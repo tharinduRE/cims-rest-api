@@ -1,0 +1,92 @@
+entity InvUser (cims_user) {
+    postTitle String,
+}
+entity InvDepartment  (cims_inv_dept) {
+    departmentName String,
+}
+
+entity InvStorage (cims_inv_storage) {
+    storageCode String,
+    storageName String,
+    storageDesc String,
+    storageLocation StorageLocation,
+}
+
+enum StorageLocation {
+	GLI, GLII, GSQ, SPL
+}
+
+entity Item (cims_inv_item) {
+	itemName String required,
+    itemDesc String,
+  	casNumber String,
+    stockBookFolio String,
+ 	itemCapacity Float,
+    unitPrice Float,
+}
+
+entity ItemStock (cims_item_stock) {
+    totalQuantity Integer,
+    minimumQuantity Integer,
+    itemStatus ItemStatus,
+    stockStore StockStore
+    entryDate LocalDate,
+    expiryDate LocalDate,
+    creatorId Integer,
+    createdOn Instant,
+    sdsfile String,
+}
+
+enum ItemStatus {
+	NEW, USED, OUTOFSTOCK
+}
+enum StockStore{
+	ORG,
+    INORG,
+    ACIDS,
+    NORM_GLASS,
+    Q_FIT_GLASS,
+    ORG_USED,
+    INORG_USED
+}
+
+entity MeasUnit  (cims_meas_units) {
+	measUnit String,
+    measDesc String,
+}
+
+entity HazardCode (cims_item_hazard_code) {
+	hazardCode Integer,
+    hazardCodeDesc String,
+}
+
+entity ItemManufacturer (cims_item_manufacturer) {
+    manufacturerName String,
+    manufacturerDesc String,
+}
+
+entity ItemTransaction  (cims_item_transaction) {
+    quantity Integer required
+    remarks String,
+    transactionUUID UUID,
+    transactionDate LocalDate,
+}
+
+relationship OneToMany {
+	Item to ItemManufacturer{item required},
+    InvDepartment to InvStorage{department},
+    InvStorage to ItemStock{invStorage required},
+    MeasUnit to ItemStock{storageUnit required}
+    Item to ItemStock{item required}
+
+}
+
+relationship ManyToMany{
+    InvDepartment to InvUser
+    Item to HazardCode
+    ItemStock to ItemTransaction
+}
+
+dto * with mapstruct
+filter ItemStock
+
