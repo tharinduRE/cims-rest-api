@@ -1,0 +1,63 @@
+{
+  "name": "Item",
+  "fields": [
+    {
+      "fieldName": "itemName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "itemDesc",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "casNumber",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "stockBookFolio",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "itemCapacity",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "unitPrice",
+      "fieldType": "Float"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "itemManufacturer",
+      "otherEntityRelationshipName": "item",
+      "relationshipName": "itemManufacturer"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "itemStock",
+      "otherEntityRelationshipName": "item",
+      "relationshipName": "itemStock"
+    },
+    {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "hazardCode",
+      "otherEntityRelationshipName": "item",
+      "relationshipName": "hazardCode",
+      "otherEntityField": "id",
+      "ownerSide": true
+    }
+  ],
+  "changelogDate": "20200903132923",
+  "entityTableName": "cims_inv_item",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

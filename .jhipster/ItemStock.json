@@ -1,0 +1,88 @@
+{
+  "name": "ItemStock",
+  "fields": [
+    {
+      "fieldName": "totalQuantity",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "minimumQuantity",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "itemStatus",
+      "fieldType": "ItemStatus",
+      "fieldValues": "NEW,USED,OUTOFSTOCK"
+    },
+    {
+      "fieldName": "stockStore",
+      "fieldType": "StockStore",
+      "fieldValues": "ORG,INORG,ACIDS,NORM_GLASS,Q_FIT_GLASS,ORG_USED,INORG_USED"
+    },
+    {
+      "fieldName": "entryDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "expiryDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "creatorId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "createdOn",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "sdsfile",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "itemTransaction",
+      "otherEntityRelationshipName": "itemStock",
+      "relationshipName": "itemTransaction",
+      "otherEntityField": "id",
+      "ownerSide": true
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "invStorage",
+      "otherEntityRelationshipName": "itemStock",
+      "relationshipValidateRules": "required",
+      "relationshipName": "invStorage",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "measUnit",
+      "otherEntityRelationshipName": "itemStock",
+      "relationshipValidateRules": "required",
+      "relationshipName": "storageUnit",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "item",
+      "otherEntityRelationshipName": "itemStock",
+      "relationshipValidateRules": "required",
+      "relationshipName": "item",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20200903133023",
+  "entityTableName": "cims_item_stock",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": true,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

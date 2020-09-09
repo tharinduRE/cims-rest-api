@@ -1,0 +1,48 @@
+{
+  "name": "InvStorage",
+  "fields": [
+    {
+      "fieldName": "storageCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "storageName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "storageDesc",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "storageLocation",
+      "fieldType": "StorageLocation",
+      "fieldValues": "GLI,GLII,GSQ,SPL"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "itemStock",
+      "otherEntityRelationshipName": "invStorage",
+      "relationshipName": "itemStock"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "invDepartment",
+      "otherEntityRelationshipName": "invStorage",
+      "relationshipName": "department",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20200903132823",
+  "entityTableName": "cims_inv_storage",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

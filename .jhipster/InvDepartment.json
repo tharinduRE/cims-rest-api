@@ -1,0 +1,36 @@
+{
+  "name": "InvDepartment",
+  "fields": [
+    {
+      "fieldName": "departmentName",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "invStorage",
+      "otherEntityRelationshipName": "department",
+      "relationshipName": "invStorage"
+    },
+    {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "invUser",
+      "otherEntityRelationshipName": "invDepartment",
+      "relationshipName": "invUser",
+      "otherEntityField": "id",
+      "ownerSide": true
+    }
+  ],
+  "changelogDate": "20200903132723",
+  "entityTableName": "cims_inv_dept",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}
