@@ -54,7 +54,7 @@
     },
     {
       "fieldName": "lastUpdated",
-      "fieldType": "LocalDate"
+      "fieldType": "Instant"
     },
     {
       "fieldName": "sdsfile",

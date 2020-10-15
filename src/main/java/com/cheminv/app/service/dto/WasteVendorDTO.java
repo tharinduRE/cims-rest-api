@@ -1,6 +1,6 @@
 package com.cheminv.app.service.dto;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +14,7 @@ public class WasteVendorDTO implements Serializable {
 
     private String vendorName;
 
-    private LocalDate lastIssuedOn;
+    private Instant lastIssuedOn;
 
     private Set<WasteItemDTO> wasteItems = new HashSet<>();
     
@@ -34,11 +34,11 @@ public class WasteVendorDTO implements Serializable {
         this.vendorName = vendorName;
     }
 
-    public LocalDate getLastIssuedOn() {
+    public Instant getLastIssuedOn() {
         return lastIssuedOn;
     }
 
-    public void setLastIssuedOn(LocalDate lastIssuedOn) {
+    public void setLastIssuedOn(Instant lastIssuedOn) {
         this.lastIssuedOn = lastIssuedOn;
     }
 

@@ -1,7 +1,6 @@
 package com.cheminv.app.service.dto;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import com.cheminv.app.domain.enumeration.TransactionType;
@@ -10,7 +9,7 @@ import com.cheminv.app.domain.enumeration.TransactionType;
  * A DTO for the {@link com.cheminv.app.domain.ItemTransaction} entity.
  */
 public class ItemTransactionDTO implements Serializable {
-
+    
     private Long id;
 
     @NotNull
@@ -22,8 +21,11 @@ public class ItemTransactionDTO implements Serializable {
 
     private Instant transactionDate;
 
+
     private Long itemStockId;
 
+    private Long createdById;
+    
     public Long getId() {
         return id;
     }
@@ -72,6 +74,14 @@ public class ItemTransactionDTO implements Serializable {
         this.itemStockId = itemStockId;
     }
 
+    public Long getCreatedById() {
+        return createdById;
+    }
+
+    public void setCreatedById(Long invUserId) {
+        this.createdById = invUserId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -99,6 +109,7 @@ public class ItemTransactionDTO implements Serializable {
             ", transactionType='" + getTransactionType() + "'" +
             ", transactionDate='" + getTransactionDate() + "'" +
             ", itemStockId=" + getItemStockId() +
+            ", createdById=" + getCreatedById() +
             "}";
     }
 }

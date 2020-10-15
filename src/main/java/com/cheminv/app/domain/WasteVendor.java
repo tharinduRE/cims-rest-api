@@ -4,7 +4,7 @@ package com.cheminv.app.domain;
 import javax.persistence.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,7 +25,7 @@ public class WasteVendor implements Serializable {
     private String vendorName;
 
     @Column(name = "last_issued_on")
-    private LocalDate lastIssuedOn;
+    private Instant lastIssuedOn;
 
     @ManyToMany
     @JoinTable(name = "cims_waste_vendor_waste_item",
@@ -55,16 +55,16 @@ public class WasteVendor implements Serializable {
         this.vendorName = vendorName;
     }
 
-    public LocalDate getLastIssuedOn() {
+    public Instant getLastIssuedOn() {
         return lastIssuedOn;
     }
 
-    public WasteVendor lastIssuedOn(LocalDate lastIssuedOn) {
+    public WasteVendor lastIssuedOn(Instant lastIssuedOn) {
         this.lastIssuedOn = lastIssuedOn;
         return this;
     }
 
-    public void setLastIssuedOn(LocalDate lastIssuedOn) {
+    public void setLastIssuedOn(Instant lastIssuedOn) {
         this.lastIssuedOn = lastIssuedOn;
     }
 

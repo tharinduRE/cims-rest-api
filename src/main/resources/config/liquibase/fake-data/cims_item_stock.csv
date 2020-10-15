@@ -1,11 +1,11 @@
 id;item_name;cas_number;stock_book_folio;item_manufacturer;item_capacity;unit_price;total_quantity;minimum_quantity;item_status;stock_store;creator_id;created_on;last_updated;sdsfile;sdsfile_content_type;inv_storage_id;storage_unit_id
-1;Metrics killer;virtual;Refined SMTP;International Pula;62300;43942;88701;86572;USED;ORG_USED;66698;2020-10-08T16:29:21;2020-10-09;../fake-data/blob/hipster.png;image/png;1;1
-2;invoice withdrawal circuit;synergies navigating New Jersey;Chief Refined Frozen Bike;hacking Maryland;11081;71184;90268;7008;NEW;ACIDS;78424;2020-10-08T19:35:29;2020-10-08;../fake-data/blob/hipster.png;image/png;2;2
-3;Planner uniform Bike;Technician;Money Market Account;Cuba systematic;34041;69944;9095;85766;NEW;ORG;64195;2020-10-08T15:57:22;2020-10-08;../fake-data/blob/hipster.png;image/png;3;3
-4;Argentina Fresh;Buckinghamshire Vatu neural;compress Chief Agent;open-source copying Virtual;1239;76406;47443;5114;USED;INORG;92755;2020-10-09T05:36:05;2020-10-09;../fake-data/blob/hipster.png;image/png;4;4
-5;Pizza Universal;Movies;function;Chicken support;96054;40234;4447;41830;NEW;ORG;91306;2020-10-08T06:32:55;2020-10-09;../fake-data/blob/hipster.png;image/png;5;5
-6;Cordoba Oro hack;Corporate;navigating Interactions Bedfordshire;Iceland Krona Malaysian Ringgit;66506;2416;44711;84658;OUTOFSTOCK;ORG;82581;2020-10-08T08:53:58;2020-10-09;../fake-data/blob/hipster.png;image/png;6;6
-7;models;Rustic Wooden Hat;SDD Australian Dollar integrate;Administrator Practical Fresh Mouse New York;48000;36322;81642;26621;OUTOFSTOCK;ACIDS;12704;2020-10-08T09:38:44;2020-10-08;../fake-data/blob/hipster.png;image/png;7;7
-8;exploit connect parse;Nakfa maximized Kansas;1080p benchmark transmitting;Small quantify PCI;6922;57795;25802;26013;USED;INORG;10420;2020-10-08T13:21:24;2020-10-08;../fake-data/blob/hipster.png;image/png;8;8
-9;fresh-thinking salmon User-centric;Senior Serbian Dinar;silver deposit Shoes;withdrawal indexing;34414;51591;85886;13325;USED;INORG;14681;2020-10-08T06:21:56;2020-10-08;../fake-data/blob/hipster.png;image/png;9;9
-10;Ergonomic Designer;Grove;backing up alarm Riel;withdrawal Metal;66893;13848;20535;82759;USED;ACIDS;26503;2020-10-08T19:29:35;2020-10-08;../fake-data/blob/hipster.png;image/png;10;10
+1;Metrics killer;virtual;Refined SMTP;International Pula;62300;43942;88701;86572;USED;ORG_USED;66698;2020-10-08T16:29:21;2020-10-09T04:42:17;../fake-data/blob/hipster.png;image/png;1;1
+2;invoice withdrawal circuit;synergies navigating New Jersey;Chief Refined Frozen Bike;hacking Maryland;11081;71184;90268;7008;NEW;ACIDS;78424;2020-10-08T19:35:29;2020-10-08T15:39:18;../fake-data/blob/hipster.png;image/png;2;2
+3;Planner uniform Bike;Technician;Money Market Account;Cuba systematic;34041;69944;9095;85766;NEW;ORG;64195;2020-10-08T15:57:22;2020-10-08T12:41:02;../fake-data/blob/hipster.png;image/png;3;3
+4;Argentina Fresh;Buckinghamshire Vatu neural;compress Chief Agent;open-source copying Virtual;1239;76406;47443;5114;USED;INORG;92755;2020-10-09T05:36:05;2020-10-09T01:30:53;../fake-data/blob/hipster.png;image/png;4;4
+5;Pizza Universal;Movies;function;Chicken support;96054;40234;4447;41830;NEW;ORG;91306;2020-10-08T06:32:55;2020-10-09T00:35:28;../fake-data/blob/hipster.png;image/png;5;5
+6;Cordoba Oro hack;Corporate;navigating Interactions Bedfordshire;Iceland Krona Malaysian Ringgit;66506;2416;44711;84658;OUTOFSTOCK;ORG;82581;2020-10-08T08:53:58;2020-10-09T01:16:07;../fake-data/blob/hipster.png;image/png;6;6
+7;models;Rustic Wooden Hat;SDD Australian Dollar integrate;Administrator Practical Fresh Mouse New York;48000;36322;81642;26621;OUTOFSTOCK;ACIDS;12704;2020-10-08T09:38:44;2020-10-08T23:18:22;../fake-data/blob/hipster.png;image/png;7;7
+8;exploit connect parse;Nakfa maximized Kansas;1080p benchmark transmitting;Small quantify PCI;6922;57795;25802;26013;USED;INORG;10420;2020-10-08T13:21:24;2020-10-08T23:33:59;../fake-data/blob/hipster.png;image/png;8;8
+9;fresh-thinking salmon User-centric;Senior Serbian Dinar;silver deposit Shoes;withdrawal indexing;34414;51591;85886;13325;USED;INORG;14681;2020-10-08T06:21:56;2020-10-08T06:07:29;../fake-data/blob/hipster.png;image/png;9;9
+10;Ergonomic Designer;Grove;backing up alarm Riel;withdrawal Metal;66893;13848;20535;82759;USED;ACIDS;26503;2020-10-08T19:29:35;2020-10-08T09:23:34;../fake-data/blob/hipster.png;image/png;10;10

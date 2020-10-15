@@ -4,7 +4,14 @@ import java.io.Serializable;
 import java.util.Objects;
 import io.github.jhipster.service.Criteria;
 import com.cheminv.app.domain.enumeration.TransactionType;
-import io.github.jhipster.service.filter.*;
+import io.github.jhipster.service.filter.BooleanFilter;
+import io.github.jhipster.service.filter.DoubleFilter;
+import io.github.jhipster.service.filter.Filter;
+import io.github.jhipster.service.filter.FloatFilter;
+import io.github.jhipster.service.filter.IntegerFilter;
+import io.github.jhipster.service.filter.LongFilter;
+import io.github.jhipster.service.filter.StringFilter;
+import io.github.jhipster.service.filter.InstantFilter;
 
 /**
  * Criteria class for the {@link com.cheminv.app.domain.ItemTransaction} entity. This class is used
@@ -49,6 +56,8 @@ public class ItemTransactionCriteria implements Serializable, Criteria {
 
     private LongFilter itemStockId;
 
+    private LongFilter createdById;
+
     public ItemTransactionCriteria() {
     }
 
@@ -59,6 +68,7 @@ public class ItemTransactionCriteria implements Serializable, Criteria {
         this.transactionType = other.transactionType == null ? null : other.transactionType.copy();
         this.transactionDate = other.transactionDate == null ? null : other.transactionDate.copy();
         this.itemStockId = other.itemStockId == null ? null : other.itemStockId.copy();
+        this.createdById = other.createdById == null ? null : other.createdById.copy();
     }
 
     @Override
@@ -114,6 +124,14 @@ public class ItemTransactionCriteria implements Serializable, Criteria {
         this.itemStockId = itemStockId;
     }
 
+    public LongFilter getCreatedById() {
+        return createdById;
+    }
+
+    public void setCreatedById(LongFilter createdById) {
+        this.createdById = createdById;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -130,7 +148,8 @@ public class ItemTransactionCriteria implements Serializable, Criteria {
             Objects.equals(remarks, that.remarks) &&
             Objects.equals(transactionType, that.transactionType) &&
             Objects.equals(transactionDate, that.transactionDate) &&
-            Objects.equals(itemStockId, that.itemStockId);
+            Objects.equals(itemStockId, that.itemStockId) &&
+            Objects.equals(createdById, that.createdById);
     }
 
     @Override
@@ -141,7 +160,8 @@ public class ItemTransactionCriteria implements Serializable, Criteria {
         remarks,
         transactionType,
         transactionDate,
-        itemStockId
+        itemStockId,
+        createdById
         );
     }
 
@@ -155,6 +175,7 @@ public class ItemTransactionCriteria implements Serializable, Criteria {
                 (transactionType != null ? "transactionType=" + transactionType + ", " : "") +
                 (transactionDate != null ? "transactionDate=" + transactionDate + ", " : "") +
                 (itemStockId != null ? "itemStockId=" + itemStockId + ", " : "") +
+                (createdById != null ? "createdById=" + createdById + ", " : "") +
             "}";
     }
 

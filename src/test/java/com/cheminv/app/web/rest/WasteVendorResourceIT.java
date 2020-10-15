@@ -22,8 +22,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,8 +45,8 @@ public class WasteVendorResourceIT {
     private static final String DEFAULT_VENDOR_NAME = "AAAAAAAAAA";
     private static final String UPDATED_VENDOR_NAME = "BBBBBBBBBB";
 
-    private static final LocalDate DEFAULT_LAST_ISSUED_ON = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_LAST_ISSUED_ON = LocalDate.now(ZoneId.systemDefault());
+    private static final Instant DEFAULT_LAST_ISSUED_ON = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_LAST_ISSUED_ON = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     @Autowired
     private WasteVendorRepository wasteVendorRepository;

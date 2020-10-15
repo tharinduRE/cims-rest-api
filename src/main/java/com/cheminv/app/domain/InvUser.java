@@ -30,6 +30,9 @@ public class InvUser implements Serializable {
     @Column(name = "post_title")
     private String postTitle;
 
+    @OneToMany(mappedBy = "createdBy")
+    private Set<ItemTransaction> itemTransactions = new HashSet<>();
+
     @ManyToMany(mappedBy = "invUsers")
     @JsonIgnore
     private Set<InvDepartment> invDepartments = new HashSet<>();
@@ -80,6 +83,31 @@ public class InvUser implements Serializable {
 
     public void setPostTitle(String postTitle) {
         this.postTitle = postTitle;
+    }
+
+    public Set<ItemTransaction> getItemTransactions() {
+        return itemTransactions;
+    }
+
+    public InvUser itemTransactions(Set<ItemTransaction> itemTransactions) {
+        this.itemTransactions = itemTransactions;
+        return this;
+    }
+
+    public InvUser addItemTransaction(ItemTransaction itemTransaction) {
+        this.itemTransactions.add(itemTransaction);
+        itemTransaction.setCreatedBy(this);
+        return this;
+    }
+
+    public InvUser removeItemTransaction(ItemTransaction itemTransaction) {
+        this.itemTransactions.remove(itemTransaction);
+        itemTransaction.setCreatedBy(null);
+        return this;
+    }
+
+    public void setItemTransactions(Set<ItemTransaction> itemTransactions) {
+        this.itemTransactions = itemTransactions;
     }
 
     public Set<InvDepartment> getInvDepartments() {

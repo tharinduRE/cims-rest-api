@@ -7,7 +7,7 @@
     },
     {
       "fieldName": "lastIssuedOn",
-      "fieldType": "LocalDate"
+      "fieldType": "Instant"
     }
   ],
   "relationships": [

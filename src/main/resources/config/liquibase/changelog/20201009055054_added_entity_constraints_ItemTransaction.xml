@@ -14,5 +14,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="cims_item_stock"/>
 
+        <addForeignKeyConstraint baseColumnNames="created_by_id"
+                                 baseTableName="cims_item_transaction"
+                                 constraintName="fk_cims_item_transaction_created_by_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cims_user"/>
+
     </changeSet>
 </databaseChangeLog>

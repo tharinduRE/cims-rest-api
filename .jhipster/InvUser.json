@@ -16,6 +16,12 @@
   ],
   "relationships": [
     {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "itemTransaction",
+      "otherEntityRelationshipName": "createdBy",
+      "relationshipName": "itemTransaction"
+    },
+    {
       "relationshipType": "many-to-many",
       "otherEntityName": "invDepartment",
       "otherEntityRelationshipName": "invUser",

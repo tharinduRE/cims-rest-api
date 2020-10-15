@@ -13,7 +13,6 @@ import io.github.jhipster.service.filter.IntegerFilter;
 import io.github.jhipster.service.filter.LongFilter;
 import io.github.jhipster.service.filter.StringFilter;
 import io.github.jhipster.service.filter.InstantFilter;
-import io.github.jhipster.service.filter.LocalDateFilter;
 
 /**
  * Criteria class for the {@link com.cheminv.app.domain.ItemStock} entity. This class is used
@@ -90,7 +89,7 @@ public class ItemStockCriteria implements Serializable, Criteria {
 
     private InstantFilter createdOn;
 
-    private LocalDateFilter lastUpdated;
+    private InstantFilter lastUpdated;
 
     private LongFilter itemTransactionId;
 
@@ -236,11 +235,11 @@ public class ItemStockCriteria implements Serializable, Criteria {
         this.createdOn = createdOn;
     }
 
-    public LocalDateFilter getLastUpdated() {
+    public InstantFilter getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(LocalDateFilter lastUpdated) {
+    public void setLastUpdated(InstantFilter lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 

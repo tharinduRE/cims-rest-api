@@ -7,7 +7,6 @@ import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -68,7 +67,7 @@ public class ItemStock implements Serializable {
     private Instant createdOn;
 
     @Column(name = "last_updated")
-    private LocalDate lastUpdated;
+    private Instant lastUpdated;
 
     @Lob
     @Column(name = "sdsfile")
@@ -264,16 +263,16 @@ public class ItemStock implements Serializable {
         this.createdOn = createdOn;
     }
 
-    public LocalDate getLastUpdated() {
+    public Instant getLastUpdated() {
         return lastUpdated;
     }
 
-    public ItemStock lastUpdated(LocalDate lastUpdated) {
+    public ItemStock lastUpdated(Instant lastUpdated) {
         this.lastUpdated = lastUpdated;
         return this;
     }
 
-    public void setLastUpdated(LocalDate lastUpdated) {
+    public void setLastUpdated(Instant lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 

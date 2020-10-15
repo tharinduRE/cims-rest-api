@@ -17,7 +17,7 @@
     },
     {
       "fieldName": "transactionDate",
-      "fieldType": "LocalDate"
+      "fieldType": "Instant"
     }
   ],
   "relationships": [
@@ -27,6 +27,14 @@
       "otherEntityRelationshipName": "itemTransaction",
       "relationshipValidateRules": "required",
       "relationshipName": "itemStock",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "invUser",
+      "otherEntityRelationshipName": "itemTransaction",
+      "relationshipValidateRules": "required",
+      "relationshipName": "createdBy",
       "otherEntityField": "id"
     }
   ],

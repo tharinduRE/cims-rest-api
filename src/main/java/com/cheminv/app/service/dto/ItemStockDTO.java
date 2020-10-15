@@ -1,7 +1,6 @@
 package com.cheminv.app.service.dto;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -14,7 +13,7 @@ import com.cheminv.app.domain.enumeration.StockStore;
  * A DTO for the {@link com.cheminv.app.domain.ItemStock} entity.
  */
 public class ItemStockDTO implements Serializable {
-
+    
     private Long id;
 
     @NotNull
@@ -42,19 +41,18 @@ public class ItemStockDTO implements Serializable {
 
     private Instant createdOn;
 
-    private LocalDate lastUpdated;
+    private Instant lastUpdated;
 
     @Lob
     private byte[] sdsfile;
 
     private String sdsfileContentType;
-
-    //private Set<HazardCodeDTO> hazardCodes = new HashSet<>();
+    private Set<HazardCodeDTO> hazardCodes = new HashSet<>();
 
     private Long invStorageId;
 
     private Long storageUnitId;
-
+    
     public Long getId() {
         return id;
     }
@@ -159,11 +157,11 @@ public class ItemStockDTO implements Serializable {
         this.createdOn = createdOn;
     }
 
-    public LocalDate getLastUpdated() {
+    public Instant getLastUpdated() {
         return lastUpdated;
     }
 
-    public void setLastUpdated(LocalDate lastUpdated) {
+    public void setLastUpdated(Instant lastUpdated) {
         this.lastUpdated = lastUpdated;
     }
 
@@ -183,6 +181,14 @@ public class ItemStockDTO implements Serializable {
         this.sdsfileContentType = sdsfileContentType;
     }
 
+    public Set<HazardCodeDTO> getHazardCodes() {
+        return hazardCodes;
+    }
+
+    public void setHazardCodes(Set<HazardCodeDTO> hazardCodes) {
+        this.hazardCodes = hazardCodes;
+    }
+
     public Long getInvStorageId() {
         return invStorageId;
     }
@@ -195,8 +201,8 @@ public class ItemStockDTO implements Serializable {
         return storageUnitId;
     }
 
-    public void setStorageUnitId(Long storageUnitId) {
-        this.storageUnitId = storageUnitId;
+    public void setStorageUnitId(Long measUnitId) {
+        this.storageUnitId = measUnitId;
     }
 
     @Override
@@ -235,7 +241,9 @@ public class ItemStockDTO implements Serializable {
             ", createdOn='" + getCreatedOn() + "'" +
             ", lastUpdated='" + getLastUpdated() + "'" +
             ", sdsfile='" + getSdsfile() + "'" +
+            ", hazardCodes='" + getHazardCodes() + "'" +
             ", invStorageId=" + getInvStorageId() +
+            ", storageUnitId=" + getStorageUnitId() +
             "}";
     }
 }

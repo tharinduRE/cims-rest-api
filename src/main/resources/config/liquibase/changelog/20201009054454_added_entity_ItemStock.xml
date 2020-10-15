@@ -52,7 +52,7 @@
             <column name="created_on" type="datetime">
                 <constraints nullable="true" />
             </column>
-            <column name="last_updated" type="date">
+            <column name="last_updated" type="datetime">
                 <constraints nullable="true" />
             </column>
             <column name="sdsfile" type="longblob">
@@ -70,6 +70,7 @@
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
         <dropDefaultValue tableName="cims_item_stock" columnName="created_on" columnDataType="datetime"/>
+        <dropDefaultValue tableName="cims_item_stock" columnName="last_updated" columnDataType="datetime"/>
     </changeSet>
 
     <changeSet id="20201009054454-1-relations" author="jhipster">
@@ -114,7 +115,7 @@
             <column name="stock_store" type="string"/>
             <column name="creator_id" type="numeric"/>
             <column name="created_on" type="datetime"/>
-            <column name="last_updated" type="date"/>
+            <column name="last_updated" type="datetime"/>
             <column name="sdsfile" type="blob"/>
             <column name="sdsfile_content_type" type="string"/>
             <column name="inv_storage_id" type="numeric"/>

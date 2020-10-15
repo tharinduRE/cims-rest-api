@@ -30,9 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Base64Utils;
 import javax.persistence.EntityManager;
-import java.time.LocalDate;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,9 +93,8 @@ public class ItemStockResourceIT {
     private static final Instant DEFAULT_CREATED_ON = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_CREATED_ON = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
-    private static final LocalDate DEFAULT_LAST_UPDATED = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_LAST_UPDATED = LocalDate.now(ZoneId.systemDefault());
-    private static final LocalDate SMALLER_LAST_UPDATED = LocalDate.ofEpochDay(-1L);
+    private static final Instant DEFAULT_LAST_UPDATED = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_LAST_UPDATED = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     private static final byte[] DEFAULT_SDSFILE = TestUtil.createByteArray(1, "0");
     private static final byte[] UPDATED_SDSFILE = TestUtil.createByteArray(1, "1");
@@ -1439,59 +1436,6 @@ public class ItemStockResourceIT {
         // Get all the itemStockList where lastUpdated is null
         defaultItemStockShouldNotBeFound("lastUpdated.specified=false");
     }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByLastUpdatedIsGreaterThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where lastUpdated is greater than or equal to DEFAULT_LAST_UPDATED
-        defaultItemStockShouldBeFound("lastUpdated.greaterThanOrEqual=" + DEFAULT_LAST_UPDATED);
-
-        // Get all the itemStockList where lastUpdated is greater than or equal to UPDATED_LAST_UPDATED
-        defaultItemStockShouldNotBeFound("lastUpdated.greaterThanOrEqual=" + UPDATED_LAST_UPDATED);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByLastUpdatedIsLessThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where lastUpdated is less than or equal to DEFAULT_LAST_UPDATED
-        defaultItemStockShouldBeFound("lastUpdated.lessThanOrEqual=" + DEFAULT_LAST_UPDATED);
-
-        // Get all the itemStockList where lastUpdated is less than or equal to SMALLER_LAST_UPDATED
-        defaultItemStockShouldNotBeFound("lastUpdated.lessThanOrEqual=" + SMALLER_LAST_UPDATED);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByLastUpdatedIsLessThanSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where lastUpdated is less than DEFAULT_LAST_UPDATED
-        defaultItemStockShouldNotBeFound("lastUpdated.lessThan=" + DEFAULT_LAST_UPDATED);
-
-        // Get all the itemStockList where lastUpdated is less than UPDATED_LAST_UPDATED
-        defaultItemStockShouldBeFound("lastUpdated.lessThan=" + UPDATED_LAST_UPDATED);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByLastUpdatedIsGreaterThanSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where lastUpdated is greater than DEFAULT_LAST_UPDATED
-        defaultItemStockShouldNotBeFound("lastUpdated.greaterThan=" + DEFAULT_LAST_UPDATED);
-
-        // Get all the itemStockList where lastUpdated is greater than SMALLER_LAST_UPDATED
-        defaultItemStockShouldBeFound("lastUpdated.greaterThan=" + SMALLER_LAST_UPDATED);
-    }
-
 
     @Test
     @Transactional

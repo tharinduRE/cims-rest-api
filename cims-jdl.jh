@@ -30,7 +30,7 @@ entity ItemStock (cims_item_stock) {
     stockStore StockStore
     creatorId Integer,
     createdOn Instant,
-    lastUpdated LocalDate,
+    lastUpdated Instant,
     sdsfile Blob,
 }
 
@@ -46,7 +46,7 @@ entity WasteItem (cims_waste_item) {
 
 entity WasteVendor (cims_waste_vendor) {
     vendorName String,
-    lastIssuedOn LocalDate,
+    lastIssuedOn Instant,
 }
 
 enum ItemStatus {
@@ -82,7 +82,7 @@ entity ItemTransaction  (cims_item_transaction) {
     quantity Float required
     remarks String,
     transactionType TransactionType,
-    transactionDate LocalDate,
+    transactionDate Instant,
 }
 
 relationship OneToMany {
@@ -91,6 +91,7 @@ relationship OneToMany {
     MeasUnit to ItemStock{storageUnit required}
     ItemStock to ItemTransaction{itemStock required}
     ItemStock to WasteItem{itemStock required}
+    InvUser to ItemTransaction{createdBy required}
 }
 
 relationship ManyToMany{

@@ -3,10 +3,12 @@ package com.cheminv.app.web.rest;
 import com.cheminv.app.CimsApp;
 import com.cheminv.app.domain.ItemTransaction;
 import com.cheminv.app.domain.ItemStock;
+import com.cheminv.app.domain.InvUser;
 import com.cheminv.app.repository.ItemTransactionRepository;
 import com.cheminv.app.service.ItemTransactionService;
 import com.cheminv.app.service.dto.ItemTransactionDTO;
 import com.cheminv.app.service.mapper.ItemTransactionMapper;
+import com.cheminv.app.service.dto.ItemTransactionCriteria;
 import com.cheminv.app.service.ItemTransactionQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -92,6 +94,16 @@ public class ItemTransactionResourceIT {
             itemStock = TestUtil.findAll(em, ItemStock.class).get(0);
         }
         itemTransaction.setItemStock(itemStock);
+        // Add required entity
+        InvUser invUser;
+        if (TestUtil.findAll(em, InvUser.class).isEmpty()) {
+            invUser = InvUserResourceIT.createEntity(em);
+            em.persist(invUser);
+            em.flush();
+        } else {
+            invUser = TestUtil.findAll(em, InvUser.class).get(0);
+        }
+        itemTransaction.setCreatedBy(invUser);
         return itemTransaction;
     }
     /**
@@ -116,6 +128,16 @@ public class ItemTransactionResourceIT {
             itemStock = TestUtil.findAll(em, ItemStock.class).get(0);
         }
         itemTransaction.setItemStock(itemStock);
+        // Add required entity
+        InvUser invUser;
+        if (TestUtil.findAll(em, InvUser.class).isEmpty()) {
+            invUser = InvUserResourceIT.createUpdatedEntity(em);
+            em.persist(invUser);
+            em.flush();
+        } else {
+            invUser = TestUtil.findAll(em, InvUser.class).get(0);
+        }
+        itemTransaction.setCreatedBy(invUser);
         return itemTransaction;
     }
 
@@ -202,7 +224,7 @@ public class ItemTransactionResourceIT {
             .andExpect(jsonPath("$.[*].transactionType").value(hasItem(DEFAULT_TRANSACTION_TYPE.toString())))
             .andExpect(jsonPath("$.[*].transactionDate").value(hasItem(DEFAULT_TRANSACTION_DATE.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getItemTransaction() throws Exception {
@@ -529,55 +551,6 @@ public class ItemTransactionResourceIT {
 
     @Test
     @Transactional
-    public void getAllItemTransactionsByTransactionDateIsGreaterThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
-
-        // Get all the itemTransactionList where transactionDate is greater than or equal to DEFAULT_TRANSACTION_DATE
-        defaultItemTransactionShouldBeFound("transactionDate.greaterThanOrEqual=" + DEFAULT_TRANSACTION_DATE);
-
-        // Get all the itemTransactionList where transactionDate is greater than or equal to UPDATED_TRANSACTION_DATE
-        defaultItemTransactionShouldNotBeFound("transactionDate.greaterThanOrEqual=" + UPDATED_TRANSACTION_DATE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemTransactionsByTransactionDateIsLessThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
-
-        // Get all the itemTransactionList where transactionDate is less than or equal to DEFAULT_TRANSACTION_DATE
-        defaultItemTransactionShouldBeFound("transactionDate.lessThanOrEqual=" + DEFAULT_TRANSACTION_DATE);
-
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemTransactionsByTransactionDateIsLessThanSomething() throws Exception {
-        // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
-
-        // Get all the itemTransactionList where transactionDate is less than DEFAULT_TRANSACTION_DATE
-        defaultItemTransactionShouldNotBeFound("transactionDate.lessThan=" + DEFAULT_TRANSACTION_DATE);
-
-        // Get all the itemTransactionList where transactionDate is less than UPDATED_TRANSACTION_DATE
-        defaultItemTransactionShouldBeFound("transactionDate.lessThan=" + UPDATED_TRANSACTION_DATE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemTransactionsByTransactionDateIsGreaterThanSomething() throws Exception {
-        // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
-
-        // Get all the itemTransactionList where transactionDate is greater than DEFAULT_TRANSACTION_DATE
-        defaultItemTransactionShouldNotBeFound("transactionDate.greaterThan=" + DEFAULT_TRANSACTION_DATE);
-
-       }
-
-
-    @Test
-    @Transactional
     public void getAllItemTransactionsByItemStockIsEqualToSomething() throws Exception {
         // Get already existing entity
         ItemStock itemStock = itemTransaction.getItemStock();
@@ -589,6 +562,22 @@ public class ItemTransactionResourceIT {
 
         // Get all the itemTransactionList where itemStock equals to itemStockId + 1
         defaultItemTransactionShouldNotBeFound("itemStockId.equals=" + (itemStockId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllItemTransactionsByCreatedByIsEqualToSomething() throws Exception {
+        // Get already existing entity
+        InvUser createdBy = itemTransaction.getCreatedBy();
+        itemTransactionRepository.saveAndFlush(itemTransaction);
+        Long createdById = createdBy.getId();
+
+        // Get all the itemTransactionList where createdBy equals to createdById
+        defaultItemTransactionShouldBeFound("createdById.equals=" + createdById);
+
+        // Get all the itemTransactionList where createdBy equals to createdById + 1
+        defaultItemTransactionShouldNotBeFound("createdById.equals=" + (createdById + 1));
     }
 
     /**

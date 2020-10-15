@@ -7,7 +7,6 @@ import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.LocalDate;
 
 import com.cheminv.app.domain.enumeration.TransactionType;
 
@@ -42,6 +41,11 @@ public class ItemTransaction implements Serializable {
     @NotNull
     @JsonIgnoreProperties(value = "itemTransactions", allowSetters = true)
     private ItemStock itemStock;
+
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties(value = "itemTransactions", allowSetters = true)
+    private InvUser createdBy;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -91,14 +95,13 @@ public class ItemTransaction implements Serializable {
         this.transactionType = transactionType;
     }
 
+    public Instant getTransactionDate() {
+        return transactionDate;
+    }
 
     public ItemTransaction transactionDate(Instant transactionDate) {
         this.transactionDate = transactionDate;
         return this;
-    }
-
-    public Instant getTransactionDate() {
-        return transactionDate;
     }
 
     public void setTransactionDate(Instant transactionDate) {
@@ -116,6 +119,19 @@ public class ItemTransaction implements Serializable {
 
     public void setItemStock(ItemStock itemStock) {
         this.itemStock = itemStock;
+    }
+
+    public InvUser getCreatedBy() {
+        return createdBy;
+    }
+
+    public ItemTransaction createdBy(InvUser invUser) {
+        this.createdBy = invUser;
+        return this;
+    }
+
+    public void setCreatedBy(InvUser invUser) {
+        this.createdBy = invUser;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
