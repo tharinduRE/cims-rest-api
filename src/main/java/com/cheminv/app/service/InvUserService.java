@@ -2,7 +2,6 @@ package com.cheminv.app.service;
 
 import com.cheminv.app.domain.InvUser;
 import com.cheminv.app.repository.InvUserRepository;
-import com.cheminv.app.repository.search.InvUserSearchRepository;
 import com.cheminv.app.service.dto.InvUserDTO;
 import com.cheminv.app.service.mapper.InvUserMapper;
 import org.slf4j.Logger;
@@ -15,9 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing {@link InvUser}.
@@ -32,12 +28,9 @@ public class InvUserService {
 
     private final InvUserMapper invUserMapper;
 
-    private final InvUserSearchRepository invUserSearchRepository;
-
-    public InvUserService(InvUserRepository invUserRepository, InvUserMapper invUserMapper, InvUserSearchRepository invUserSearchRepository) {
+    public InvUserService(InvUserRepository invUserRepository, InvUserMapper invUserMapper) {
         this.invUserRepository = invUserRepository;
         this.invUserMapper = invUserMapper;
-        this.invUserSearchRepository = invUserSearchRepository;
     }
 
     /**
@@ -50,9 +43,7 @@ public class InvUserService {
         log.debug("Request to save InvUser : {}", invUserDTO);
         InvUser invUser = invUserMapper.toEntity(invUserDTO);
         invUser = invUserRepository.save(invUser);
-        InvUserDTO result = invUserMapper.toDto(invUser);
-        invUserSearchRepository.save(invUser);
-        return result;
+        return invUserMapper.toDto(invUser);
     }
 
     /**
@@ -90,21 +81,5 @@ public class InvUserService {
     public void delete(Long id) {
         log.debug("Request to delete InvUser : {}", id);
         invUserRepository.deleteById(id);
-        invUserSearchRepository.deleteById(id);
-    }
-
-    /**
-     * Search for the invUser corresponding to the query.
-     *
-     * @param query the query of the search.
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public List<InvUserDTO> search(String query) {
-        log.debug("Request to search InvUsers for query {}", query);
-        return StreamSupport
-            .stream(invUserSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .map(invUserMapper::toDto)
-        .collect(Collectors.toList());
     }
 }

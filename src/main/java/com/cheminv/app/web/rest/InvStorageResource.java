@@ -16,9 +16,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing {@link com.cheminv.app.domain.InvStorage}.
@@ -115,18 +112,5 @@ public class InvStorageResource {
         log.debug("REST request to delete InvStorage : {}", id);
         invStorageService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/inv-storages?query=:query} : search for the invStorage corresponding
-     * to the query.
-     *
-     * @param query the query of the invStorage search.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/inv-storages")
-    public List<InvStorageDTO> searchInvStorages(@RequestParam String query) {
-        log.debug("REST request to search InvStorages for query {}", query);
-        return invStorageService.search(query);
     }
 }

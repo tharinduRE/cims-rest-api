@@ -2,7 +2,6 @@ package com.cheminv.app.service;
 
 import com.cheminv.app.domain.InvStorage;
 import com.cheminv.app.repository.InvStorageRepository;
-import com.cheminv.app.repository.search.InvStorageSearchRepository;
 import com.cheminv.app.service.dto.InvStorageDTO;
 import com.cheminv.app.service.mapper.InvStorageMapper;
 import org.slf4j.Logger;
@@ -15,9 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing {@link InvStorage}.
@@ -32,12 +28,9 @@ public class InvStorageService {
 
     private final InvStorageMapper invStorageMapper;
 
-    private final InvStorageSearchRepository invStorageSearchRepository;
-
-    public InvStorageService(InvStorageRepository invStorageRepository, InvStorageMapper invStorageMapper, InvStorageSearchRepository invStorageSearchRepository) {
+    public InvStorageService(InvStorageRepository invStorageRepository, InvStorageMapper invStorageMapper) {
         this.invStorageRepository = invStorageRepository;
         this.invStorageMapper = invStorageMapper;
-        this.invStorageSearchRepository = invStorageSearchRepository;
     }
 
     /**
@@ -50,9 +43,7 @@ public class InvStorageService {
         log.debug("Request to save InvStorage : {}", invStorageDTO);
         InvStorage invStorage = invStorageMapper.toEntity(invStorageDTO);
         invStorage = invStorageRepository.save(invStorage);
-        InvStorageDTO result = invStorageMapper.toDto(invStorage);
-        invStorageSearchRepository.save(invStorage);
-        return result;
+        return invStorageMapper.toDto(invStorage);
     }
 
     /**
@@ -90,21 +81,5 @@ public class InvStorageService {
     public void delete(Long id) {
         log.debug("Request to delete InvStorage : {}", id);
         invStorageRepository.deleteById(id);
-        invStorageSearchRepository.deleteById(id);
-    }
-
-    /**
-     * Search for the invStorage corresponding to the query.
-     *
-     * @param query the query of the search.
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public List<InvStorageDTO> search(String query) {
-        log.debug("Request to search InvStorages for query {}", query);
-        return StreamSupport
-            .stream(invStorageSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .map(invStorageMapper::toDto)
-        .collect(Collectors.toList());
     }
 }

@@ -17,7 +17,6 @@ import io.github.jhipster.service.QueryService;
 import com.cheminv.app.domain.ItemStock;
 import com.cheminv.app.domain.*; // for static metamodels
 import com.cheminv.app.repository.ItemStockRepository;
-import com.cheminv.app.repository.search.ItemStockSearchRepository;
 import com.cheminv.app.service.dto.ItemStockCriteria;
 import com.cheminv.app.service.dto.ItemStockDTO;
 import com.cheminv.app.service.mapper.ItemStockMapper;
@@ -38,12 +37,9 @@ public class ItemStockQueryService extends QueryService<ItemStock> {
 
     private final ItemStockMapper itemStockMapper;
 
-    private final ItemStockSearchRepository itemStockSearchRepository;
-
-    public ItemStockQueryService(ItemStockRepository itemStockRepository, ItemStockMapper itemStockMapper, ItemStockSearchRepository itemStockSearchRepository) {
+    public ItemStockQueryService(ItemStockRepository itemStockRepository, ItemStockMapper itemStockMapper) {
         this.itemStockRepository = itemStockRepository;
         this.itemStockMapper = itemStockMapper;
-        this.itemStockSearchRepository = itemStockSearchRepository;
     }
 
     /**
@@ -95,6 +91,24 @@ public class ItemStockQueryService extends QueryService<ItemStock> {
             if (criteria.getId() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getId(), ItemStock_.id));
             }
+            if (criteria.getItemName() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getItemName(), ItemStock_.itemName));
+            }
+            if (criteria.getCasNumber() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getCasNumber(), ItemStock_.casNumber));
+            }
+            if (criteria.getStockBookFolio() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getStockBookFolio(), ItemStock_.stockBookFolio));
+            }
+            if (criteria.getItemManufacturer() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getItemManufacturer(), ItemStock_.itemManufacturer));
+            }
+            if (criteria.getItemCapacity() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getItemCapacity(), ItemStock_.itemCapacity));
+            }
+            if (criteria.getUnitPrice() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getUnitPrice(), ItemStock_.unitPrice));
+            }
             if (criteria.getTotalQuantity() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getTotalQuantity(), ItemStock_.totalQuantity));
             }
@@ -107,24 +121,26 @@ public class ItemStockQueryService extends QueryService<ItemStock> {
             if (criteria.getStockStore() != null) {
                 specification = specification.and(buildSpecification(criteria.getStockStore(), ItemStock_.stockStore));
             }
-            if (criteria.getEntryDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getEntryDate(), ItemStock_.entryDate));
-            }
-            if (criteria.getExpiryDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getExpiryDate(), ItemStock_.expiryDate));
-            }
             if (criteria.getCreatorId() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getCreatorId(), ItemStock_.creatorId));
             }
             if (criteria.getCreatedOn() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getCreatedOn(), ItemStock_.createdOn));
             }
-            if (criteria.getSdsfile() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getSdsfile(), ItemStock_.sdsfile));
+            if (criteria.getLastUpdated() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getLastUpdated(), ItemStock_.lastUpdated));
             }
             if (criteria.getItemTransactionId() != null) {
                 specification = specification.and(buildSpecification(criteria.getItemTransactionId(),
                     root -> root.join(ItemStock_.itemTransactions, JoinType.LEFT).get(ItemTransaction_.id)));
+            }
+            if (criteria.getWasteItemId() != null) {
+                specification = specification.and(buildSpecification(criteria.getWasteItemId(),
+                    root -> root.join(ItemStock_.wasteItems, JoinType.LEFT).get(WasteItem_.id)));
+            }
+            if (criteria.getHazardCodeId() != null) {
+                specification = specification.and(buildSpecification(criteria.getHazardCodeId(),
+                    root -> root.join(ItemStock_.hazardCodes, JoinType.LEFT).get(HazardCode_.id)));
             }
             if (criteria.getInvStorageId() != null) {
                 specification = specification.and(buildSpecification(criteria.getInvStorageId(),
@@ -133,10 +149,6 @@ public class ItemStockQueryService extends QueryService<ItemStock> {
             if (criteria.getStorageUnitId() != null) {
                 specification = specification.and(buildSpecification(criteria.getStorageUnitId(),
                     root -> root.join(ItemStock_.storageUnit, JoinType.LEFT).get(MeasUnit_.id)));
-            }
-            if (criteria.getItemId() != null) {
-                specification = specification.and(buildSpecification(criteria.getItemId(),
-                    root -> root.join(ItemStock_.item, JoinType.LEFT).get(Item_.id)));
             }
         }
         return specification;

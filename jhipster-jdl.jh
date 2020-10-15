@@ -1,4 +1,6 @@
 entity InvUser (cims_user) {
+    firstName String,
+    lastName String,
     postTitle String,
 }
 entity InvDepartment  (cims_inv_dept) {
@@ -8,7 +10,6 @@ entity InvDepartment  (cims_inv_dept) {
 entity InvStorage (cims_inv_storage) {
     storageCode String,
     storageName String,
-    storageDesc String,
     storageLocation StorageLocation,
 }
 
@@ -18,23 +19,38 @@ enum StorageLocation {
 
 entity Item (cims_inv_item) {
 	itemName String required,
-    itemDesc String,
   	casNumber String,
     stockBookFolio String,
- 	itemCapacity Float,
-    unitPrice Float,
+    itemManufacturer String,
 }
 
 entity ItemStock (cims_item_stock) {
-    totalQuantity Integer,
-    minimumQuantity Integer,
+ 	itemCapacity Float,
+    unitPrice Float,
+    totalQuantity Float,
+    minimumQuantity Float,
     itemStatus ItemStatus,
     stockStore StockStore
     entryDate LocalDate,
     expiryDate LocalDate,
     creatorId Integer,
     createdOn Instant,
-    sdsfile String,
+    sdsfile Blob,
+}
+
+entity CasNumber (cims_cas_number) {
+    casNumber String,
+    itemName String,
+}
+
+entity WasteItem (cims_waste_item) {
+    itemQuantity Float,
+    minQuantity Float,
+}
+
+entity WasteVendor (cims_waste_vendor) {
+    vendorName String,
+    lastIssuedOn LocalDate,
 }
 
 enum ItemStatus {
@@ -60,33 +76,36 @@ entity HazardCode (cims_item_hazard_code) {
     hazardCodeDesc String,
 }
 
-entity ItemManufacturer (cims_item_manufacturer) {
-    manufacturerName String,
-    manufacturerDesc String,
+enum TransactionType {
+    ISSUE,
+    ORDER,
+    WASTE
 }
 
 entity ItemTransaction  (cims_item_transaction) {
-    quantity Integer required
+    quantity Float required
     remarks String,
-    transactionUUID UUID,
+    transactionType TransactionType,
     transactionDate LocalDate,
 }
 
 relationship OneToMany {
-	Item to ItemManufacturer{item required},
     InvDepartment to InvStorage{department},
     InvStorage to ItemStock{invStorage required},
     MeasUnit to ItemStock{storageUnit required}
     Item to ItemStock{item required}
-
+    ItemStock to ItemTransaction{itemStock required}
+    ItemStock to WasteItem{itemStock required}
 }
 
 relationship ManyToMany{
     InvDepartment to InvUser
     Item to HazardCode
-    ItemStock to ItemTransaction
+    WasteVendor to WasteItem
 }
 
-dto * with mapstruct
-filter ItemStock
+readOnly CasNumber,HazardCode
+dto * with mapstruct except CasNumber
+filter ItemStock,ItemTransaction
+paginate ItemStock,ItemTransaction with pagination
 

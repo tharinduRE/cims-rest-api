@@ -3,7 +3,6 @@ package com.cheminv.app.web.rest;
 import com.cheminv.app.CimsApp;
 import com.cheminv.app.domain.InvDepartment;
 import com.cheminv.app.repository.InvDepartmentRepository;
-import com.cheminv.app.repository.search.InvDepartmentSearchRepository;
 import com.cheminv.app.service.InvDepartmentService;
 import com.cheminv.app.service.dto.InvDepartmentDTO;
 import com.cheminv.app.service.mapper.InvDepartmentMapper;
@@ -24,11 +23,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -60,14 +57,6 @@ public class InvDepartmentResourceIT {
 
     @Autowired
     private InvDepartmentService invDepartmentService;
-
-    /**
-     * This repository is mocked in the com.cheminv.app.repository.search test package.
-     *
-     * @see com.cheminv.app.repository.search.InvDepartmentSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private InvDepartmentSearchRepository mockInvDepartmentSearchRepository;
 
     @Autowired
     private EntityManager em;
@@ -121,9 +110,6 @@ public class InvDepartmentResourceIT {
         assertThat(invDepartmentList).hasSize(databaseSizeBeforeCreate + 1);
         InvDepartment testInvDepartment = invDepartmentList.get(invDepartmentList.size() - 1);
         assertThat(testInvDepartment.getDepartmentName()).isEqualTo(DEFAULT_DEPARTMENT_NAME);
-
-        // Validate the InvDepartment in Elasticsearch
-        verify(mockInvDepartmentSearchRepository, times(1)).save(testInvDepartment);
     }
 
     @Test
@@ -144,9 +130,6 @@ public class InvDepartmentResourceIT {
         // Validate the InvDepartment in the database
         List<InvDepartment> invDepartmentList = invDepartmentRepository.findAll();
         assertThat(invDepartmentList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the InvDepartment in Elasticsearch
-        verify(mockInvDepartmentSearchRepository, times(0)).save(invDepartment);
     }
 
 
@@ -231,9 +214,6 @@ public class InvDepartmentResourceIT {
         assertThat(invDepartmentList).hasSize(databaseSizeBeforeUpdate);
         InvDepartment testInvDepartment = invDepartmentList.get(invDepartmentList.size() - 1);
         assertThat(testInvDepartment.getDepartmentName()).isEqualTo(UPDATED_DEPARTMENT_NAME);
-
-        // Validate the InvDepartment in Elasticsearch
-        verify(mockInvDepartmentSearchRepository, times(1)).save(testInvDepartment);
     }
 
     @Test
@@ -253,9 +233,6 @@ public class InvDepartmentResourceIT {
         // Validate the InvDepartment in the database
         List<InvDepartment> invDepartmentList = invDepartmentRepository.findAll();
         assertThat(invDepartmentList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the InvDepartment in Elasticsearch
-        verify(mockInvDepartmentSearchRepository, times(0)).save(invDepartment);
     }
 
     @Test
@@ -274,25 +251,5 @@ public class InvDepartmentResourceIT {
         // Validate the database contains one less item
         List<InvDepartment> invDepartmentList = invDepartmentRepository.findAll();
         assertThat(invDepartmentList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the InvDepartment in Elasticsearch
-        verify(mockInvDepartmentSearchRepository, times(1)).deleteById(invDepartment.getId());
-    }
-
-    @Test
-    @Transactional
-    public void searchInvDepartment() throws Exception {
-        // Configure the mock search repository
-        // Initialize the database
-        invDepartmentRepository.saveAndFlush(invDepartment);
-        when(mockInvDepartmentSearchRepository.search(queryStringQuery("id:" + invDepartment.getId())))
-            .thenReturn(Collections.singletonList(invDepartment));
-
-        // Search the invDepartment
-        restInvDepartmentMockMvc.perform(get("/api/_search/inv-departments?query=id:" + invDepartment.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(invDepartment.getId().intValue())))
-            .andExpect(jsonPath("$.[*].departmentName").value(hasItem(DEFAULT_DEPARTMENT_NAME)));
     }
 }

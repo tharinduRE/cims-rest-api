@@ -17,13 +17,13 @@ import java.util.Optional;
 @Repository
 public interface ItemStockRepository extends JpaRepository<ItemStock, Long>, JpaSpecificationExecutor<ItemStock> {
 
-    @Query(value = "select distinct itemStock from ItemStock itemStock left join fetch itemStock.itemTransactions",
+    @Query(value = "select distinct itemStock from ItemStock itemStock left join fetch itemStock.hazardCodes",
         countQuery = "select count(distinct itemStock) from ItemStock itemStock")
     Page<ItemStock> findAllWithEagerRelationships(Pageable pageable);
 
-    @Query("select distinct itemStock from ItemStock itemStock left join fetch itemStock.itemTransactions")
+    @Query("select distinct itemStock from ItemStock itemStock left join fetch itemStock.hazardCodes")
     List<ItemStock> findAllWithEagerRelationships();
 
-    @Query("select itemStock from ItemStock itemStock left join fetch itemStock.itemTransactions where itemStock.id =:id")
+    @Query("select itemStock from ItemStock itemStock left join fetch itemStock.hazardCodes where itemStock.id =:id")
     Optional<ItemStock> findOneWithEagerRelationships(@Param("id") Long id);
 }

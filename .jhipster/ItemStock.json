@@ -2,12 +2,37 @@
   "name": "ItemStock",
   "fields": [
     {
+      "fieldName": "itemName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "casNumber",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "stockBookFolio",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "itemManufacturer",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "itemCapacity",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "unitPrice",
+      "fieldType": "Float"
+    },
+    {
       "fieldName": "totalQuantity",
-      "fieldType": "Integer"
+      "fieldType": "Float"
     },
     {
       "fieldName": "minimumQuantity",
-      "fieldType": "Integer"
+      "fieldType": "Float"
     },
     {
       "fieldName": "itemStatus",
@@ -20,14 +45,6 @@
       "fieldValues": "ORG,INORG,ACIDS,NORM_GLASS,Q_FIT_GLASS,ORG_USED,INORG_USED"
     },
     {
-      "fieldName": "entryDate",
-      "fieldType": "LocalDate"
-    },
-    {
-      "fieldName": "expiryDate",
-      "fieldType": "LocalDate"
-    },
-    {
       "fieldName": "creatorId",
       "fieldType": "Integer"
     },
@@ -36,16 +53,33 @@
       "fieldType": "Instant"
     },
     {
+      "fieldName": "lastUpdated",
+      "fieldType": "LocalDate"
+    },
+    {
       "fieldName": "sdsfile",
-      "fieldType": "String"
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "any"
     }
   ],
   "relationships": [
     {
-      "relationshipType": "many-to-many",
+      "relationshipType": "one-to-many",
       "otherEntityName": "itemTransaction",
       "otherEntityRelationshipName": "itemStock",
-      "relationshipName": "itemTransaction",
+      "relationshipName": "itemTransaction"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "wasteItem",
+      "otherEntityRelationshipName": "itemStock",
+      "relationshipName": "wasteItem"
+    },
+    {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "hazardCode",
+      "otherEntityRelationshipName": "itemStock",
+      "relationshipName": "hazardCode",
       "otherEntityField": "id",
       "ownerSide": true
     },
@@ -64,20 +98,12 @@
       "relationshipValidateRules": "required",
       "relationshipName": "storageUnit",
       "otherEntityField": "id"
-    },
-    {
-      "relationshipType": "many-to-one",
-      "otherEntityName": "item",
-      "otherEntityRelationshipName": "itemStock",
-      "relationshipValidateRules": "required",
-      "relationshipName": "item",
-      "otherEntityField": "id"
     }
   ],
-  "changelogDate": "20200903133023",
+  "changelogDate": "20201009054454",
   "entityTableName": "cims_item_stock",
   "dto": "mapstruct",
-  "pagination": "no",
+  "pagination": "pagination",
   "service": "serviceClass",
   "jpaMetamodelFiltering": true,
   "fluentMethods": true,

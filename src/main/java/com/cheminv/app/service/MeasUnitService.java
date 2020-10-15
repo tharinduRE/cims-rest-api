@@ -2,7 +2,6 @@ package com.cheminv.app.service;
 
 import com.cheminv.app.domain.MeasUnit;
 import com.cheminv.app.repository.MeasUnitRepository;
-import com.cheminv.app.repository.search.MeasUnitSearchRepository;
 import com.cheminv.app.service.dto.MeasUnitDTO;
 import com.cheminv.app.service.mapper.MeasUnitMapper;
 import org.slf4j.Logger;
@@ -15,9 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing {@link MeasUnit}.
@@ -32,12 +28,9 @@ public class MeasUnitService {
 
     private final MeasUnitMapper measUnitMapper;
 
-    private final MeasUnitSearchRepository measUnitSearchRepository;
-
-    public MeasUnitService(MeasUnitRepository measUnitRepository, MeasUnitMapper measUnitMapper, MeasUnitSearchRepository measUnitSearchRepository) {
+    public MeasUnitService(MeasUnitRepository measUnitRepository, MeasUnitMapper measUnitMapper) {
         this.measUnitRepository = measUnitRepository;
         this.measUnitMapper = measUnitMapper;
-        this.measUnitSearchRepository = measUnitSearchRepository;
     }
 
     /**
@@ -50,9 +43,7 @@ public class MeasUnitService {
         log.debug("Request to save MeasUnit : {}", measUnitDTO);
         MeasUnit measUnit = measUnitMapper.toEntity(measUnitDTO);
         measUnit = measUnitRepository.save(measUnit);
-        MeasUnitDTO result = measUnitMapper.toDto(measUnit);
-        measUnitSearchRepository.save(measUnit);
-        return result;
+        return measUnitMapper.toDto(measUnit);
     }
 
     /**
@@ -90,21 +81,5 @@ public class MeasUnitService {
     public void delete(Long id) {
         log.debug("Request to delete MeasUnit : {}", id);
         measUnitRepository.deleteById(id);
-        measUnitSearchRepository.deleteById(id);
-    }
-
-    /**
-     * Search for the measUnit corresponding to the query.
-     *
-     * @param query the query of the search.
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public List<MeasUnitDTO> search(String query) {
-        log.debug("Request to search MeasUnits for query {}", query);
-        return StreamSupport
-            .stream(measUnitSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .map(measUnitMapper::toDto)
-        .collect(Collectors.toList());
     }
 }

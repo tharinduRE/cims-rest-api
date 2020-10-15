@@ -22,7 +22,7 @@
       "ownerSide": true
     }
   ],
-  "changelogDate": "20200903132723",
+  "changelogDate": "20201009054154",
   "entityTableName": "cims_inv_dept",
   "dto": "mapstruct",
   "pagination": "no",

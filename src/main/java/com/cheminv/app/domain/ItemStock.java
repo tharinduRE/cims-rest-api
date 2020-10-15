@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -21,7 +20,6 @@ import com.cheminv.app.domain.enumeration.StockStore;
  */
 @Entity
 @Table(name = "cims_item_stock")
-@org.springframework.data.elasticsearch.annotations.Document(indexName = "itemstock")
 public class ItemStock implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -30,11 +28,30 @@ public class ItemStock implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
+    @Column(name = "item_name", nullable = false)
+    private String itemName;
+
+    @Column(name = "cas_number")
+    private String casNumber;
+
+    @Column(name = "stock_book_folio")
+    private String stockBookFolio;
+
+    @Column(name = "item_manufacturer")
+    private String itemManufacturer;
+
+    @Column(name = "item_capacity")
+    private Float itemCapacity;
+
+    @Column(name = "unit_price")
+    private Float unitPrice;
+
     @Column(name = "total_quantity")
-    private Integer totalQuantity;
+    private Float totalQuantity;
 
     @Column(name = "minimum_quantity")
-    private Integer minimumQuantity;
+    private Float minimumQuantity;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "item_status")
@@ -44,26 +61,33 @@ public class ItemStock implements Serializable {
     @Column(name = "stock_store")
     private StockStore stockStore;
 
-    @Column(name = "entry_date")
-    private LocalDate entryDate;
-
-    @Column(name = "expiry_date")
-    private LocalDate expiryDate;
-
     @Column(name = "creator_id")
     private Integer creatorId;
 
     @Column(name = "created_on")
     private Instant createdOn;
 
+    @Column(name = "last_updated")
+    private LocalDate lastUpdated;
+
+    @Lob
     @Column(name = "sdsfile")
-    private String sdsfile;
+    private byte[] sdsfile;
+
+    @Column(name = "sdsfile_content_type")
+    private String sdsfileContentType;
+
+    @OneToMany(mappedBy = "itemStock")
+    private Set<ItemTransaction> itemTransactions = new HashSet<>();
+
+    @OneToMany(mappedBy = "itemStock")
+    private Set<WasteItem> wasteItems = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "cims_item_stock_item_transaction",
+    @JoinTable(name = "cims_item_stock_hazard_code",
                joinColumns = @JoinColumn(name = "item_stock_id", referencedColumnName = "id"),
-               inverseJoinColumns = @JoinColumn(name = "item_transaction_id", referencedColumnName = "id"))
-    private Set<ItemTransaction> itemTransactions = new HashSet<>();
+               inverseJoinColumns = @JoinColumn(name = "hazard_code_id", referencedColumnName = "id"))
+    private Set<HazardCode> hazardCodes = new HashSet<>();
 
     @ManyToOne(optional = false)
     @NotNull
@@ -75,11 +99,6 @@ public class ItemStock implements Serializable {
     @JsonIgnoreProperties(value = "itemStocks", allowSetters = true)
     private MeasUnit storageUnit;
 
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties(value = "itemStocks", allowSetters = true)
-    private Item item;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -89,29 +108,107 @@ public class ItemStock implements Serializable {
         this.id = id;
     }
 
-    public Integer getTotalQuantity() {
+    public String getItemName() {
+        return itemName;
+    }
+
+    public ItemStock itemName(String itemName) {
+        this.itemName = itemName;
+        return this;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public String getCasNumber() {
+        return casNumber;
+    }
+
+    public ItemStock casNumber(String casNumber) {
+        this.casNumber = casNumber;
+        return this;
+    }
+
+    public void setCasNumber(String casNumber) {
+        this.casNumber = casNumber;
+    }
+
+    public String getStockBookFolio() {
+        return stockBookFolio;
+    }
+
+    public ItemStock stockBookFolio(String stockBookFolio) {
+        this.stockBookFolio = stockBookFolio;
+        return this;
+    }
+
+    public void setStockBookFolio(String stockBookFolio) {
+        this.stockBookFolio = stockBookFolio;
+    }
+
+    public String getItemManufacturer() {
+        return itemManufacturer;
+    }
+
+    public ItemStock itemManufacturer(String itemManufacturer) {
+        this.itemManufacturer = itemManufacturer;
+        return this;
+    }
+
+    public void setItemManufacturer(String itemManufacturer) {
+        this.itemManufacturer = itemManufacturer;
+    }
+
+    public Float getItemCapacity() {
+        return itemCapacity;
+    }
+
+    public ItemStock itemCapacity(Float itemCapacity) {
+        this.itemCapacity = itemCapacity;
+        return this;
+    }
+
+    public void setItemCapacity(Float itemCapacity) {
+        this.itemCapacity = itemCapacity;
+    }
+
+    public Float getUnitPrice() {
+        return unitPrice;
+    }
+
+    public ItemStock unitPrice(Float unitPrice) {
+        this.unitPrice = unitPrice;
+        return this;
+    }
+
+    public void setUnitPrice(Float unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public Float getTotalQuantity() {
         return totalQuantity;
     }
 
-    public ItemStock totalQuantity(Integer totalQuantity) {
+    public ItemStock totalQuantity(Float totalQuantity) {
         this.totalQuantity = totalQuantity;
         return this;
     }
 
-    public void setTotalQuantity(Integer totalQuantity) {
+    public void setTotalQuantity(Float totalQuantity) {
         this.totalQuantity = totalQuantity;
     }
 
-    public Integer getMinimumQuantity() {
+    public Float getMinimumQuantity() {
         return minimumQuantity;
     }
 
-    public ItemStock minimumQuantity(Integer minimumQuantity) {
+    public ItemStock minimumQuantity(Float minimumQuantity) {
         this.minimumQuantity = minimumQuantity;
         return this;
     }
 
-    public void setMinimumQuantity(Integer minimumQuantity) {
+    public void setMinimumQuantity(Float minimumQuantity) {
         this.minimumQuantity = minimumQuantity;
     }
 
@@ -141,32 +238,6 @@ public class ItemStock implements Serializable {
         this.stockStore = stockStore;
     }
 
-    public LocalDate getEntryDate() {
-        return entryDate;
-    }
-
-    public ItemStock entryDate(LocalDate entryDate) {
-        this.entryDate = entryDate;
-        return this;
-    }
-
-    public void setEntryDate(LocalDate entryDate) {
-        this.entryDate = entryDate;
-    }
-
-    public LocalDate getExpiryDate() {
-        return expiryDate;
-    }
-
-    public ItemStock expiryDate(LocalDate expiryDate) {
-        this.expiryDate = expiryDate;
-        return this;
-    }
-
-    public void setExpiryDate(LocalDate expiryDate) {
-        this.expiryDate = expiryDate;
-    }
-
     public Integer getCreatorId() {
         return creatorId;
     }
@@ -193,17 +264,43 @@ public class ItemStock implements Serializable {
         this.createdOn = createdOn;
     }
 
-    public String getSdsfile() {
+    public LocalDate getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public ItemStock lastUpdated(LocalDate lastUpdated) {
+        this.lastUpdated = lastUpdated;
+        return this;
+    }
+
+    public void setLastUpdated(LocalDate lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public byte[] getSdsfile() {
         return sdsfile;
     }
 
-    public ItemStock sdsfile(String sdsfile) {
+    public ItemStock sdsfile(byte[] sdsfile) {
         this.sdsfile = sdsfile;
         return this;
     }
 
-    public void setSdsfile(String sdsfile) {
+    public void setSdsfile(byte[] sdsfile) {
         this.sdsfile = sdsfile;
+    }
+
+    public String getSdsfileContentType() {
+        return sdsfileContentType;
+    }
+
+    public ItemStock sdsfileContentType(String sdsfileContentType) {
+        this.sdsfileContentType = sdsfileContentType;
+        return this;
+    }
+
+    public void setSdsfileContentType(String sdsfileContentType) {
+        this.sdsfileContentType = sdsfileContentType;
     }
 
     public Set<ItemTransaction> getItemTransactions() {
@@ -217,18 +314,68 @@ public class ItemStock implements Serializable {
 
     public ItemStock addItemTransaction(ItemTransaction itemTransaction) {
         this.itemTransactions.add(itemTransaction);
-        itemTransaction.getItemStocks().add(this);
+        itemTransaction.setItemStock(this);
         return this;
     }
 
     public ItemStock removeItemTransaction(ItemTransaction itemTransaction) {
         this.itemTransactions.remove(itemTransaction);
-        itemTransaction.getItemStocks().remove(this);
+        itemTransaction.setItemStock(null);
         return this;
     }
 
     public void setItemTransactions(Set<ItemTransaction> itemTransactions) {
         this.itemTransactions = itemTransactions;
+    }
+
+    public Set<WasteItem> getWasteItems() {
+        return wasteItems;
+    }
+
+    public ItemStock wasteItems(Set<WasteItem> wasteItems) {
+        this.wasteItems = wasteItems;
+        return this;
+    }
+
+    public ItemStock addWasteItem(WasteItem wasteItem) {
+        this.wasteItems.add(wasteItem);
+        wasteItem.setItemStock(this);
+        return this;
+    }
+
+    public ItemStock removeWasteItem(WasteItem wasteItem) {
+        this.wasteItems.remove(wasteItem);
+        wasteItem.setItemStock(null);
+        return this;
+    }
+
+    public void setWasteItems(Set<WasteItem> wasteItems) {
+        this.wasteItems = wasteItems;
+    }
+
+    public Set<HazardCode> getHazardCodes() {
+        return hazardCodes;
+    }
+
+    public ItemStock hazardCodes(Set<HazardCode> hazardCodes) {
+        this.hazardCodes = hazardCodes;
+        return this;
+    }
+
+    public ItemStock addHazardCode(HazardCode hazardCode) {
+        this.hazardCodes.add(hazardCode);
+        hazardCode.getItemStocks().add(this);
+        return this;
+    }
+
+    public ItemStock removeHazardCode(HazardCode hazardCode) {
+        this.hazardCodes.remove(hazardCode);
+        hazardCode.getItemStocks().remove(this);
+        return this;
+    }
+
+    public void setHazardCodes(Set<HazardCode> hazardCodes) {
+        this.hazardCodes = hazardCodes;
     }
 
     public InvStorage getInvStorage() {
@@ -256,19 +403,6 @@ public class ItemStock implements Serializable {
     public void setStorageUnit(MeasUnit measUnit) {
         this.storageUnit = measUnit;
     }
-
-    public Item getItem() {
-        return item;
-    }
-
-    public ItemStock item(Item item) {
-        this.item = item;
-        return this;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
-    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -292,15 +426,21 @@ public class ItemStock implements Serializable {
     public String toString() {
         return "ItemStock{" +
             "id=" + getId() +
+            ", itemName='" + getItemName() + "'" +
+            ", casNumber='" + getCasNumber() + "'" +
+            ", stockBookFolio='" + getStockBookFolio() + "'" +
+            ", itemManufacturer='" + getItemManufacturer() + "'" +
+            ", itemCapacity=" + getItemCapacity() +
+            ", unitPrice=" + getUnitPrice() +
             ", totalQuantity=" + getTotalQuantity() +
             ", minimumQuantity=" + getMinimumQuantity() +
             ", itemStatus='" + getItemStatus() + "'" +
             ", stockStore='" + getStockStore() + "'" +
-            ", entryDate='" + getEntryDate() + "'" +
-            ", expiryDate='" + getExpiryDate() + "'" +
             ", creatorId=" + getCreatorId() +
             ", createdOn='" + getCreatedOn() + "'" +
+            ", lastUpdated='" + getLastUpdated() + "'" +
             ", sdsfile='" + getSdsfile() + "'" +
+            ", sdsfileContentType='" + getSdsfileContentType() + "'" +
             "}";
     }
 }

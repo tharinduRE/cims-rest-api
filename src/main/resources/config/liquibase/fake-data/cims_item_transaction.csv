@@ -1,11 +1,11 @@
-id;quantity;remarks;transaction_uuid;transaction_date
-1;20486;Tasty Cotton Mouse;ba8e22ad-6748-4d84-ae15-6afb54b033e0;2020-09-02
-2;57133;Latvia maximized mindshare;a6e8f3f5-6be8-484f-ab66-eeec237ce88f;2020-09-03
-3;34922;Fantastic Granite Chair Checking Account world-class;9b0fa3f3-bc4d-439e-8bff-ffede41143b9;2020-09-02
-4;5234;Hungary;fa983715-f88e-4812-b87e-736bb7700707;2020-09-03
-5;95079;projection;45d9fc0a-7f43-409c-80ef-7da69fe7706e;2020-09-02
-6;70236;seize;3332cb3c-32d0-42d4-b2a1-37ac5502019c;2020-09-02
-7;73637;Lesotho National Berkshire;5582748c-2de9-4197-bda2-3507c9cbae55;2020-09-03
-8;99281;array Table EXE;af89dd02-5503-4082-a2f1-c98cd9011151;2020-09-03
-9;54490;Rubber;84c80534-4f12-4cfb-811e-accb6b04a4d1;2020-09-02
-10;22280;task-force;9b41ae11-837c-453b-83db-8f128feb6a73;2020-09-02
+id;quantity;remarks;transaction_type;transaction_date;item_stock_id
+1;20486;Tasty Cotton Mouse;WASTE;2020-10-08;1
+2;46039;Cambridgeshire;ORDER;2020-10-08;2
+3;67225;card neutral Electronics;ORDER;2020-10-08;3
+4;68176;Bedfordshire Michigan;WASTE;2020-10-08;4
+5;37538;Global French Guiana Technician;ISSUE;2020-10-09;5
+6;46334;Operations Virgin Islands, British pink;ORDER;2020-10-08;6
+7;6199;Savings Account Implementation transmitter;ORDER;2020-10-08;7
+8;51752;Strategist Factors Internal;ISSUE;2020-10-09;8
+9;52530;Orchestrator Home Loan Account;ORDER;2020-10-08;9
+10;53054;Global Rustic Metal Hat;WASTE;2020-10-08;10

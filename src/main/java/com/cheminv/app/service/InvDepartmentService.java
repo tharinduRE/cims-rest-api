@@ -2,7 +2,6 @@ package com.cheminv.app.service;
 
 import com.cheminv.app.domain.InvDepartment;
 import com.cheminv.app.repository.InvDepartmentRepository;
-import com.cheminv.app.repository.search.InvDepartmentSearchRepository;
 import com.cheminv.app.service.dto.InvDepartmentDTO;
 import com.cheminv.app.service.mapper.InvDepartmentMapper;
 import org.slf4j.Logger;
@@ -17,9 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing {@link InvDepartment}.
@@ -34,12 +30,9 @@ public class InvDepartmentService {
 
     private final InvDepartmentMapper invDepartmentMapper;
 
-    private final InvDepartmentSearchRepository invDepartmentSearchRepository;
-
-    public InvDepartmentService(InvDepartmentRepository invDepartmentRepository, InvDepartmentMapper invDepartmentMapper, InvDepartmentSearchRepository invDepartmentSearchRepository) {
+    public InvDepartmentService(InvDepartmentRepository invDepartmentRepository, InvDepartmentMapper invDepartmentMapper) {
         this.invDepartmentRepository = invDepartmentRepository;
         this.invDepartmentMapper = invDepartmentMapper;
-        this.invDepartmentSearchRepository = invDepartmentSearchRepository;
     }
 
     /**
@@ -52,9 +45,7 @@ public class InvDepartmentService {
         log.debug("Request to save InvDepartment : {}", invDepartmentDTO);
         InvDepartment invDepartment = invDepartmentMapper.toEntity(invDepartmentDTO);
         invDepartment = invDepartmentRepository.save(invDepartment);
-        InvDepartmentDTO result = invDepartmentMapper.toDto(invDepartment);
-        invDepartmentSearchRepository.save(invDepartment);
-        return result;
+        return invDepartmentMapper.toDto(invDepartment);
     }
 
     /**
@@ -101,21 +92,5 @@ public class InvDepartmentService {
     public void delete(Long id) {
         log.debug("Request to delete InvDepartment : {}", id);
         invDepartmentRepository.deleteById(id);
-        invDepartmentSearchRepository.deleteById(id);
-    }
-
-    /**
-     * Search for the invDepartment corresponding to the query.
-     *
-     * @param query the query of the search.
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public List<InvDepartmentDTO> search(String query) {
-        log.debug("Request to search InvDepartments for query {}", query);
-        return StreamSupport
-            .stream(invDepartmentSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .map(invDepartmentMapper::toDto)
-        .collect(Collectors.toList());
     }
 }

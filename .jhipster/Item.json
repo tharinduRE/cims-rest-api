@@ -7,10 +7,6 @@
       "fieldValidateRules": ["required"]
     },
     {
-      "fieldName": "itemDesc",
-      "fieldType": "String"
-    },
-    {
       "fieldName": "casNumber",
       "fieldType": "String"
     },
@@ -19,21 +15,11 @@
       "fieldType": "String"
     },
     {
-      "fieldName": "itemCapacity",
-      "fieldType": "Float"
-    },
-    {
-      "fieldName": "unitPrice",
-      "fieldType": "Float"
+      "fieldName": "itemManufacturer",
+      "fieldType": "String"
     }
   ],
   "relationships": [
-    {
-      "relationshipType": "one-to-many",
-      "otherEntityName": "itemManufacturer",
-      "otherEntityRelationshipName": "item",
-      "relationshipName": "itemManufacturer"
-    },
     {
       "relationshipType": "one-to-many",
       "otherEntityName": "itemStock",
@@ -49,7 +35,7 @@
       "ownerSide": true
     }
   ],
-  "changelogDate": "20200903132923",
+  "changelogDate": "20201009054354",
   "entityTableName": "cims_inv_item",
   "dto": "mapstruct",
   "pagination": "no",

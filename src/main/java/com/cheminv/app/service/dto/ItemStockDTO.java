@@ -6,9 +6,9 @@ import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Lob;
 import com.cheminv.app.domain.enumeration.ItemStatus;
 import com.cheminv.app.domain.enumeration.StockStore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * A DTO for the {@link com.cheminv.app.domain.ItemStock} entity.
@@ -17,42 +17,43 @@ public class ItemStockDTO implements Serializable {
 
     private Long id;
 
-    private Integer totalQuantity;
+    @NotNull
+    private String itemName;
 
-    private Integer minimumQuantity;
+    private String casNumber;
+
+    private String stockBookFolio;
+
+    private String itemManufacturer;
+
+    private Float itemCapacity;
+
+    private Float unitPrice;
+
+    private Float totalQuantity;
+
+    private Float minimumQuantity;
 
     private ItemStatus itemStatus;
 
     private StockStore stockStore;
 
-    private LocalDate entryDate;
-
-    private LocalDate expiryDate;
-
     private Integer creatorId;
 
     private Instant createdOn;
 
-    private String sdsfile;
+    private LocalDate lastUpdated;
 
-    private Set<ItemTransactionDTO> itemTransactions = new HashSet<>();
+    @Lob
+    private byte[] sdsfile;
+
+    private String sdsfileContentType;
+
+    //private Set<HazardCodeDTO> hazardCodes = new HashSet<>();
 
     private Long invStorageId;
 
     private Long storageUnitId;
-
-    public ItemDTO getItem() {
-        return item;
-    }
-
-    public void setItem(ItemDTO item) {
-        this.item = item;
-    }
-
-    private Long itemId;
-
-    @JsonProperty("item")
-    private ItemDTO item;
 
     public Long getId() {
         return id;
@@ -62,19 +63,67 @@ public class ItemStockDTO implements Serializable {
         this.id = id;
     }
 
-    public Integer getTotalQuantity() {
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public String getCasNumber() {
+        return casNumber;
+    }
+
+    public void setCasNumber(String casNumber) {
+        this.casNumber = casNumber;
+    }
+
+    public String getStockBookFolio() {
+        return stockBookFolio;
+    }
+
+    public void setStockBookFolio(String stockBookFolio) {
+        this.stockBookFolio = stockBookFolio;
+    }
+
+    public String getItemManufacturer() {
+        return itemManufacturer;
+    }
+
+    public void setItemManufacturer(String itemManufacturer) {
+        this.itemManufacturer = itemManufacturer;
+    }
+
+    public Float getItemCapacity() {
+        return itemCapacity;
+    }
+
+    public void setItemCapacity(Float itemCapacity) {
+        this.itemCapacity = itemCapacity;
+    }
+
+    public Float getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(Float unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public Float getTotalQuantity() {
         return totalQuantity;
     }
 
-    public void setTotalQuantity(Integer totalQuantity) {
+    public void setTotalQuantity(Float totalQuantity) {
         this.totalQuantity = totalQuantity;
     }
 
-    public Integer getMinimumQuantity() {
+    public Float getMinimumQuantity() {
         return minimumQuantity;
     }
 
-    public void setMinimumQuantity(Integer minimumQuantity) {
+    public void setMinimumQuantity(Float minimumQuantity) {
         this.minimumQuantity = minimumQuantity;
     }
 
@@ -94,22 +143,6 @@ public class ItemStockDTO implements Serializable {
         this.stockStore = stockStore;
     }
 
-    public LocalDate getEntryDate() {
-        return entryDate;
-    }
-
-    public void setEntryDate(LocalDate entryDate) {
-        this.entryDate = entryDate;
-    }
-
-    public LocalDate getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(LocalDate expiryDate) {
-        this.expiryDate = expiryDate;
-    }
-
     public Integer getCreatorId() {
         return creatorId;
     }
@@ -126,20 +159,28 @@ public class ItemStockDTO implements Serializable {
         this.createdOn = createdOn;
     }
 
-    public String getSdsfile() {
+    public LocalDate getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(LocalDate lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public byte[] getSdsfile() {
         return sdsfile;
     }
 
-    public void setSdsfile(String sdsfile) {
+    public void setSdsfile(byte[] sdsfile) {
         this.sdsfile = sdsfile;
     }
 
-    public Set<ItemTransactionDTO> getItemTransactions() {
-        return itemTransactions;
+    public String getSdsfileContentType() {
+        return sdsfileContentType;
     }
 
-    public void setItemTransactions(Set<ItemTransactionDTO> itemTransactions) {
-        this.itemTransactions = itemTransactions;
+    public void setSdsfileContentType(String sdsfileContentType) {
+        this.sdsfileContentType = sdsfileContentType;
     }
 
     public Long getInvStorageId() {
@@ -154,17 +195,9 @@ public class ItemStockDTO implements Serializable {
         return storageUnitId;
     }
 
-    public void setStorageUnitId(Long measUnitId) {
-        this.storageUnitId = measUnitId;
+    public void setStorageUnitId(Long storageUnitId) {
+        this.storageUnitId = storageUnitId;
     }
-
-   /* public Long getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(Long itemId) {
-        this.itemId = itemId;
-    }*/
 
     @Override
     public boolean equals(Object o) {
@@ -188,19 +221,21 @@ public class ItemStockDTO implements Serializable {
     public String toString() {
         return "ItemStockDTO{" +
             "id=" + getId() +
+            ", itemName='" + getItemName() + "'" +
+            ", casNumber='" + getCasNumber() + "'" +
+            ", stockBookFolio='" + getStockBookFolio() + "'" +
+            ", itemManufacturer='" + getItemManufacturer() + "'" +
+            ", itemCapacity=" + getItemCapacity() +
+            ", unitPrice=" + getUnitPrice() +
             ", totalQuantity=" + getTotalQuantity() +
             ", minimumQuantity=" + getMinimumQuantity() +
             ", itemStatus='" + getItemStatus() + "'" +
             ", stockStore='" + getStockStore() + "'" +
-            ", entryDate='" + getEntryDate() + "'" +
-            ", expiryDate='" + getExpiryDate() + "'" +
             ", creatorId=" + getCreatorId() +
             ", createdOn='" + getCreatedOn() + "'" +
+            ", lastUpdated='" + getLastUpdated() + "'" +
             ", sdsfile='" + getSdsfile() + "'" +
-            ", itemTransactions='" + getItemTransactions() + "'" +
             ", invStorageId=" + getInvStorageId() +
-            ", storageUnitId=" + getStorageUnitId() +
-            //", itemId=" + getItemId() +
             "}";
     }
 }

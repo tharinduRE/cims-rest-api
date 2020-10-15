@@ -16,9 +16,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing {@link com.cheminv.app.domain.InvUser}.
@@ -115,18 +112,5 @@ public class InvUserResource {
         log.debug("REST request to delete InvUser : {}", id);
         invUserService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/inv-users?query=:query} : search for the invUser corresponding
-     * to the query.
-     *
-     * @param query the query of the invUser search.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/inv-users")
-    public List<InvUserDTO> searchInvUsers(@RequestParam String query) {
-        log.debug("REST request to search InvUsers for query {}", query);
-        return invUserService.search(query);
     }
 }

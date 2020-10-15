@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ItemTransactionRepository extends JpaRepository<ItemTransaction, Long> {
+public interface ItemTransactionRepository extends JpaRepository<ItemTransaction, Long>, JpaSpecificationExecutor<ItemTransaction> {
 }

@@ -1,0 +1,34 @@
+{
+  "name": "WasteVendor",
+  "fields": [
+    {
+      "fieldName": "vendorName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lastIssuedOn",
+      "fieldType": "LocalDate"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "wasteItem",
+      "otherEntityRelationshipName": "wasteVendor",
+      "relationshipName": "wasteItem",
+      "otherEntityField": "id",
+      "ownerSide": true
+    }
+  ],
+  "changelogDate": "20201009054754",
+  "entityTableName": "cims_waste_vendor",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

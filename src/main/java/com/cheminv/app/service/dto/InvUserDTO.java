@@ -9,6 +9,10 @@ public class InvUserDTO implements Serializable {
     
     private Long id;
 
+    private String firstName;
+
+    private String lastName;
+
     private String postTitle;
 
     
@@ -18,6 +22,22 @@ public class InvUserDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getPostTitle() {
@@ -50,6 +70,8 @@ public class InvUserDTO implements Serializable {
     public String toString() {
         return "InvUserDTO{" +
             "id=" + getId() +
+            ", firstName='" + getFirstName() + "'" +
+            ", lastName='" + getLastName() + "'" +
             ", postTitle='" + getPostTitle() + "'" +
             "}";
     }

@@ -10,10 +10,6 @@
       "fieldType": "String"
     },
     {
-      "fieldName": "storageDesc",
-      "fieldType": "String"
-    },
-    {
       "fieldName": "storageLocation",
       "fieldType": "StorageLocation",
       "fieldValues": "GLI,GLII,GSQ,SPL"
@@ -34,7 +30,7 @@
       "otherEntityField": "id"
     }
   ],
-  "changelogDate": "20200903132823",
+  "changelogDate": "20201009054254",
   "entityTableName": "cims_inv_storage",
   "dto": "mapstruct",
   "pagination": "no",

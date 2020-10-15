@@ -8,15 +8,9 @@ services:
       - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
       - SPRING_DATASOURCE_URL=jdbc:mysql://cims-mysql:3306/cims?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC&createDatabaseIfNotExist=true
       - JHIPSTER_SLEEP=30 # gives time for other services to boot before the application
-      - SPRING_DATA_JEST_URI=http://cims-elasticsearch:9200
-      - SPRING_ELASTICSEARCH_REST_URIS=http://cims-elasticsearch:9200
     ports:
       - 8080:8080
   cims-mysql:
     extends:
       file: mysql.yml
       service: cims-mysql
-  cims-elasticsearch:
-    extends:
-      file: elasticsearch.yml
-      service: cims-elasticsearch

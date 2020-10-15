@@ -14,8 +14,6 @@ public class InvStorageDTO implements Serializable {
 
     private String storageName;
 
-    private String storageDesc;
-
     private StorageLocation storageLocation;
 
 
@@ -43,14 +41,6 @@ public class InvStorageDTO implements Serializable {
 
     public void setStorageName(String storageName) {
         this.storageName = storageName;
-    }
-
-    public String getStorageDesc() {
-        return storageDesc;
-    }
-
-    public void setStorageDesc(String storageDesc) {
-        this.storageDesc = storageDesc;
     }
 
     public StorageLocation getStorageLocation() {
@@ -93,7 +83,6 @@ public class InvStorageDTO implements Serializable {
             "id=" + getId() +
             ", storageCode='" + getStorageCode() + "'" +
             ", storageName='" + getStorageName() + "'" +
-            ", storageDesc='" + getStorageDesc() + "'" +
             ", storageLocation='" + getStorageLocation() + "'" +
             ", departmentId=" + getDepartmentId() +
             "}";

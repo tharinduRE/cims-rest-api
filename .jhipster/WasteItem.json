@@ -1,0 +1,42 @@
+{
+  "name": "WasteItem",
+  "fields": [
+    {
+      "fieldName": "itemQuantity",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "minQuantity",
+      "fieldType": "Float"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "itemStock",
+      "otherEntityRelationshipName": "wasteItem",
+      "relationshipValidateRules": "required",
+      "relationshipName": "itemStock",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "wasteVendor",
+      "otherEntityRelationshipName": "wasteItem",
+      "relationshipName": "wasteVendor",
+      "otherEntityField": "id",
+      "ownerSide": false
+    }
+  ],
+  "changelogDate": "20201009054654",
+  "entityTableName": "cims_waste_item",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

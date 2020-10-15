@@ -2,6 +2,14 @@
   "name": "InvUser",
   "fields": [
     {
+      "fieldName": "firstName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lastName",
+      "fieldType": "String"
+    },
+    {
       "fieldName": "postTitle",
       "fieldType": "String"
     }
@@ -16,7 +24,7 @@
       "ownerSide": false
     }
   ],
-  "changelogDate": "20200903132623",
+  "changelogDate": "20201009054054",
   "entityTableName": "cims_user",
   "dto": "mapstruct",
   "pagination": "no",

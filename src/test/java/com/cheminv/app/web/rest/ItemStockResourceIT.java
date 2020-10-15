@@ -3,11 +3,11 @@ package com.cheminv.app.web.rest;
 import com.cheminv.app.CimsApp;
 import com.cheminv.app.domain.ItemStock;
 import com.cheminv.app.domain.ItemTransaction;
+import com.cheminv.app.domain.WasteItem;
+import com.cheminv.app.domain.HazardCode;
 import com.cheminv.app.domain.InvStorage;
 import com.cheminv.app.domain.MeasUnit;
-import com.cheminv.app.domain.Item;
 import com.cheminv.app.repository.ItemStockRepository;
-import com.cheminv.app.repository.search.ItemStockSearchRepository;
 import com.cheminv.app.service.ItemStockService;
 import com.cheminv.app.service.dto.ItemStockDTO;
 import com.cheminv.app.service.mapper.ItemStockMapper;
@@ -28,17 +28,16 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Base64Utils;
 import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -55,27 +54,39 @@ import com.cheminv.app.domain.enumeration.StockStore;
 @WithMockUser
 public class ItemStockResourceIT {
 
-    private static final Integer DEFAULT_TOTAL_QUANTITY = 1;
-    private static final Integer UPDATED_TOTAL_QUANTITY = 2;
-    private static final Integer SMALLER_TOTAL_QUANTITY = 1 - 1;
+    private static final String DEFAULT_ITEM_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_ITEM_NAME = "BBBBBBBBBB";
 
-    private static final Integer DEFAULT_MINIMUM_QUANTITY = 1;
-    private static final Integer UPDATED_MINIMUM_QUANTITY = 2;
-    private static final Integer SMALLER_MINIMUM_QUANTITY = 1 - 1;
+    private static final String DEFAULT_CAS_NUMBER = "AAAAAAAAAA";
+    private static final String UPDATED_CAS_NUMBER = "BBBBBBBBBB";
+
+    private static final String DEFAULT_STOCK_BOOK_FOLIO = "AAAAAAAAAA";
+    private static final String UPDATED_STOCK_BOOK_FOLIO = "BBBBBBBBBB";
+
+    private static final String DEFAULT_ITEM_MANUFACTURER = "AAAAAAAAAA";
+    private static final String UPDATED_ITEM_MANUFACTURER = "BBBBBBBBBB";
+
+    private static final Float DEFAULT_ITEM_CAPACITY = 1F;
+    private static final Float UPDATED_ITEM_CAPACITY = 2F;
+    private static final Float SMALLER_ITEM_CAPACITY = 1F - 1F;
+
+    private static final Float DEFAULT_UNIT_PRICE = 1F;
+    private static final Float UPDATED_UNIT_PRICE = 2F;
+    private static final Float SMALLER_UNIT_PRICE = 1F - 1F;
+
+    private static final Float DEFAULT_TOTAL_QUANTITY = 1F;
+    private static final Float UPDATED_TOTAL_QUANTITY = 2F;
+    private static final Float SMALLER_TOTAL_QUANTITY = 1F - 1F;
+
+    private static final Float DEFAULT_MINIMUM_QUANTITY = 1F;
+    private static final Float UPDATED_MINIMUM_QUANTITY = 2F;
+    private static final Float SMALLER_MINIMUM_QUANTITY = 1F - 1F;
 
     private static final ItemStatus DEFAULT_ITEM_STATUS = ItemStatus.NEW;
     private static final ItemStatus UPDATED_ITEM_STATUS = ItemStatus.USED;
 
     private static final StockStore DEFAULT_STOCK_STORE = StockStore.ORG;
     private static final StockStore UPDATED_STOCK_STORE = StockStore.INORG;
-
-    private static final LocalDate DEFAULT_ENTRY_DATE = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_ENTRY_DATE = LocalDate.now(ZoneId.systemDefault());
-    private static final LocalDate SMALLER_ENTRY_DATE = LocalDate.ofEpochDay(-1L);
-
-    private static final LocalDate DEFAULT_EXPIRY_DATE = LocalDate.ofEpochDay(0L);
-    private static final LocalDate UPDATED_EXPIRY_DATE = LocalDate.now(ZoneId.systemDefault());
-    private static final LocalDate SMALLER_EXPIRY_DATE = LocalDate.ofEpochDay(-1L);
 
     private static final Integer DEFAULT_CREATOR_ID = 1;
     private static final Integer UPDATED_CREATOR_ID = 2;
@@ -84,8 +95,14 @@ public class ItemStockResourceIT {
     private static final Instant DEFAULT_CREATED_ON = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_CREATED_ON = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
-    private static final String DEFAULT_SDSFILE = "AAAAAAAAAA";
-    private static final String UPDATED_SDSFILE = "BBBBBBBBBB";
+    private static final LocalDate DEFAULT_LAST_UPDATED = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_LAST_UPDATED = LocalDate.now(ZoneId.systemDefault());
+    private static final LocalDate SMALLER_LAST_UPDATED = LocalDate.ofEpochDay(-1L);
+
+    private static final byte[] DEFAULT_SDSFILE = TestUtil.createByteArray(1, "0");
+    private static final byte[] UPDATED_SDSFILE = TestUtil.createByteArray(1, "1");
+    private static final String DEFAULT_SDSFILE_CONTENT_TYPE = "image/jpg";
+    private static final String UPDATED_SDSFILE_CONTENT_TYPE = "image/png";
 
     @Autowired
     private ItemStockRepository itemStockRepository;
@@ -101,14 +118,6 @@ public class ItemStockResourceIT {
 
     @Autowired
     private ItemStockService itemStockService;
-
-    /**
-     * This repository is mocked in the com.cheminv.app.repository.search test package.
-     *
-     * @see com.cheminv.app.repository.search.ItemStockSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private ItemStockSearchRepository mockItemStockSearchRepository;
 
     @Autowired
     private ItemStockQueryService itemStockQueryService;
@@ -129,15 +138,21 @@ public class ItemStockResourceIT {
      */
     public static ItemStock createEntity(EntityManager em) {
         ItemStock itemStock = new ItemStock()
+            .itemName(DEFAULT_ITEM_NAME)
+            .casNumber(DEFAULT_CAS_NUMBER)
+            .stockBookFolio(DEFAULT_STOCK_BOOK_FOLIO)
+            .itemManufacturer(DEFAULT_ITEM_MANUFACTURER)
+            .itemCapacity(DEFAULT_ITEM_CAPACITY)
+            .unitPrice(DEFAULT_UNIT_PRICE)
             .totalQuantity(DEFAULT_TOTAL_QUANTITY)
             .minimumQuantity(DEFAULT_MINIMUM_QUANTITY)
             .itemStatus(DEFAULT_ITEM_STATUS)
             .stockStore(DEFAULT_STOCK_STORE)
-            .entryDate(DEFAULT_ENTRY_DATE)
-            .expiryDate(DEFAULT_EXPIRY_DATE)
             .creatorId(DEFAULT_CREATOR_ID)
             .createdOn(DEFAULT_CREATED_ON)
-            .sdsfile(DEFAULT_SDSFILE);
+            .lastUpdated(DEFAULT_LAST_UPDATED)
+            .sdsfile(DEFAULT_SDSFILE)
+            .sdsfileContentType(DEFAULT_SDSFILE_CONTENT_TYPE);
         // Add required entity
         InvStorage invStorage;
         if (TestUtil.findAll(em, InvStorage.class).isEmpty()) {
@@ -158,16 +173,6 @@ public class ItemStockResourceIT {
             measUnit = TestUtil.findAll(em, MeasUnit.class).get(0);
         }
         itemStock.setStorageUnit(measUnit);
-        // Add required entity
-        Item item;
-        if (TestUtil.findAll(em, Item.class).isEmpty()) {
-            item = ItemResourceIT.createEntity(em);
-            em.persist(item);
-            em.flush();
-        } else {
-            item = TestUtil.findAll(em, Item.class).get(0);
-        }
-        itemStock.setItem(item);
         return itemStock;
     }
     /**
@@ -178,15 +183,21 @@ public class ItemStockResourceIT {
      */
     public static ItemStock createUpdatedEntity(EntityManager em) {
         ItemStock itemStock = new ItemStock()
+            .itemName(UPDATED_ITEM_NAME)
+            .casNumber(UPDATED_CAS_NUMBER)
+            .stockBookFolio(UPDATED_STOCK_BOOK_FOLIO)
+            .itemManufacturer(UPDATED_ITEM_MANUFACTURER)
+            .itemCapacity(UPDATED_ITEM_CAPACITY)
+            .unitPrice(UPDATED_UNIT_PRICE)
             .totalQuantity(UPDATED_TOTAL_QUANTITY)
             .minimumQuantity(UPDATED_MINIMUM_QUANTITY)
             .itemStatus(UPDATED_ITEM_STATUS)
             .stockStore(UPDATED_STOCK_STORE)
-            .entryDate(UPDATED_ENTRY_DATE)
-            .expiryDate(UPDATED_EXPIRY_DATE)
             .creatorId(UPDATED_CREATOR_ID)
             .createdOn(UPDATED_CREATED_ON)
-            .sdsfile(UPDATED_SDSFILE);
+            .lastUpdated(UPDATED_LAST_UPDATED)
+            .sdsfile(UPDATED_SDSFILE)
+            .sdsfileContentType(UPDATED_SDSFILE_CONTENT_TYPE);
         // Add required entity
         InvStorage invStorage;
         if (TestUtil.findAll(em, InvStorage.class).isEmpty()) {
@@ -207,16 +218,6 @@ public class ItemStockResourceIT {
             measUnit = TestUtil.findAll(em, MeasUnit.class).get(0);
         }
         itemStock.setStorageUnit(measUnit);
-        // Add required entity
-        Item item;
-        if (TestUtil.findAll(em, Item.class).isEmpty()) {
-            item = ItemResourceIT.createUpdatedEntity(em);
-            em.persist(item);
-            em.flush();
-        } else {
-            item = TestUtil.findAll(em, Item.class).get(0);
-        }
-        itemStock.setItem(item);
         return itemStock;
     }
 
@@ -240,18 +241,21 @@ public class ItemStockResourceIT {
         List<ItemStock> itemStockList = itemStockRepository.findAll();
         assertThat(itemStockList).hasSize(databaseSizeBeforeCreate + 1);
         ItemStock testItemStock = itemStockList.get(itemStockList.size() - 1);
+        assertThat(testItemStock.getItemName()).isEqualTo(DEFAULT_ITEM_NAME);
+        assertThat(testItemStock.getCasNumber()).isEqualTo(DEFAULT_CAS_NUMBER);
+        assertThat(testItemStock.getStockBookFolio()).isEqualTo(DEFAULT_STOCK_BOOK_FOLIO);
+        assertThat(testItemStock.getItemManufacturer()).isEqualTo(DEFAULT_ITEM_MANUFACTURER);
+        assertThat(testItemStock.getItemCapacity()).isEqualTo(DEFAULT_ITEM_CAPACITY);
+        assertThat(testItemStock.getUnitPrice()).isEqualTo(DEFAULT_UNIT_PRICE);
         assertThat(testItemStock.getTotalQuantity()).isEqualTo(DEFAULT_TOTAL_QUANTITY);
         assertThat(testItemStock.getMinimumQuantity()).isEqualTo(DEFAULT_MINIMUM_QUANTITY);
         assertThat(testItemStock.getItemStatus()).isEqualTo(DEFAULT_ITEM_STATUS);
         assertThat(testItemStock.getStockStore()).isEqualTo(DEFAULT_STOCK_STORE);
-        assertThat(testItemStock.getEntryDate()).isEqualTo(DEFAULT_ENTRY_DATE);
-        assertThat(testItemStock.getExpiryDate()).isEqualTo(DEFAULT_EXPIRY_DATE);
         assertThat(testItemStock.getCreatorId()).isEqualTo(DEFAULT_CREATOR_ID);
         assertThat(testItemStock.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
+        assertThat(testItemStock.getLastUpdated()).isEqualTo(DEFAULT_LAST_UPDATED);
         assertThat(testItemStock.getSdsfile()).isEqualTo(DEFAULT_SDSFILE);
-
-        // Validate the ItemStock in Elasticsearch
-        verify(mockItemStockSearchRepository, times(1)).save(testItemStock);
+        assertThat(testItemStock.getSdsfileContentType()).isEqualTo(DEFAULT_SDSFILE_CONTENT_TYPE);
     }
 
     @Test
@@ -272,11 +276,28 @@ public class ItemStockResourceIT {
         // Validate the ItemStock in the database
         List<ItemStock> itemStockList = itemStockRepository.findAll();
         assertThat(itemStockList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the ItemStock in Elasticsearch
-        verify(mockItemStockSearchRepository, times(0)).save(itemStock);
     }
 
+
+    @Test
+    @Transactional
+    public void checkItemNameIsRequired() throws Exception {
+        int databaseSizeBeforeTest = itemStockRepository.findAll().size();
+        // set the field null
+        itemStock.setItemName(null);
+
+        // Create the ItemStock, which fails.
+        ItemStockDTO itemStockDTO = itemStockMapper.toDto(itemStock);
+
+
+        restItemStockMockMvc.perform(post("/api/item-stocks")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(TestUtil.convertObjectToJsonBytes(itemStockDTO)))
+            .andExpect(status().isBadRequest());
+
+        List<ItemStock> itemStockList = itemStockRepository.findAll();
+        assertThat(itemStockList).hasSize(databaseSizeBeforeTest);
+    }
 
     @Test
     @Transactional
@@ -289,15 +310,21 @@ public class ItemStockResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(itemStock.getId().intValue())))
-            .andExpect(jsonPath("$.[*].totalQuantity").value(hasItem(DEFAULT_TOTAL_QUANTITY)))
-            .andExpect(jsonPath("$.[*].minimumQuantity").value(hasItem(DEFAULT_MINIMUM_QUANTITY)))
+            .andExpect(jsonPath("$.[*].itemName").value(hasItem(DEFAULT_ITEM_NAME)))
+            .andExpect(jsonPath("$.[*].casNumber").value(hasItem(DEFAULT_CAS_NUMBER)))
+            .andExpect(jsonPath("$.[*].stockBookFolio").value(hasItem(DEFAULT_STOCK_BOOK_FOLIO)))
+            .andExpect(jsonPath("$.[*].itemManufacturer").value(hasItem(DEFAULT_ITEM_MANUFACTURER)))
+            .andExpect(jsonPath("$.[*].itemCapacity").value(hasItem(DEFAULT_ITEM_CAPACITY.doubleValue())))
+            .andExpect(jsonPath("$.[*].unitPrice").value(hasItem(DEFAULT_UNIT_PRICE.doubleValue())))
+            .andExpect(jsonPath("$.[*].totalQuantity").value(hasItem(DEFAULT_TOTAL_QUANTITY.doubleValue())))
+            .andExpect(jsonPath("$.[*].minimumQuantity").value(hasItem(DEFAULT_MINIMUM_QUANTITY.doubleValue())))
             .andExpect(jsonPath("$.[*].itemStatus").value(hasItem(DEFAULT_ITEM_STATUS.toString())))
             .andExpect(jsonPath("$.[*].stockStore").value(hasItem(DEFAULT_STOCK_STORE.toString())))
-            .andExpect(jsonPath("$.[*].entryDate").value(hasItem(DEFAULT_ENTRY_DATE.toString())))
-            .andExpect(jsonPath("$.[*].expiryDate").value(hasItem(DEFAULT_EXPIRY_DATE.toString())))
             .andExpect(jsonPath("$.[*].creatorId").value(hasItem(DEFAULT_CREATOR_ID)))
             .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
-            .andExpect(jsonPath("$.[*].sdsfile").value(hasItem(DEFAULT_SDSFILE)));
+            .andExpect(jsonPath("$.[*].lastUpdated").value(hasItem(DEFAULT_LAST_UPDATED.toString())))
+            .andExpect(jsonPath("$.[*].sdsfileContentType").value(hasItem(DEFAULT_SDSFILE_CONTENT_TYPE)))
+            .andExpect(jsonPath("$.[*].sdsfile").value(hasItem(Base64Utils.encodeToString(DEFAULT_SDSFILE))));
     }
     
     @SuppressWarnings({"unchecked"})
@@ -331,15 +358,21 @@ public class ItemStockResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(itemStock.getId().intValue()))
-            .andExpect(jsonPath("$.totalQuantity").value(DEFAULT_TOTAL_QUANTITY))
-            .andExpect(jsonPath("$.minimumQuantity").value(DEFAULT_MINIMUM_QUANTITY))
+            .andExpect(jsonPath("$.itemName").value(DEFAULT_ITEM_NAME))
+            .andExpect(jsonPath("$.casNumber").value(DEFAULT_CAS_NUMBER))
+            .andExpect(jsonPath("$.stockBookFolio").value(DEFAULT_STOCK_BOOK_FOLIO))
+            .andExpect(jsonPath("$.itemManufacturer").value(DEFAULT_ITEM_MANUFACTURER))
+            .andExpect(jsonPath("$.itemCapacity").value(DEFAULT_ITEM_CAPACITY.doubleValue()))
+            .andExpect(jsonPath("$.unitPrice").value(DEFAULT_UNIT_PRICE.doubleValue()))
+            .andExpect(jsonPath("$.totalQuantity").value(DEFAULT_TOTAL_QUANTITY.doubleValue()))
+            .andExpect(jsonPath("$.minimumQuantity").value(DEFAULT_MINIMUM_QUANTITY.doubleValue()))
             .andExpect(jsonPath("$.itemStatus").value(DEFAULT_ITEM_STATUS.toString()))
             .andExpect(jsonPath("$.stockStore").value(DEFAULT_STOCK_STORE.toString()))
-            .andExpect(jsonPath("$.entryDate").value(DEFAULT_ENTRY_DATE.toString()))
-            .andExpect(jsonPath("$.expiryDate").value(DEFAULT_EXPIRY_DATE.toString()))
             .andExpect(jsonPath("$.creatorId").value(DEFAULT_CREATOR_ID))
             .andExpect(jsonPath("$.createdOn").value(DEFAULT_CREATED_ON.toString()))
-            .andExpect(jsonPath("$.sdsfile").value(DEFAULT_SDSFILE));
+            .andExpect(jsonPath("$.lastUpdated").value(DEFAULT_LAST_UPDATED.toString()))
+            .andExpect(jsonPath("$.sdsfileContentType").value(DEFAULT_SDSFILE_CONTENT_TYPE))
+            .andExpect(jsonPath("$.sdsfile").value(Base64Utils.encodeToString(DEFAULT_SDSFILE)));
     }
 
 
@@ -359,6 +392,528 @@ public class ItemStockResourceIT {
 
         defaultItemStockShouldBeFound("id.lessThanOrEqual=" + id);
         defaultItemStockShouldNotBeFound("id.lessThan=" + id);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemName equals to DEFAULT_ITEM_NAME
+        defaultItemStockShouldBeFound("itemName.equals=" + DEFAULT_ITEM_NAME);
+
+        // Get all the itemStockList where itemName equals to UPDATED_ITEM_NAME
+        defaultItemStockShouldNotBeFound("itemName.equals=" + UPDATED_ITEM_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemNameIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemName not equals to DEFAULT_ITEM_NAME
+        defaultItemStockShouldNotBeFound("itemName.notEquals=" + DEFAULT_ITEM_NAME);
+
+        // Get all the itemStockList where itemName not equals to UPDATED_ITEM_NAME
+        defaultItemStockShouldBeFound("itemName.notEquals=" + UPDATED_ITEM_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemName in DEFAULT_ITEM_NAME or UPDATED_ITEM_NAME
+        defaultItemStockShouldBeFound("itemName.in=" + DEFAULT_ITEM_NAME + "," + UPDATED_ITEM_NAME);
+
+        // Get all the itemStockList where itemName equals to UPDATED_ITEM_NAME
+        defaultItemStockShouldNotBeFound("itemName.in=" + UPDATED_ITEM_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemName is not null
+        defaultItemStockShouldBeFound("itemName.specified=true");
+
+        // Get all the itemStockList where itemName is null
+        defaultItemStockShouldNotBeFound("itemName.specified=false");
+    }
+                @Test
+    @Transactional
+    public void getAllItemStocksByItemNameContainsSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemName contains DEFAULT_ITEM_NAME
+        defaultItemStockShouldBeFound("itemName.contains=" + DEFAULT_ITEM_NAME);
+
+        // Get all the itemStockList where itemName contains UPDATED_ITEM_NAME
+        defaultItemStockShouldNotBeFound("itemName.contains=" + UPDATED_ITEM_NAME);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemNameNotContainsSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemName does not contain DEFAULT_ITEM_NAME
+        defaultItemStockShouldNotBeFound("itemName.doesNotContain=" + DEFAULT_ITEM_NAME);
+
+        // Get all the itemStockList where itemName does not contain UPDATED_ITEM_NAME
+        defaultItemStockShouldBeFound("itemName.doesNotContain=" + UPDATED_ITEM_NAME);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByCasNumberIsEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where casNumber equals to DEFAULT_CAS_NUMBER
+        defaultItemStockShouldBeFound("casNumber.equals=" + DEFAULT_CAS_NUMBER);
+
+        // Get all the itemStockList where casNumber equals to UPDATED_CAS_NUMBER
+        defaultItemStockShouldNotBeFound("casNumber.equals=" + UPDATED_CAS_NUMBER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByCasNumberIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where casNumber not equals to DEFAULT_CAS_NUMBER
+        defaultItemStockShouldNotBeFound("casNumber.notEquals=" + DEFAULT_CAS_NUMBER);
+
+        // Get all the itemStockList where casNumber not equals to UPDATED_CAS_NUMBER
+        defaultItemStockShouldBeFound("casNumber.notEquals=" + UPDATED_CAS_NUMBER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByCasNumberIsInShouldWork() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where casNumber in DEFAULT_CAS_NUMBER or UPDATED_CAS_NUMBER
+        defaultItemStockShouldBeFound("casNumber.in=" + DEFAULT_CAS_NUMBER + "," + UPDATED_CAS_NUMBER);
+
+        // Get all the itemStockList where casNumber equals to UPDATED_CAS_NUMBER
+        defaultItemStockShouldNotBeFound("casNumber.in=" + UPDATED_CAS_NUMBER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByCasNumberIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where casNumber is not null
+        defaultItemStockShouldBeFound("casNumber.specified=true");
+
+        // Get all the itemStockList where casNumber is null
+        defaultItemStockShouldNotBeFound("casNumber.specified=false");
+    }
+                @Test
+    @Transactional
+    public void getAllItemStocksByCasNumberContainsSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where casNumber contains DEFAULT_CAS_NUMBER
+        defaultItemStockShouldBeFound("casNumber.contains=" + DEFAULT_CAS_NUMBER);
+
+        // Get all the itemStockList where casNumber contains UPDATED_CAS_NUMBER
+        defaultItemStockShouldNotBeFound("casNumber.contains=" + UPDATED_CAS_NUMBER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByCasNumberNotContainsSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where casNumber does not contain DEFAULT_CAS_NUMBER
+        defaultItemStockShouldNotBeFound("casNumber.doesNotContain=" + DEFAULT_CAS_NUMBER);
+
+        // Get all the itemStockList where casNumber does not contain UPDATED_CAS_NUMBER
+        defaultItemStockShouldBeFound("casNumber.doesNotContain=" + UPDATED_CAS_NUMBER);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByStockBookFolioIsEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where stockBookFolio equals to DEFAULT_STOCK_BOOK_FOLIO
+        defaultItemStockShouldBeFound("stockBookFolio.equals=" + DEFAULT_STOCK_BOOK_FOLIO);
+
+        // Get all the itemStockList where stockBookFolio equals to UPDATED_STOCK_BOOK_FOLIO
+        defaultItemStockShouldNotBeFound("stockBookFolio.equals=" + UPDATED_STOCK_BOOK_FOLIO);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByStockBookFolioIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where stockBookFolio not equals to DEFAULT_STOCK_BOOK_FOLIO
+        defaultItemStockShouldNotBeFound("stockBookFolio.notEquals=" + DEFAULT_STOCK_BOOK_FOLIO);
+
+        // Get all the itemStockList where stockBookFolio not equals to UPDATED_STOCK_BOOK_FOLIO
+        defaultItemStockShouldBeFound("stockBookFolio.notEquals=" + UPDATED_STOCK_BOOK_FOLIO);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByStockBookFolioIsInShouldWork() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where stockBookFolio in DEFAULT_STOCK_BOOK_FOLIO or UPDATED_STOCK_BOOK_FOLIO
+        defaultItemStockShouldBeFound("stockBookFolio.in=" + DEFAULT_STOCK_BOOK_FOLIO + "," + UPDATED_STOCK_BOOK_FOLIO);
+
+        // Get all the itemStockList where stockBookFolio equals to UPDATED_STOCK_BOOK_FOLIO
+        defaultItemStockShouldNotBeFound("stockBookFolio.in=" + UPDATED_STOCK_BOOK_FOLIO);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByStockBookFolioIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where stockBookFolio is not null
+        defaultItemStockShouldBeFound("stockBookFolio.specified=true");
+
+        // Get all the itemStockList where stockBookFolio is null
+        defaultItemStockShouldNotBeFound("stockBookFolio.specified=false");
+    }
+                @Test
+    @Transactional
+    public void getAllItemStocksByStockBookFolioContainsSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where stockBookFolio contains DEFAULT_STOCK_BOOK_FOLIO
+        defaultItemStockShouldBeFound("stockBookFolio.contains=" + DEFAULT_STOCK_BOOK_FOLIO);
+
+        // Get all the itemStockList where stockBookFolio contains UPDATED_STOCK_BOOK_FOLIO
+        defaultItemStockShouldNotBeFound("stockBookFolio.contains=" + UPDATED_STOCK_BOOK_FOLIO);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByStockBookFolioNotContainsSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where stockBookFolio does not contain DEFAULT_STOCK_BOOK_FOLIO
+        defaultItemStockShouldNotBeFound("stockBookFolio.doesNotContain=" + DEFAULT_STOCK_BOOK_FOLIO);
+
+        // Get all the itemStockList where stockBookFolio does not contain UPDATED_STOCK_BOOK_FOLIO
+        defaultItemStockShouldBeFound("stockBookFolio.doesNotContain=" + UPDATED_STOCK_BOOK_FOLIO);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemManufacturerIsEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemManufacturer equals to DEFAULT_ITEM_MANUFACTURER
+        defaultItemStockShouldBeFound("itemManufacturer.equals=" + DEFAULT_ITEM_MANUFACTURER);
+
+        // Get all the itemStockList where itemManufacturer equals to UPDATED_ITEM_MANUFACTURER
+        defaultItemStockShouldNotBeFound("itemManufacturer.equals=" + UPDATED_ITEM_MANUFACTURER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemManufacturerIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemManufacturer not equals to DEFAULT_ITEM_MANUFACTURER
+        defaultItemStockShouldNotBeFound("itemManufacturer.notEquals=" + DEFAULT_ITEM_MANUFACTURER);
+
+        // Get all the itemStockList where itemManufacturer not equals to UPDATED_ITEM_MANUFACTURER
+        defaultItemStockShouldBeFound("itemManufacturer.notEquals=" + UPDATED_ITEM_MANUFACTURER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemManufacturerIsInShouldWork() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemManufacturer in DEFAULT_ITEM_MANUFACTURER or UPDATED_ITEM_MANUFACTURER
+        defaultItemStockShouldBeFound("itemManufacturer.in=" + DEFAULT_ITEM_MANUFACTURER + "," + UPDATED_ITEM_MANUFACTURER);
+
+        // Get all the itemStockList where itemManufacturer equals to UPDATED_ITEM_MANUFACTURER
+        defaultItemStockShouldNotBeFound("itemManufacturer.in=" + UPDATED_ITEM_MANUFACTURER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemManufacturerIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemManufacturer is not null
+        defaultItemStockShouldBeFound("itemManufacturer.specified=true");
+
+        // Get all the itemStockList where itemManufacturer is null
+        defaultItemStockShouldNotBeFound("itemManufacturer.specified=false");
+    }
+                @Test
+    @Transactional
+    public void getAllItemStocksByItemManufacturerContainsSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemManufacturer contains DEFAULT_ITEM_MANUFACTURER
+        defaultItemStockShouldBeFound("itemManufacturer.contains=" + DEFAULT_ITEM_MANUFACTURER);
+
+        // Get all the itemStockList where itemManufacturer contains UPDATED_ITEM_MANUFACTURER
+        defaultItemStockShouldNotBeFound("itemManufacturer.contains=" + UPDATED_ITEM_MANUFACTURER);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemManufacturerNotContainsSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemManufacturer does not contain DEFAULT_ITEM_MANUFACTURER
+        defaultItemStockShouldNotBeFound("itemManufacturer.doesNotContain=" + DEFAULT_ITEM_MANUFACTURER);
+
+        // Get all the itemStockList where itemManufacturer does not contain UPDATED_ITEM_MANUFACTURER
+        defaultItemStockShouldBeFound("itemManufacturer.doesNotContain=" + UPDATED_ITEM_MANUFACTURER);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemCapacityIsEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemCapacity equals to DEFAULT_ITEM_CAPACITY
+        defaultItemStockShouldBeFound("itemCapacity.equals=" + DEFAULT_ITEM_CAPACITY);
+
+        // Get all the itemStockList where itemCapacity equals to UPDATED_ITEM_CAPACITY
+        defaultItemStockShouldNotBeFound("itemCapacity.equals=" + UPDATED_ITEM_CAPACITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemCapacityIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemCapacity not equals to DEFAULT_ITEM_CAPACITY
+        defaultItemStockShouldNotBeFound("itemCapacity.notEquals=" + DEFAULT_ITEM_CAPACITY);
+
+        // Get all the itemStockList where itemCapacity not equals to UPDATED_ITEM_CAPACITY
+        defaultItemStockShouldBeFound("itemCapacity.notEquals=" + UPDATED_ITEM_CAPACITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemCapacityIsInShouldWork() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemCapacity in DEFAULT_ITEM_CAPACITY or UPDATED_ITEM_CAPACITY
+        defaultItemStockShouldBeFound("itemCapacity.in=" + DEFAULT_ITEM_CAPACITY + "," + UPDATED_ITEM_CAPACITY);
+
+        // Get all the itemStockList where itemCapacity equals to UPDATED_ITEM_CAPACITY
+        defaultItemStockShouldNotBeFound("itemCapacity.in=" + UPDATED_ITEM_CAPACITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemCapacityIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemCapacity is not null
+        defaultItemStockShouldBeFound("itemCapacity.specified=true");
+
+        // Get all the itemStockList where itemCapacity is null
+        defaultItemStockShouldNotBeFound("itemCapacity.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemCapacityIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemCapacity is greater than or equal to DEFAULT_ITEM_CAPACITY
+        defaultItemStockShouldBeFound("itemCapacity.greaterThanOrEqual=" + DEFAULT_ITEM_CAPACITY);
+
+        // Get all the itemStockList where itemCapacity is greater than or equal to UPDATED_ITEM_CAPACITY
+        defaultItemStockShouldNotBeFound("itemCapacity.greaterThanOrEqual=" + UPDATED_ITEM_CAPACITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemCapacityIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemCapacity is less than or equal to DEFAULT_ITEM_CAPACITY
+        defaultItemStockShouldBeFound("itemCapacity.lessThanOrEqual=" + DEFAULT_ITEM_CAPACITY);
+
+        // Get all the itemStockList where itemCapacity is less than or equal to SMALLER_ITEM_CAPACITY
+        defaultItemStockShouldNotBeFound("itemCapacity.lessThanOrEqual=" + SMALLER_ITEM_CAPACITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemCapacityIsLessThanSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemCapacity is less than DEFAULT_ITEM_CAPACITY
+        defaultItemStockShouldNotBeFound("itemCapacity.lessThan=" + DEFAULT_ITEM_CAPACITY);
+
+        // Get all the itemStockList where itemCapacity is less than UPDATED_ITEM_CAPACITY
+        defaultItemStockShouldBeFound("itemCapacity.lessThan=" + UPDATED_ITEM_CAPACITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemCapacityIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where itemCapacity is greater than DEFAULT_ITEM_CAPACITY
+        defaultItemStockShouldNotBeFound("itemCapacity.greaterThan=" + DEFAULT_ITEM_CAPACITY);
+
+        // Get all the itemStockList where itemCapacity is greater than SMALLER_ITEM_CAPACITY
+        defaultItemStockShouldBeFound("itemCapacity.greaterThan=" + SMALLER_ITEM_CAPACITY);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByUnitPriceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where unitPrice equals to DEFAULT_UNIT_PRICE
+        defaultItemStockShouldBeFound("unitPrice.equals=" + DEFAULT_UNIT_PRICE);
+
+        // Get all the itemStockList where unitPrice equals to UPDATED_UNIT_PRICE
+        defaultItemStockShouldNotBeFound("unitPrice.equals=" + UPDATED_UNIT_PRICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByUnitPriceIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where unitPrice not equals to DEFAULT_UNIT_PRICE
+        defaultItemStockShouldNotBeFound("unitPrice.notEquals=" + DEFAULT_UNIT_PRICE);
+
+        // Get all the itemStockList where unitPrice not equals to UPDATED_UNIT_PRICE
+        defaultItemStockShouldBeFound("unitPrice.notEquals=" + UPDATED_UNIT_PRICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByUnitPriceIsInShouldWork() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where unitPrice in DEFAULT_UNIT_PRICE or UPDATED_UNIT_PRICE
+        defaultItemStockShouldBeFound("unitPrice.in=" + DEFAULT_UNIT_PRICE + "," + UPDATED_UNIT_PRICE);
+
+        // Get all the itemStockList where unitPrice equals to UPDATED_UNIT_PRICE
+        defaultItemStockShouldNotBeFound("unitPrice.in=" + UPDATED_UNIT_PRICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByUnitPriceIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where unitPrice is not null
+        defaultItemStockShouldBeFound("unitPrice.specified=true");
+
+        // Get all the itemStockList where unitPrice is null
+        defaultItemStockShouldNotBeFound("unitPrice.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByUnitPriceIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where unitPrice is greater than or equal to DEFAULT_UNIT_PRICE
+        defaultItemStockShouldBeFound("unitPrice.greaterThanOrEqual=" + DEFAULT_UNIT_PRICE);
+
+        // Get all the itemStockList where unitPrice is greater than or equal to UPDATED_UNIT_PRICE
+        defaultItemStockShouldNotBeFound("unitPrice.greaterThanOrEqual=" + UPDATED_UNIT_PRICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByUnitPriceIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where unitPrice is less than or equal to DEFAULT_UNIT_PRICE
+        defaultItemStockShouldBeFound("unitPrice.lessThanOrEqual=" + DEFAULT_UNIT_PRICE);
+
+        // Get all the itemStockList where unitPrice is less than or equal to SMALLER_UNIT_PRICE
+        defaultItemStockShouldNotBeFound("unitPrice.lessThanOrEqual=" + SMALLER_UNIT_PRICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByUnitPriceIsLessThanSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where unitPrice is less than DEFAULT_UNIT_PRICE
+        defaultItemStockShouldNotBeFound("unitPrice.lessThan=" + DEFAULT_UNIT_PRICE);
+
+        // Get all the itemStockList where unitPrice is less than UPDATED_UNIT_PRICE
+        defaultItemStockShouldBeFound("unitPrice.lessThan=" + UPDATED_UNIT_PRICE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByUnitPriceIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where unitPrice is greater than DEFAULT_UNIT_PRICE
+        defaultItemStockShouldNotBeFound("unitPrice.greaterThan=" + DEFAULT_UNIT_PRICE);
+
+        // Get all the itemStockList where unitPrice is greater than SMALLER_UNIT_PRICE
+        defaultItemStockShouldBeFound("unitPrice.greaterThan=" + SMALLER_UNIT_PRICE);
     }
 
 
@@ -678,216 +1233,6 @@ public class ItemStockResourceIT {
 
     @Test
     @Transactional
-    public void getAllItemStocksByEntryDateIsEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where entryDate equals to DEFAULT_ENTRY_DATE
-        defaultItemStockShouldBeFound("entryDate.equals=" + DEFAULT_ENTRY_DATE);
-
-        // Get all the itemStockList where entryDate equals to UPDATED_ENTRY_DATE
-        defaultItemStockShouldNotBeFound("entryDate.equals=" + UPDATED_ENTRY_DATE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByEntryDateIsNotEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where entryDate not equals to DEFAULT_ENTRY_DATE
-        defaultItemStockShouldNotBeFound("entryDate.notEquals=" + DEFAULT_ENTRY_DATE);
-
-        // Get all the itemStockList where entryDate not equals to UPDATED_ENTRY_DATE
-        defaultItemStockShouldBeFound("entryDate.notEquals=" + UPDATED_ENTRY_DATE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByEntryDateIsInShouldWork() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where entryDate in DEFAULT_ENTRY_DATE or UPDATED_ENTRY_DATE
-        defaultItemStockShouldBeFound("entryDate.in=" + DEFAULT_ENTRY_DATE + "," + UPDATED_ENTRY_DATE);
-
-        // Get all the itemStockList where entryDate equals to UPDATED_ENTRY_DATE
-        defaultItemStockShouldNotBeFound("entryDate.in=" + UPDATED_ENTRY_DATE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByEntryDateIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where entryDate is not null
-        defaultItemStockShouldBeFound("entryDate.specified=true");
-
-        // Get all the itemStockList where entryDate is null
-        defaultItemStockShouldNotBeFound("entryDate.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByEntryDateIsGreaterThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where entryDate is greater than or equal to DEFAULT_ENTRY_DATE
-        defaultItemStockShouldBeFound("entryDate.greaterThanOrEqual=" + DEFAULT_ENTRY_DATE);
-
-        // Get all the itemStockList where entryDate is greater than or equal to UPDATED_ENTRY_DATE
-        defaultItemStockShouldNotBeFound("entryDate.greaterThanOrEqual=" + UPDATED_ENTRY_DATE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByEntryDateIsLessThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where entryDate is less than or equal to DEFAULT_ENTRY_DATE
-        defaultItemStockShouldBeFound("entryDate.lessThanOrEqual=" + DEFAULT_ENTRY_DATE);
-
-        // Get all the itemStockList where entryDate is less than or equal to SMALLER_ENTRY_DATE
-        defaultItemStockShouldNotBeFound("entryDate.lessThanOrEqual=" + SMALLER_ENTRY_DATE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByEntryDateIsLessThanSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where entryDate is less than DEFAULT_ENTRY_DATE
-        defaultItemStockShouldNotBeFound("entryDate.lessThan=" + DEFAULT_ENTRY_DATE);
-
-        // Get all the itemStockList where entryDate is less than UPDATED_ENTRY_DATE
-        defaultItemStockShouldBeFound("entryDate.lessThan=" + UPDATED_ENTRY_DATE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByEntryDateIsGreaterThanSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where entryDate is greater than DEFAULT_ENTRY_DATE
-        defaultItemStockShouldNotBeFound("entryDate.greaterThan=" + DEFAULT_ENTRY_DATE);
-
-        // Get all the itemStockList where entryDate is greater than SMALLER_ENTRY_DATE
-        defaultItemStockShouldBeFound("entryDate.greaterThan=" + SMALLER_ENTRY_DATE);
-    }
-
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByExpiryDateIsEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where expiryDate equals to DEFAULT_EXPIRY_DATE
-        defaultItemStockShouldBeFound("expiryDate.equals=" + DEFAULT_EXPIRY_DATE);
-
-        // Get all the itemStockList where expiryDate equals to UPDATED_EXPIRY_DATE
-        defaultItemStockShouldNotBeFound("expiryDate.equals=" + UPDATED_EXPIRY_DATE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByExpiryDateIsNotEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where expiryDate not equals to DEFAULT_EXPIRY_DATE
-        defaultItemStockShouldNotBeFound("expiryDate.notEquals=" + DEFAULT_EXPIRY_DATE);
-
-        // Get all the itemStockList where expiryDate not equals to UPDATED_EXPIRY_DATE
-        defaultItemStockShouldBeFound("expiryDate.notEquals=" + UPDATED_EXPIRY_DATE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByExpiryDateIsInShouldWork() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where expiryDate in DEFAULT_EXPIRY_DATE or UPDATED_EXPIRY_DATE
-        defaultItemStockShouldBeFound("expiryDate.in=" + DEFAULT_EXPIRY_DATE + "," + UPDATED_EXPIRY_DATE);
-
-        // Get all the itemStockList where expiryDate equals to UPDATED_EXPIRY_DATE
-        defaultItemStockShouldNotBeFound("expiryDate.in=" + UPDATED_EXPIRY_DATE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByExpiryDateIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where expiryDate is not null
-        defaultItemStockShouldBeFound("expiryDate.specified=true");
-
-        // Get all the itemStockList where expiryDate is null
-        defaultItemStockShouldNotBeFound("expiryDate.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByExpiryDateIsGreaterThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where expiryDate is greater than or equal to DEFAULT_EXPIRY_DATE
-        defaultItemStockShouldBeFound("expiryDate.greaterThanOrEqual=" + DEFAULT_EXPIRY_DATE);
-
-        // Get all the itemStockList where expiryDate is greater than or equal to UPDATED_EXPIRY_DATE
-        defaultItemStockShouldNotBeFound("expiryDate.greaterThanOrEqual=" + UPDATED_EXPIRY_DATE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByExpiryDateIsLessThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where expiryDate is less than or equal to DEFAULT_EXPIRY_DATE
-        defaultItemStockShouldBeFound("expiryDate.lessThanOrEqual=" + DEFAULT_EXPIRY_DATE);
-
-        // Get all the itemStockList where expiryDate is less than or equal to SMALLER_EXPIRY_DATE
-        defaultItemStockShouldNotBeFound("expiryDate.lessThanOrEqual=" + SMALLER_EXPIRY_DATE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByExpiryDateIsLessThanSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where expiryDate is less than DEFAULT_EXPIRY_DATE
-        defaultItemStockShouldNotBeFound("expiryDate.lessThan=" + DEFAULT_EXPIRY_DATE);
-
-        // Get all the itemStockList where expiryDate is less than UPDATED_EXPIRY_DATE
-        defaultItemStockShouldBeFound("expiryDate.lessThan=" + UPDATED_EXPIRY_DATE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByExpiryDateIsGreaterThanSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where expiryDate is greater than DEFAULT_EXPIRY_DATE
-        defaultItemStockShouldNotBeFound("expiryDate.greaterThan=" + DEFAULT_EXPIRY_DATE);
-
-        // Get all the itemStockList where expiryDate is greater than SMALLER_EXPIRY_DATE
-        defaultItemStockShouldBeFound("expiryDate.greaterThan=" + SMALLER_EXPIRY_DATE);
-    }
-
-
-    @Test
-    @Transactional
     public void getAllItemStocksByCreatorIdIsEqualToSomething() throws Exception {
         // Initialize the database
         itemStockRepository.saveAndFlush(itemStock);
@@ -1045,79 +1390,106 @@ public class ItemStockResourceIT {
 
     @Test
     @Transactional
-    public void getAllItemStocksBySdsfileIsEqualToSomething() throws Exception {
+    public void getAllItemStocksByLastUpdatedIsEqualToSomething() throws Exception {
         // Initialize the database
         itemStockRepository.saveAndFlush(itemStock);
 
-        // Get all the itemStockList where sdsfile equals to DEFAULT_SDSFILE
-        defaultItemStockShouldBeFound("sdsfile.equals=" + DEFAULT_SDSFILE);
+        // Get all the itemStockList where lastUpdated equals to DEFAULT_LAST_UPDATED
+        defaultItemStockShouldBeFound("lastUpdated.equals=" + DEFAULT_LAST_UPDATED);
 
-        // Get all the itemStockList where sdsfile equals to UPDATED_SDSFILE
-        defaultItemStockShouldNotBeFound("sdsfile.equals=" + UPDATED_SDSFILE);
+        // Get all the itemStockList where lastUpdated equals to UPDATED_LAST_UPDATED
+        defaultItemStockShouldNotBeFound("lastUpdated.equals=" + UPDATED_LAST_UPDATED);
     }
 
     @Test
     @Transactional
-    public void getAllItemStocksBySdsfileIsNotEqualToSomething() throws Exception {
+    public void getAllItemStocksByLastUpdatedIsNotEqualToSomething() throws Exception {
         // Initialize the database
         itemStockRepository.saveAndFlush(itemStock);
 
-        // Get all the itemStockList where sdsfile not equals to DEFAULT_SDSFILE
-        defaultItemStockShouldNotBeFound("sdsfile.notEquals=" + DEFAULT_SDSFILE);
+        // Get all the itemStockList where lastUpdated not equals to DEFAULT_LAST_UPDATED
+        defaultItemStockShouldNotBeFound("lastUpdated.notEquals=" + DEFAULT_LAST_UPDATED);
 
-        // Get all the itemStockList where sdsfile not equals to UPDATED_SDSFILE
-        defaultItemStockShouldBeFound("sdsfile.notEquals=" + UPDATED_SDSFILE);
+        // Get all the itemStockList where lastUpdated not equals to UPDATED_LAST_UPDATED
+        defaultItemStockShouldBeFound("lastUpdated.notEquals=" + UPDATED_LAST_UPDATED);
     }
 
     @Test
     @Transactional
-    public void getAllItemStocksBySdsfileIsInShouldWork() throws Exception {
+    public void getAllItemStocksByLastUpdatedIsInShouldWork() throws Exception {
         // Initialize the database
         itemStockRepository.saveAndFlush(itemStock);
 
-        // Get all the itemStockList where sdsfile in DEFAULT_SDSFILE or UPDATED_SDSFILE
-        defaultItemStockShouldBeFound("sdsfile.in=" + DEFAULT_SDSFILE + "," + UPDATED_SDSFILE);
+        // Get all the itemStockList where lastUpdated in DEFAULT_LAST_UPDATED or UPDATED_LAST_UPDATED
+        defaultItemStockShouldBeFound("lastUpdated.in=" + DEFAULT_LAST_UPDATED + "," + UPDATED_LAST_UPDATED);
 
-        // Get all the itemStockList where sdsfile equals to UPDATED_SDSFILE
-        defaultItemStockShouldNotBeFound("sdsfile.in=" + UPDATED_SDSFILE);
+        // Get all the itemStockList where lastUpdated equals to UPDATED_LAST_UPDATED
+        defaultItemStockShouldNotBeFound("lastUpdated.in=" + UPDATED_LAST_UPDATED);
     }
 
     @Test
     @Transactional
-    public void getAllItemStocksBySdsfileIsNullOrNotNull() throws Exception {
+    public void getAllItemStocksByLastUpdatedIsNullOrNotNull() throws Exception {
         // Initialize the database
         itemStockRepository.saveAndFlush(itemStock);
 
-        // Get all the itemStockList where sdsfile is not null
-        defaultItemStockShouldBeFound("sdsfile.specified=true");
+        // Get all the itemStockList where lastUpdated is not null
+        defaultItemStockShouldBeFound("lastUpdated.specified=true");
 
-        // Get all the itemStockList where sdsfile is null
-        defaultItemStockShouldNotBeFound("sdsfile.specified=false");
-    }
-                @Test
-    @Transactional
-    public void getAllItemStocksBySdsfileContainsSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where sdsfile contains DEFAULT_SDSFILE
-        defaultItemStockShouldBeFound("sdsfile.contains=" + DEFAULT_SDSFILE);
-
-        // Get all the itemStockList where sdsfile contains UPDATED_SDSFILE
-        defaultItemStockShouldNotBeFound("sdsfile.contains=" + UPDATED_SDSFILE);
+        // Get all the itemStockList where lastUpdated is null
+        defaultItemStockShouldNotBeFound("lastUpdated.specified=false");
     }
 
     @Test
     @Transactional
-    public void getAllItemStocksBySdsfileNotContainsSomething() throws Exception {
+    public void getAllItemStocksByLastUpdatedIsGreaterThanOrEqualToSomething() throws Exception {
         // Initialize the database
         itemStockRepository.saveAndFlush(itemStock);
 
-        // Get all the itemStockList where sdsfile does not contain DEFAULT_SDSFILE
-        defaultItemStockShouldNotBeFound("sdsfile.doesNotContain=" + DEFAULT_SDSFILE);
+        // Get all the itemStockList where lastUpdated is greater than or equal to DEFAULT_LAST_UPDATED
+        defaultItemStockShouldBeFound("lastUpdated.greaterThanOrEqual=" + DEFAULT_LAST_UPDATED);
 
-        // Get all the itemStockList where sdsfile does not contain UPDATED_SDSFILE
-        defaultItemStockShouldBeFound("sdsfile.doesNotContain=" + UPDATED_SDSFILE);
+        // Get all the itemStockList where lastUpdated is greater than or equal to UPDATED_LAST_UPDATED
+        defaultItemStockShouldNotBeFound("lastUpdated.greaterThanOrEqual=" + UPDATED_LAST_UPDATED);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByLastUpdatedIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where lastUpdated is less than or equal to DEFAULT_LAST_UPDATED
+        defaultItemStockShouldBeFound("lastUpdated.lessThanOrEqual=" + DEFAULT_LAST_UPDATED);
+
+        // Get all the itemStockList where lastUpdated is less than or equal to SMALLER_LAST_UPDATED
+        defaultItemStockShouldNotBeFound("lastUpdated.lessThanOrEqual=" + SMALLER_LAST_UPDATED);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByLastUpdatedIsLessThanSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where lastUpdated is less than DEFAULT_LAST_UPDATED
+        defaultItemStockShouldNotBeFound("lastUpdated.lessThan=" + DEFAULT_LAST_UPDATED);
+
+        // Get all the itemStockList where lastUpdated is less than UPDATED_LAST_UPDATED
+        defaultItemStockShouldBeFound("lastUpdated.lessThan=" + UPDATED_LAST_UPDATED);
+    }
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByLastUpdatedIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+
+        // Get all the itemStockList where lastUpdated is greater than DEFAULT_LAST_UPDATED
+        defaultItemStockShouldNotBeFound("lastUpdated.greaterThan=" + DEFAULT_LAST_UPDATED);
+
+        // Get all the itemStockList where lastUpdated is greater than SMALLER_LAST_UPDATED
+        defaultItemStockShouldBeFound("lastUpdated.greaterThan=" + SMALLER_LAST_UPDATED);
     }
 
 
@@ -1138,6 +1510,46 @@ public class ItemStockResourceIT {
 
         // Get all the itemStockList where itemTransaction equals to itemTransactionId + 1
         defaultItemStockShouldNotBeFound("itemTransactionId.equals=" + (itemTransactionId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByWasteItemIsEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+        WasteItem wasteItem = WasteItemResourceIT.createEntity(em);
+        em.persist(wasteItem);
+        em.flush();
+        itemStock.addWasteItem(wasteItem);
+        itemStockRepository.saveAndFlush(itemStock);
+        Long wasteItemId = wasteItem.getId();
+
+        // Get all the itemStockList where wasteItem equals to wasteItemId
+        defaultItemStockShouldBeFound("wasteItemId.equals=" + wasteItemId);
+
+        // Get all the itemStockList where wasteItem equals to wasteItemId + 1
+        defaultItemStockShouldNotBeFound("wasteItemId.equals=" + (wasteItemId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByHazardCodeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+        HazardCode hazardCode = HazardCodeResourceIT.createEntity(em);
+        em.persist(hazardCode);
+        em.flush();
+        itemStock.addHazardCode(hazardCode);
+        itemStockRepository.saveAndFlush(itemStock);
+        Long hazardCodeId = hazardCode.getId();
+
+        // Get all the itemStockList where hazardCode equals to hazardCodeId
+        defaultItemStockShouldBeFound("hazardCodeId.equals=" + hazardCodeId);
+
+        // Get all the itemStockList where hazardCode equals to hazardCodeId + 1
+        defaultItemStockShouldNotBeFound("hazardCodeId.equals=" + (hazardCodeId + 1));
     }
 
 
@@ -1172,22 +1584,6 @@ public class ItemStockResourceIT {
         defaultItemStockShouldNotBeFound("storageUnitId.equals=" + (storageUnitId + 1));
     }
 
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByItemIsEqualToSomething() throws Exception {
-        // Get already existing entity
-        Item item = itemStock.getItem();
-        itemStockRepository.saveAndFlush(itemStock);
-        Long itemId = item.getId();
-
-        // Get all the itemStockList where item equals to itemId
-        defaultItemStockShouldBeFound("itemId.equals=" + itemId);
-
-        // Get all the itemStockList where item equals to itemId + 1
-        defaultItemStockShouldNotBeFound("itemId.equals=" + (itemId + 1));
-    }
-
     /**
      * Executes the search, and checks that the default entity is returned.
      */
@@ -1196,15 +1592,21 @@ public class ItemStockResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(itemStock.getId().intValue())))
-            .andExpect(jsonPath("$.[*].totalQuantity").value(hasItem(DEFAULT_TOTAL_QUANTITY)))
-            .andExpect(jsonPath("$.[*].minimumQuantity").value(hasItem(DEFAULT_MINIMUM_QUANTITY)))
+            .andExpect(jsonPath("$.[*].itemName").value(hasItem(DEFAULT_ITEM_NAME)))
+            .andExpect(jsonPath("$.[*].casNumber").value(hasItem(DEFAULT_CAS_NUMBER)))
+            .andExpect(jsonPath("$.[*].stockBookFolio").value(hasItem(DEFAULT_STOCK_BOOK_FOLIO)))
+            .andExpect(jsonPath("$.[*].itemManufacturer").value(hasItem(DEFAULT_ITEM_MANUFACTURER)))
+            .andExpect(jsonPath("$.[*].itemCapacity").value(hasItem(DEFAULT_ITEM_CAPACITY.doubleValue())))
+            .andExpect(jsonPath("$.[*].unitPrice").value(hasItem(DEFAULT_UNIT_PRICE.doubleValue())))
+            .andExpect(jsonPath("$.[*].totalQuantity").value(hasItem(DEFAULT_TOTAL_QUANTITY.doubleValue())))
+            .andExpect(jsonPath("$.[*].minimumQuantity").value(hasItem(DEFAULT_MINIMUM_QUANTITY.doubleValue())))
             .andExpect(jsonPath("$.[*].itemStatus").value(hasItem(DEFAULT_ITEM_STATUS.toString())))
             .andExpect(jsonPath("$.[*].stockStore").value(hasItem(DEFAULT_STOCK_STORE.toString())))
-            .andExpect(jsonPath("$.[*].entryDate").value(hasItem(DEFAULT_ENTRY_DATE.toString())))
-            .andExpect(jsonPath("$.[*].expiryDate").value(hasItem(DEFAULT_EXPIRY_DATE.toString())))
             .andExpect(jsonPath("$.[*].creatorId").value(hasItem(DEFAULT_CREATOR_ID)))
             .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
-            .andExpect(jsonPath("$.[*].sdsfile").value(hasItem(DEFAULT_SDSFILE)));
+            .andExpect(jsonPath("$.[*].lastUpdated").value(hasItem(DEFAULT_LAST_UPDATED.toString())))
+            .andExpect(jsonPath("$.[*].sdsfileContentType").value(hasItem(DEFAULT_SDSFILE_CONTENT_TYPE)))
+            .andExpect(jsonPath("$.[*].sdsfile").value(hasItem(Base64Utils.encodeToString(DEFAULT_SDSFILE))));
 
         // Check, that the count call also returns 1
         restItemStockMockMvc.perform(get("/api/item-stocks/count?sort=id,desc&" + filter))
@@ -1251,15 +1653,21 @@ public class ItemStockResourceIT {
         // Disconnect from session so that the updates on updatedItemStock are not directly saved in db
         em.detach(updatedItemStock);
         updatedItemStock
+            .itemName(UPDATED_ITEM_NAME)
+            .casNumber(UPDATED_CAS_NUMBER)
+            .stockBookFolio(UPDATED_STOCK_BOOK_FOLIO)
+            .itemManufacturer(UPDATED_ITEM_MANUFACTURER)
+            .itemCapacity(UPDATED_ITEM_CAPACITY)
+            .unitPrice(UPDATED_UNIT_PRICE)
             .totalQuantity(UPDATED_TOTAL_QUANTITY)
             .minimumQuantity(UPDATED_MINIMUM_QUANTITY)
             .itemStatus(UPDATED_ITEM_STATUS)
             .stockStore(UPDATED_STOCK_STORE)
-            .entryDate(UPDATED_ENTRY_DATE)
-            .expiryDate(UPDATED_EXPIRY_DATE)
             .creatorId(UPDATED_CREATOR_ID)
             .createdOn(UPDATED_CREATED_ON)
-            .sdsfile(UPDATED_SDSFILE);
+            .lastUpdated(UPDATED_LAST_UPDATED)
+            .sdsfile(UPDATED_SDSFILE)
+            .sdsfileContentType(UPDATED_SDSFILE_CONTENT_TYPE);
         ItemStockDTO itemStockDTO = itemStockMapper.toDto(updatedItemStock);
 
         restItemStockMockMvc.perform(put("/api/item-stocks")
@@ -1271,18 +1679,21 @@ public class ItemStockResourceIT {
         List<ItemStock> itemStockList = itemStockRepository.findAll();
         assertThat(itemStockList).hasSize(databaseSizeBeforeUpdate);
         ItemStock testItemStock = itemStockList.get(itemStockList.size() - 1);
+        assertThat(testItemStock.getItemName()).isEqualTo(UPDATED_ITEM_NAME);
+        assertThat(testItemStock.getCasNumber()).isEqualTo(UPDATED_CAS_NUMBER);
+        assertThat(testItemStock.getStockBookFolio()).isEqualTo(UPDATED_STOCK_BOOK_FOLIO);
+        assertThat(testItemStock.getItemManufacturer()).isEqualTo(UPDATED_ITEM_MANUFACTURER);
+        assertThat(testItemStock.getItemCapacity()).isEqualTo(UPDATED_ITEM_CAPACITY);
+        assertThat(testItemStock.getUnitPrice()).isEqualTo(UPDATED_UNIT_PRICE);
         assertThat(testItemStock.getTotalQuantity()).isEqualTo(UPDATED_TOTAL_QUANTITY);
         assertThat(testItemStock.getMinimumQuantity()).isEqualTo(UPDATED_MINIMUM_QUANTITY);
         assertThat(testItemStock.getItemStatus()).isEqualTo(UPDATED_ITEM_STATUS);
         assertThat(testItemStock.getStockStore()).isEqualTo(UPDATED_STOCK_STORE);
-        assertThat(testItemStock.getEntryDate()).isEqualTo(UPDATED_ENTRY_DATE);
-        assertThat(testItemStock.getExpiryDate()).isEqualTo(UPDATED_EXPIRY_DATE);
         assertThat(testItemStock.getCreatorId()).isEqualTo(UPDATED_CREATOR_ID);
         assertThat(testItemStock.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
+        assertThat(testItemStock.getLastUpdated()).isEqualTo(UPDATED_LAST_UPDATED);
         assertThat(testItemStock.getSdsfile()).isEqualTo(UPDATED_SDSFILE);
-
-        // Validate the ItemStock in Elasticsearch
-        verify(mockItemStockSearchRepository, times(1)).save(testItemStock);
+        assertThat(testItemStock.getSdsfileContentType()).isEqualTo(UPDATED_SDSFILE_CONTENT_TYPE);
     }
 
     @Test
@@ -1302,9 +1713,6 @@ public class ItemStockResourceIT {
         // Validate the ItemStock in the database
         List<ItemStock> itemStockList = itemStockRepository.findAll();
         assertThat(itemStockList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the ItemStock in Elasticsearch
-        verify(mockItemStockSearchRepository, times(0)).save(itemStock);
     }
 
     @Test
@@ -1323,33 +1731,5 @@ public class ItemStockResourceIT {
         // Validate the database contains one less item
         List<ItemStock> itemStockList = itemStockRepository.findAll();
         assertThat(itemStockList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the ItemStock in Elasticsearch
-        verify(mockItemStockSearchRepository, times(1)).deleteById(itemStock.getId());
-    }
-
-    @Test
-    @Transactional
-    public void searchItemStock() throws Exception {
-        // Configure the mock search repository
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-        when(mockItemStockSearchRepository.search(queryStringQuery("id:" + itemStock.getId())))
-            .thenReturn(Collections.singletonList(itemStock));
-
-        // Search the itemStock
-        restItemStockMockMvc.perform(get("/api/_search/item-stocks?query=id:" + itemStock.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(itemStock.getId().intValue())))
-            .andExpect(jsonPath("$.[*].totalQuantity").value(hasItem(DEFAULT_TOTAL_QUANTITY)))
-            .andExpect(jsonPath("$.[*].minimumQuantity").value(hasItem(DEFAULT_MINIMUM_QUANTITY)))
-            .andExpect(jsonPath("$.[*].itemStatus").value(hasItem(DEFAULT_ITEM_STATUS.toString())))
-            .andExpect(jsonPath("$.[*].stockStore").value(hasItem(DEFAULT_STOCK_STORE.toString())))
-            .andExpect(jsonPath("$.[*].entryDate").value(hasItem(DEFAULT_ENTRY_DATE.toString())))
-            .andExpect(jsonPath("$.[*].expiryDate").value(hasItem(DEFAULT_EXPIRY_DATE.toString())))
-            .andExpect(jsonPath("$.[*].creatorId").value(hasItem(DEFAULT_CREATOR_ID)))
-            .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
-            .andExpect(jsonPath("$.[*].sdsfile").value(hasItem(DEFAULT_SDSFILE)));
     }
 }

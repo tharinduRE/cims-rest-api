@@ -3,16 +3,12 @@ package com.cheminv.app.web.rest;
 import com.cheminv.app.CimsApp;
 import com.cheminv.app.domain.MeasUnit;
 import com.cheminv.app.repository.MeasUnitRepository;
-import com.cheminv.app.repository.search.MeasUnitSearchRepository;
 import com.cheminv.app.service.MeasUnitService;
 import com.cheminv.app.service.dto.MeasUnitDTO;
 import com.cheminv.app.service.mapper.MeasUnitMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,13 +17,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -35,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Integration tests for the {@link MeasUnitResource} REST controller.
  */
 @SpringBootTest(classes = CimsApp.class)
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 public class MeasUnitResourceIT {
@@ -54,14 +46,6 @@ public class MeasUnitResourceIT {
 
     @Autowired
     private MeasUnitService measUnitService;
-
-    /**
-     * This repository is mocked in the com.cheminv.app.repository.search test package.
-     *
-     * @see com.cheminv.app.repository.search.MeasUnitSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private MeasUnitSearchRepository mockMeasUnitSearchRepository;
 
     @Autowired
     private EntityManager em;
@@ -118,9 +102,6 @@ public class MeasUnitResourceIT {
         MeasUnit testMeasUnit = measUnitList.get(measUnitList.size() - 1);
         assertThat(testMeasUnit.getMeasUnit()).isEqualTo(DEFAULT_MEAS_UNIT);
         assertThat(testMeasUnit.getMeasDesc()).isEqualTo(DEFAULT_MEAS_DESC);
-
-        // Validate the MeasUnit in Elasticsearch
-        verify(mockMeasUnitSearchRepository, times(1)).save(testMeasUnit);
     }
 
     @Test
@@ -141,9 +122,6 @@ public class MeasUnitResourceIT {
         // Validate the MeasUnit in the database
         List<MeasUnit> measUnitList = measUnitRepository.findAll();
         assertThat(measUnitList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the MeasUnit in Elasticsearch
-        verify(mockMeasUnitSearchRepository, times(0)).save(measUnit);
     }
 
 
@@ -212,9 +190,6 @@ public class MeasUnitResourceIT {
         MeasUnit testMeasUnit = measUnitList.get(measUnitList.size() - 1);
         assertThat(testMeasUnit.getMeasUnit()).isEqualTo(UPDATED_MEAS_UNIT);
         assertThat(testMeasUnit.getMeasDesc()).isEqualTo(UPDATED_MEAS_DESC);
-
-        // Validate the MeasUnit in Elasticsearch
-        verify(mockMeasUnitSearchRepository, times(1)).save(testMeasUnit);
     }
 
     @Test
@@ -234,9 +209,6 @@ public class MeasUnitResourceIT {
         // Validate the MeasUnit in the database
         List<MeasUnit> measUnitList = measUnitRepository.findAll();
         assertThat(measUnitList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the MeasUnit in Elasticsearch
-        verify(mockMeasUnitSearchRepository, times(0)).save(measUnit);
     }
 
     @Test
@@ -255,26 +227,5 @@ public class MeasUnitResourceIT {
         // Validate the database contains one less item
         List<MeasUnit> measUnitList = measUnitRepository.findAll();
         assertThat(measUnitList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the MeasUnit in Elasticsearch
-        verify(mockMeasUnitSearchRepository, times(1)).deleteById(measUnit.getId());
-    }
-
-    @Test
-    @Transactional
-    public void searchMeasUnit() throws Exception {
-        // Configure the mock search repository
-        // Initialize the database
-        measUnitRepository.saveAndFlush(measUnit);
-        when(mockMeasUnitSearchRepository.search(queryStringQuery("id:" + measUnit.getId())))
-            .thenReturn(Collections.singletonList(measUnit));
-
-        // Search the measUnit
-        restMeasUnitMockMvc.perform(get("/api/_search/meas-units?query=id:" + measUnit.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(measUnit.getId().intValue())))
-            .andExpect(jsonPath("$.[*].measUnit").value(hasItem(DEFAULT_MEAS_UNIT)))
-            .andExpect(jsonPath("$.[*].measDesc").value(hasItem(DEFAULT_MEAS_DESC)));
     }
 }

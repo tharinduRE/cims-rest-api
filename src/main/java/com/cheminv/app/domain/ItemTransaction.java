@@ -1,24 +1,21 @@
 package com.cheminv.app.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.hibernate.annotations.Type;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+
+import com.cheminv.app.domain.enumeration.TransactionType;
 
 /**
  * A ItemTransaction.
  */
 @Entity
 @Table(name = "cims_item_transaction")
-@org.springframework.data.elasticsearch.annotations.Document(indexName = "itemtransaction")
 public class ItemTransaction implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -29,21 +26,22 @@ public class ItemTransaction implements Serializable {
 
     @NotNull
     @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    private Float quantity;
 
     @Column(name = "remarks")
     private String remarks;
 
-    @Type(type = "uuid-char")
-    @Column(name = "transaction_uuid", length = 36)
-    private UUID transactionUUID;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "transaction_type")
+    private TransactionType transactionType;
 
     @Column(name = "transaction_date")
-    private LocalDate transactionDate;
+    private Instant transactionDate;
 
-    @ManyToMany(mappedBy = "itemTransactions")
-    @JsonIgnore
-    private Set<ItemStock> itemStocks = new HashSet<>();
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties(value = "itemTransactions", allowSetters = true)
+    private ItemStock itemStock;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -54,16 +52,16 @@ public class ItemTransaction implements Serializable {
         this.id = id;
     }
 
-    public Integer getQuantity() {
+    public Float getQuantity() {
         return quantity;
     }
 
-    public ItemTransaction quantity(Integer quantity) {
+    public ItemTransaction quantity(Float quantity) {
         this.quantity = quantity;
         return this;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(Float quantity) {
         this.quantity = quantity;
     }
 
@@ -80,55 +78,44 @@ public class ItemTransaction implements Serializable {
         this.remarks = remarks;
     }
 
-    public UUID getTransactionUUID() {
-        return transactionUUID;
+    public TransactionType getTransactionType() {
+        return transactionType;
     }
 
-    public ItemTransaction transactionUUID(UUID transactionUUID) {
-        this.transactionUUID = transactionUUID;
+    public ItemTransaction transactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
         return this;
     }
 
-    public void setTransactionUUID(UUID transactionUUID) {
-        this.transactionUUID = transactionUUID;
+    public void setTransactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
     }
 
-    public LocalDate getTransactionDate() {
+
+    public ItemTransaction transactionDate(Instant transactionDate) {
+        this.transactionDate = transactionDate;
+        return this;
+    }
+
+    public Instant getTransactionDate() {
         return transactionDate;
     }
 
-    public ItemTransaction transactionDate(LocalDate transactionDate) {
-        this.transactionDate = transactionDate;
-        return this;
-    }
-
-    public void setTransactionDate(LocalDate transactionDate) {
+    public void setTransactionDate(Instant transactionDate) {
         this.transactionDate = transactionDate;
     }
 
-    public Set<ItemStock> getItemStocks() {
-        return itemStocks;
+    public ItemStock getItemStock() {
+        return itemStock;
     }
 
-    public ItemTransaction itemStocks(Set<ItemStock> itemStocks) {
-        this.itemStocks = itemStocks;
+    public ItemTransaction itemStock(ItemStock itemStock) {
+        this.itemStock = itemStock;
         return this;
     }
 
-    public ItemTransaction addItemStock(ItemStock itemStock) {
-        this.itemStocks.add(itemStock);
-        itemStock.getItemTransactions().add(this);
-        return this;
-    }
-
-    public ItemTransaction removeItemStock(ItemStock itemStock) {
-        this.itemStocks.remove(itemStock);
-        itemStock.getItemTransactions().remove(this);
-        return this;
-    }
-
-    public void setItemStocks(Set<ItemStock> itemStocks) {
-        this.itemStocks = itemStocks;
+    public void setItemStock(ItemStock itemStock) {
+        this.itemStock = itemStock;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
@@ -155,7 +142,7 @@ public class ItemTransaction implements Serializable {
             "id=" + getId() +
             ", quantity=" + getQuantity() +
             ", remarks='" + getRemarks() + "'" +
-            ", transactionUUID='" + getTransactionUUID() + "'" +
+            ", transactionType='" + getTransactionType() + "'" +
             ", transactionDate='" + getTransactionDate() + "'" +
             "}";
     }

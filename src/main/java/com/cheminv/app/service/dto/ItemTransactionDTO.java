@@ -1,27 +1,29 @@
 package com.cheminv.app.service.dto;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.UUID;
+import com.cheminv.app.domain.enumeration.TransactionType;
 
 /**
  * A DTO for the {@link com.cheminv.app.domain.ItemTransaction} entity.
  */
 public class ItemTransactionDTO implements Serializable {
-    
+
     private Long id;
 
     @NotNull
-    private Integer quantity;
+    private Float quantity;
 
     private String remarks;
 
-    private UUID transactionUUID;
+    private TransactionType transactionType;
 
-    private LocalDate transactionDate;
+    private Instant transactionDate;
 
-    
+    private Long itemStockId;
+
     public Long getId() {
         return id;
     }
@@ -30,11 +32,11 @@ public class ItemTransactionDTO implements Serializable {
         this.id = id;
     }
 
-    public Integer getQuantity() {
+    public Float getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(Float quantity) {
         this.quantity = quantity;
     }
 
@@ -46,20 +48,28 @@ public class ItemTransactionDTO implements Serializable {
         this.remarks = remarks;
     }
 
-    public UUID getTransactionUUID() {
-        return transactionUUID;
+    public TransactionType getTransactionType() {
+        return transactionType;
     }
 
-    public void setTransactionUUID(UUID transactionUUID) {
-        this.transactionUUID = transactionUUID;
+    public void setTransactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
     }
 
-    public LocalDate getTransactionDate() {
+    public Instant getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(LocalDate transactionDate) {
+    public void setTransactionDate(Instant transactionDate) {
         this.transactionDate = transactionDate;
+    }
+
+    public Long getItemStockId() {
+        return itemStockId;
+    }
+
+    public void setItemStockId(Long itemStockId) {
+        this.itemStockId = itemStockId;
     }
 
     @Override
@@ -86,8 +96,9 @@ public class ItemTransactionDTO implements Serializable {
             "id=" + getId() +
             ", quantity=" + getQuantity() +
             ", remarks='" + getRemarks() + "'" +
-            ", transactionUUID='" + getTransactionUUID() + "'" +
+            ", transactionType='" + getTransactionType() + "'" +
             ", transactionDate='" + getTransactionDate() + "'" +
+            ", itemStockId=" + getItemStockId() +
             "}";
     }
 }

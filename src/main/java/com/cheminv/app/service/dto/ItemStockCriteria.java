@@ -66,50 +66,65 @@ public class ItemStockCriteria implements Serializable, Criteria {
 
     private LongFilter id;
 
-    private IntegerFilter totalQuantity;
+    private StringFilter itemName;
 
-    private IntegerFilter minimumQuantity;
+    private StringFilter casNumber;
+
+    private StringFilter stockBookFolio;
+
+    private StringFilter itemManufacturer;
+
+    private FloatFilter itemCapacity;
+
+    private FloatFilter unitPrice;
+
+    private FloatFilter totalQuantity;
+
+    private FloatFilter minimumQuantity;
 
     private ItemStatusFilter itemStatus;
 
     private StockStoreFilter stockStore;
 
-    private LocalDateFilter entryDate;
-
-    private LocalDateFilter expiryDate;
-
     private IntegerFilter creatorId;
 
     private InstantFilter createdOn;
 
-    private StringFilter sdsfile;
+    private LocalDateFilter lastUpdated;
 
     private LongFilter itemTransactionId;
+
+    private LongFilter wasteItemId;
+
+    private LongFilter hazardCodeId;
 
     private LongFilter invStorageId;
 
     private LongFilter storageUnitId;
-
-    private LongFilter itemId;
 
     public ItemStockCriteria() {
     }
 
     public ItemStockCriteria(ItemStockCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
+        this.itemName = other.itemName == null ? null : other.itemName.copy();
+        this.casNumber = other.casNumber == null ? null : other.casNumber.copy();
+        this.stockBookFolio = other.stockBookFolio == null ? null : other.stockBookFolio.copy();
+        this.itemManufacturer = other.itemManufacturer == null ? null : other.itemManufacturer.copy();
+        this.itemCapacity = other.itemCapacity == null ? null : other.itemCapacity.copy();
+        this.unitPrice = other.unitPrice == null ? null : other.unitPrice.copy();
         this.totalQuantity = other.totalQuantity == null ? null : other.totalQuantity.copy();
         this.minimumQuantity = other.minimumQuantity == null ? null : other.minimumQuantity.copy();
         this.itemStatus = other.itemStatus == null ? null : other.itemStatus.copy();
         this.stockStore = other.stockStore == null ? null : other.stockStore.copy();
-        this.entryDate = other.entryDate == null ? null : other.entryDate.copy();
-        this.expiryDate = other.expiryDate == null ? null : other.expiryDate.copy();
         this.creatorId = other.creatorId == null ? null : other.creatorId.copy();
         this.createdOn = other.createdOn == null ? null : other.createdOn.copy();
-        this.sdsfile = other.sdsfile == null ? null : other.sdsfile.copy();
+        this.lastUpdated = other.lastUpdated == null ? null : other.lastUpdated.copy();
         this.itemTransactionId = other.itemTransactionId == null ? null : other.itemTransactionId.copy();
+        this.wasteItemId = other.wasteItemId == null ? null : other.wasteItemId.copy();
+        this.hazardCodeId = other.hazardCodeId == null ? null : other.hazardCodeId.copy();
         this.invStorageId = other.invStorageId == null ? null : other.invStorageId.copy();
         this.storageUnitId = other.storageUnitId == null ? null : other.storageUnitId.copy();
-        this.itemId = other.itemId == null ? null : other.itemId.copy();
     }
 
     @Override
@@ -125,19 +140,67 @@ public class ItemStockCriteria implements Serializable, Criteria {
         this.id = id;
     }
 
-    public IntegerFilter getTotalQuantity() {
+    public StringFilter getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(StringFilter itemName) {
+        this.itemName = itemName;
+    }
+
+    public StringFilter getCasNumber() {
+        return casNumber;
+    }
+
+    public void setCasNumber(StringFilter casNumber) {
+        this.casNumber = casNumber;
+    }
+
+    public StringFilter getStockBookFolio() {
+        return stockBookFolio;
+    }
+
+    public void setStockBookFolio(StringFilter stockBookFolio) {
+        this.stockBookFolio = stockBookFolio;
+    }
+
+    public StringFilter getItemManufacturer() {
+        return itemManufacturer;
+    }
+
+    public void setItemManufacturer(StringFilter itemManufacturer) {
+        this.itemManufacturer = itemManufacturer;
+    }
+
+    public FloatFilter getItemCapacity() {
+        return itemCapacity;
+    }
+
+    public void setItemCapacity(FloatFilter itemCapacity) {
+        this.itemCapacity = itemCapacity;
+    }
+
+    public FloatFilter getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(FloatFilter unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public FloatFilter getTotalQuantity() {
         return totalQuantity;
     }
 
-    public void setTotalQuantity(IntegerFilter totalQuantity) {
+    public void setTotalQuantity(FloatFilter totalQuantity) {
         this.totalQuantity = totalQuantity;
     }
 
-    public IntegerFilter getMinimumQuantity() {
+    public FloatFilter getMinimumQuantity() {
         return minimumQuantity;
     }
 
-    public void setMinimumQuantity(IntegerFilter minimumQuantity) {
+    public void setMinimumQuantity(FloatFilter minimumQuantity) {
         this.minimumQuantity = minimumQuantity;
     }
 
@@ -157,22 +220,6 @@ public class ItemStockCriteria implements Serializable, Criteria {
         this.stockStore = stockStore;
     }
 
-    public LocalDateFilter getEntryDate() {
-        return entryDate;
-    }
-
-    public void setEntryDate(LocalDateFilter entryDate) {
-        this.entryDate = entryDate;
-    }
-
-    public LocalDateFilter getExpiryDate() {
-        return expiryDate;
-    }
-
-    public void setExpiryDate(LocalDateFilter expiryDate) {
-        this.expiryDate = expiryDate;
-    }
-
     public IntegerFilter getCreatorId() {
         return creatorId;
     }
@@ -189,12 +236,12 @@ public class ItemStockCriteria implements Serializable, Criteria {
         this.createdOn = createdOn;
     }
 
-    public StringFilter getSdsfile() {
-        return sdsfile;
+    public LocalDateFilter getLastUpdated() {
+        return lastUpdated;
     }
 
-    public void setSdsfile(StringFilter sdsfile) {
-        this.sdsfile = sdsfile;
+    public void setLastUpdated(LocalDateFilter lastUpdated) {
+        this.lastUpdated = lastUpdated;
     }
 
     public LongFilter getItemTransactionId() {
@@ -203,6 +250,22 @@ public class ItemStockCriteria implements Serializable, Criteria {
 
     public void setItemTransactionId(LongFilter itemTransactionId) {
         this.itemTransactionId = itemTransactionId;
+    }
+
+    public LongFilter getWasteItemId() {
+        return wasteItemId;
+    }
+
+    public void setWasteItemId(LongFilter wasteItemId) {
+        this.wasteItemId = wasteItemId;
+    }
+
+    public LongFilter getHazardCodeId() {
+        return hazardCodeId;
+    }
+
+    public void setHazardCodeId(LongFilter hazardCodeId) {
+        this.hazardCodeId = hazardCodeId;
     }
 
     public LongFilter getInvStorageId() {
@@ -221,14 +284,6 @@ public class ItemStockCriteria implements Serializable, Criteria {
         this.storageUnitId = storageUnitId;
     }
 
-    public LongFilter getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(LongFilter itemId) {
-        this.itemId = itemId;
-    }
-
 
     @Override
     public boolean equals(Object o) {
@@ -241,38 +296,48 @@ public class ItemStockCriteria implements Serializable, Criteria {
         final ItemStockCriteria that = (ItemStockCriteria) o;
         return
             Objects.equals(id, that.id) &&
+            Objects.equals(itemName, that.itemName) &&
+            Objects.equals(casNumber, that.casNumber) &&
+            Objects.equals(stockBookFolio, that.stockBookFolio) &&
+            Objects.equals(itemManufacturer, that.itemManufacturer) &&
+            Objects.equals(itemCapacity, that.itemCapacity) &&
+            Objects.equals(unitPrice, that.unitPrice) &&
             Objects.equals(totalQuantity, that.totalQuantity) &&
             Objects.equals(minimumQuantity, that.minimumQuantity) &&
             Objects.equals(itemStatus, that.itemStatus) &&
             Objects.equals(stockStore, that.stockStore) &&
-            Objects.equals(entryDate, that.entryDate) &&
-            Objects.equals(expiryDate, that.expiryDate) &&
             Objects.equals(creatorId, that.creatorId) &&
             Objects.equals(createdOn, that.createdOn) &&
-            Objects.equals(sdsfile, that.sdsfile) &&
+            Objects.equals(lastUpdated, that.lastUpdated) &&
             Objects.equals(itemTransactionId, that.itemTransactionId) &&
+            Objects.equals(wasteItemId, that.wasteItemId) &&
+            Objects.equals(hazardCodeId, that.hazardCodeId) &&
             Objects.equals(invStorageId, that.invStorageId) &&
-            Objects.equals(storageUnitId, that.storageUnitId) &&
-            Objects.equals(itemId, that.itemId);
+            Objects.equals(storageUnitId, that.storageUnitId);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
         id,
+        itemName,
+        casNumber,
+        stockBookFolio,
+        itemManufacturer,
+        itemCapacity,
+        unitPrice,
         totalQuantity,
         minimumQuantity,
         itemStatus,
         stockStore,
-        entryDate,
-        expiryDate,
         creatorId,
         createdOn,
-        sdsfile,
+        lastUpdated,
         itemTransactionId,
+        wasteItemId,
+        hazardCodeId,
         invStorageId,
-        storageUnitId,
-        itemId
+        storageUnitId
         );
     }
 
@@ -281,19 +346,24 @@ public class ItemStockCriteria implements Serializable, Criteria {
     public String toString() {
         return "ItemStockCriteria{" +
                 (id != null ? "id=" + id + ", " : "") +
+                (itemName != null ? "itemName=" + itemName + ", " : "") +
+                (casNumber != null ? "casNumber=" + casNumber + ", " : "") +
+                (stockBookFolio != null ? "stockBookFolio=" + stockBookFolio + ", " : "") +
+                (itemManufacturer != null ? "itemManufacturer=" + itemManufacturer + ", " : "") +
+                (itemCapacity != null ? "itemCapacity=" + itemCapacity + ", " : "") +
+                (unitPrice != null ? "unitPrice=" + unitPrice + ", " : "") +
                 (totalQuantity != null ? "totalQuantity=" + totalQuantity + ", " : "") +
                 (minimumQuantity != null ? "minimumQuantity=" + minimumQuantity + ", " : "") +
                 (itemStatus != null ? "itemStatus=" + itemStatus + ", " : "") +
                 (stockStore != null ? "stockStore=" + stockStore + ", " : "") +
-                (entryDate != null ? "entryDate=" + entryDate + ", " : "") +
-                (expiryDate != null ? "expiryDate=" + expiryDate + ", " : "") +
                 (creatorId != null ? "creatorId=" + creatorId + ", " : "") +
                 (createdOn != null ? "createdOn=" + createdOn + ", " : "") +
-                (sdsfile != null ? "sdsfile=" + sdsfile + ", " : "") +
+                (lastUpdated != null ? "lastUpdated=" + lastUpdated + ", " : "") +
                 (itemTransactionId != null ? "itemTransactionId=" + itemTransactionId + ", " : "") +
+                (wasteItemId != null ? "wasteItemId=" + wasteItemId + ", " : "") +
+                (hazardCodeId != null ? "hazardCodeId=" + hazardCodeId + ", " : "") +
                 (invStorageId != null ? "invStorageId=" + invStorageId + ", " : "") +
                 (storageUnitId != null ? "storageUnitId=" + storageUnitId + ", " : "") +
-                (itemId != null ? "itemId=" + itemId + ", " : "") +
             "}";
     }
 

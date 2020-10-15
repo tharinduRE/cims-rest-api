@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +13,6 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "cims_item_hazard_code")
-@org.springframework.data.elasticsearch.annotations.Document(indexName = "hazardcode")
 public class HazardCode implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,7 +29,7 @@ public class HazardCode implements Serializable {
 
     @ManyToMany(mappedBy = "hazardCodes")
     @JsonIgnore
-    private Set<Item> items = new HashSet<>();
+    private Set<ItemStock> itemStocks = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -68,29 +66,29 @@ public class HazardCode implements Serializable {
         this.hazardCodeDesc = hazardCodeDesc;
     }
 
-    public Set<Item> getItems() {
-        return items;
+    public Set<ItemStock> getItemStocks() {
+        return itemStocks;
     }
 
-    public HazardCode items(Set<Item> items) {
-        this.items = items;
+    public HazardCode itemStocks(Set<ItemStock> itemStocks) {
+        this.itemStocks = itemStocks;
         return this;
     }
 
-    public HazardCode addItem(Item item) {
-        this.items.add(item);
-        item.getHazardCodes().add(this);
+    public HazardCode addItemStock(ItemStock itemStock) {
+        this.itemStocks.add(itemStock);
+        itemStock.getHazardCodes().add(this);
         return this;
     }
 
-    public HazardCode removeItem(Item item) {
-        this.items.remove(item);
-        item.getHazardCodes().remove(this);
+    public HazardCode removeItemStock(ItemStock itemStock) {
+        this.itemStocks.remove(itemStock);
+        itemStock.getHazardCodes().remove(this);
         return this;
     }
 
-    public void setItems(Set<Item> items) {
-        this.items = items;
+    public void setItemStocks(Set<ItemStock> itemStocks) {
+        this.itemStocks = itemStocks;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

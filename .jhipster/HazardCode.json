@@ -13,21 +13,21 @@
   "relationships": [
     {
       "relationshipType": "many-to-many",
-      "otherEntityName": "item",
+      "otherEntityName": "itemStock",
       "otherEntityRelationshipName": "hazardCode",
-      "relationshipName": "item",
+      "relationshipName": "itemStock",
       "otherEntityField": "id",
       "ownerSide": false
     }
   ],
-  "changelogDate": "20200903133223",
+  "changelogDate": "20201009054954",
   "entityTableName": "cims_item_hazard_code",
   "dto": "mapstruct",
   "pagination": "no",
   "service": "serviceClass",
   "jpaMetamodelFiltering": false,
   "fluentMethods": true,
-  "readOnly": false,
+  "readOnly": true,
   "embedded": false,
   "clientRootFolder": "",
   "applications": "*"

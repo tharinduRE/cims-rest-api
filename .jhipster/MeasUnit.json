@@ -18,7 +18,7 @@
       "relationshipName": "itemStock"
     }
   ],
-  "changelogDate": "20200903133123",
+  "changelogDate": "20201009054854",
   "entityTableName": "cims_meas_units",
   "dto": "mapstruct",
   "pagination": "no",

@@ -7,10 +7,16 @@ import com.cheminv.app.service.dto.ItemStockCriteria;
 import com.cheminv.app.service.ItemStockQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,9 +25,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing {@link com.cheminv.app.domain.ItemStock}.
@@ -89,14 +92,16 @@ public class ItemStockResource {
     /**
      * {@code GET  /item-stocks} : get all the itemStocks.
      *
+     * @param pageable the pagination information.
      * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of itemStocks in body.
      */
     @GetMapping("/item-stocks")
-    public ResponseEntity<List<ItemStockDTO>> getAllItemStocks(ItemStockCriteria criteria) {
+    public ResponseEntity<List<ItemStockDTO>> getAllItemStocks(ItemStockCriteria criteria, Pageable pageable) {
         log.debug("REST request to get ItemStocks by criteria: {}", criteria);
-        List<ItemStockDTO> entityList = itemStockQueryService.findByCriteria(criteria);
-        return ResponseEntity.ok().body(entityList);
+        Page<ItemStockDTO> page = itemStockQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -135,18 +140,5 @@ public class ItemStockResource {
         log.debug("REST request to delete ItemStock : {}", id);
         itemStockService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/item-stocks?query=:query} : search for the itemStock corresponding
-     * to the query.
-     *
-     * @param query the query of the itemStock search.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/item-stocks")
-    public List<ItemStockDTO> searchItemStocks(@RequestParam String query) {
-        log.debug("REST request to search ItemStocks for query {}", query);
-        return itemStockService.search(query);
     }
 }

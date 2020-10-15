@@ -16,9 +16,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing {@link com.cheminv.app.domain.InvDepartment}.
@@ -116,18 +113,5 @@ public class InvDepartmentResource {
         log.debug("REST request to delete InvDepartment : {}", id);
         invDepartmentService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/inv-departments?query=:query} : search for the invDepartment corresponding
-     * to the query.
-     *
-     * @param query the query of the invDepartment search.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/inv-departments")
-    public List<InvDepartmentDTO> searchInvDepartments(@RequestParam String query) {
-        log.debug("REST request to search InvDepartments for query {}", query);
-        return invDepartmentService.search(query);
     }
 }

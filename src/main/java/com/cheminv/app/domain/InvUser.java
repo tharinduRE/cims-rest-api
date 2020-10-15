@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,7 +13,6 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "cims_user")
-@org.springframework.data.elasticsearch.annotations.Document(indexName = "invuser")
 public class InvUser implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -22,6 +20,12 @@ public class InvUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
 
     @Column(name = "post_title")
     private String postTitle;
@@ -37,6 +41,32 @@ public class InvUser implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public InvUser firstName(String firstName) {
+        this.firstName = firstName;
+        return this;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public InvUser lastName(String lastName) {
+        this.lastName = lastName;
+        return this;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getPostTitle() {
@@ -99,6 +129,8 @@ public class InvUser implements Serializable {
     public String toString() {
         return "InvUser{" +
             "id=" + getId() +
+            ", firstName='" + getFirstName() + "'" +
+            ", lastName='" + getLastName() + "'" +
             ", postTitle='" + getPostTitle() + "'" +
             "}";
     }

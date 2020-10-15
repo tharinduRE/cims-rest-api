@@ -13,8 +13,8 @@ import org.mapstruct.*;
 public interface HazardCodeMapper extends EntityMapper<HazardCodeDTO, HazardCode> {
 
 
-    @Mapping(target = "items", ignore = true)
-    @Mapping(target = "removeItem", ignore = true)
+    @Mapping(target = "itemStocks", ignore = true)
+    @Mapping(target = "removeItemStock", ignore = true)
     HazardCode toEntity(HazardCodeDTO hazardCodeDTO);
 
     default HazardCode fromId(Long id) {

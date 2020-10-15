@@ -3,7 +3,7 @@
   "fields": [
     {
       "fieldName": "quantity",
-      "fieldType": "Integer",
+      "fieldType": "Float",
       "fieldValidateRules": ["required"]
     },
     {
@@ -11,8 +11,9 @@
       "fieldType": "String"
     },
     {
-      "fieldName": "transactionUUID",
-      "fieldType": "UUID"
+      "fieldName": "transactionType",
+      "fieldType": "TransactionType",
+      "fieldValues": "ISSUE,ORDER,WASTE"
     },
     {
       "fieldName": "transactionDate",
@@ -21,20 +22,20 @@
   ],
   "relationships": [
     {
-      "relationshipType": "many-to-many",
+      "relationshipType": "many-to-one",
       "otherEntityName": "itemStock",
       "otherEntityRelationshipName": "itemTransaction",
+      "relationshipValidateRules": "required",
       "relationshipName": "itemStock",
-      "otherEntityField": "id",
-      "ownerSide": false
+      "otherEntityField": "id"
     }
   ],
-  "changelogDate": "20200903133423",
+  "changelogDate": "20201009055054",
   "entityTableName": "cims_item_transaction",
   "dto": "mapstruct",
-  "pagination": "no",
+  "pagination": "pagination",
   "service": "serviceClass",
-  "jpaMetamodelFiltering": false,
+  "jpaMetamodelFiltering": true,
   "fluentMethods": true,
   "readOnly": false,
   "embedded": false,

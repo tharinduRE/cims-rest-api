@@ -16,9 +16,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing {@link com.cheminv.app.domain.MeasUnit}.
@@ -115,18 +112,5 @@ public class MeasUnitResource {
         log.debug("REST request to delete MeasUnit : {}", id);
         measUnitService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
-    }
-
-    /**
-     * {@code SEARCH  /_search/meas-units?query=:query} : search for the measUnit corresponding
-     * to the query.
-     *
-     * @param query the query of the measUnit search.
-     * @return the result of the search.
-     */
-    @GetMapping("/_search/meas-units")
-    public List<MeasUnitDTO> searchMeasUnits(@RequestParam String query) {
-        log.debug("REST request to search MeasUnits for query {}", query);
-        return measUnitService.search(query);
     }
 }

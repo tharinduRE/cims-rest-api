@@ -16,7 +16,6 @@
     "databaseType": "sql",
     "devDatabaseType": "mysql",
     "prodDatabaseType": "mysql",
-    "searchEngine": "elasticsearch",
     "messageBroker": false,
     "serviceDiscoveryType": false,
     "buildTool": "maven",
@@ -33,6 +32,7 @@
     "clientPackageManager": "npm",
     "blueprints": [],
     "skipClient": true,
-    "skipUserManagement": true
+    "skipUserManagement": true,
+    "searchEngine": false
   }
 }

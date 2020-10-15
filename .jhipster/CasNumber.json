@@ -1,0 +1,25 @@
+{
+  "name": "CasNumber",
+  "fields": [
+    {
+      "fieldName": "casNumber",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "itemName",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [],
+  "changelogDate": "20201009054554",
+  "entityTableName": "cims_cas_number",
+  "dto": "no",
+  "pagination": "no",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": true,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

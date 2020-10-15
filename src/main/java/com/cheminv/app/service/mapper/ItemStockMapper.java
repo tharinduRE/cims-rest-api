@@ -9,18 +9,20 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link ItemStock} and its DTO {@link ItemStockDTO}.
  */
-@Mapper(componentModel = "spring", uses = {ItemTransactionMapper.class, InvStorageMapper.class, MeasUnitMapper.class, ItemMapper.class})
+@Mapper(componentModel = "spring", uses = {HazardCodeMapper.class, InvStorageMapper.class, MeasUnitMapper.class})
 public interface ItemStockMapper extends EntityMapper<ItemStockDTO, ItemStock> {
 
     @Mapping(source = "invStorage.id", target = "invStorageId")
     @Mapping(source = "storageUnit.id", target = "storageUnitId")
-    //@Mapping(source = "item.id", target = "itemId")
     ItemStockDTO toDto(ItemStock itemStock);
 
+    @Mapping(target = "itemTransactions", ignore = true)
     @Mapping(target = "removeItemTransaction", ignore = true)
+    @Mapping(target = "wasteItems", ignore = true)
+    @Mapping(target = "removeWasteItem", ignore = true)
+    @Mapping(target = "removeHazardCode", ignore = true)
     @Mapping(source = "invStorageId", target = "invStorage")
     @Mapping(source = "storageUnitId", target = "storageUnit")
-    @Mapping(source = "item", target = "item")
     ItemStock toEntity(ItemStockDTO itemStockDTO);
 
     default ItemStock fromId(Long id) {

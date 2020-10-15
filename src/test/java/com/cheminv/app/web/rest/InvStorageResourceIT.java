@@ -3,16 +3,12 @@ package com.cheminv.app.web.rest;
 import com.cheminv.app.CimsApp;
 import com.cheminv.app.domain.InvStorage;
 import com.cheminv.app.repository.InvStorageRepository;
-import com.cheminv.app.repository.search.InvStorageSearchRepository;
 import com.cheminv.app.service.InvStorageService;
 import com.cheminv.app.service.dto.InvStorageDTO;
 import com.cheminv.app.service.mapper.InvStorageMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,13 +17,10 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -36,7 +29,6 @@ import com.cheminv.app.domain.enumeration.StorageLocation;
  * Integration tests for the {@link InvStorageResource} REST controller.
  */
 @SpringBootTest(classes = CimsApp.class)
-@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 public class InvStorageResourceIT {
@@ -46,9 +38,6 @@ public class InvStorageResourceIT {
 
     private static final String DEFAULT_STORAGE_NAME = "AAAAAAAAAA";
     private static final String UPDATED_STORAGE_NAME = "BBBBBBBBBB";
-
-    private static final String DEFAULT_STORAGE_DESC = "AAAAAAAAAA";
-    private static final String UPDATED_STORAGE_DESC = "BBBBBBBBBB";
 
     private static final StorageLocation DEFAULT_STORAGE_LOCATION = StorageLocation.GLI;
     private static final StorageLocation UPDATED_STORAGE_LOCATION = StorageLocation.GLII;
@@ -61,14 +50,6 @@ public class InvStorageResourceIT {
 
     @Autowired
     private InvStorageService invStorageService;
-
-    /**
-     * This repository is mocked in the com.cheminv.app.repository.search test package.
-     *
-     * @see com.cheminv.app.repository.search.InvStorageSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private InvStorageSearchRepository mockInvStorageSearchRepository;
 
     @Autowired
     private EntityManager em;
@@ -88,7 +69,6 @@ public class InvStorageResourceIT {
         InvStorage invStorage = new InvStorage()
             .storageCode(DEFAULT_STORAGE_CODE)
             .storageName(DEFAULT_STORAGE_NAME)
-            .storageDesc(DEFAULT_STORAGE_DESC)
             .storageLocation(DEFAULT_STORAGE_LOCATION);
         return invStorage;
     }
@@ -102,7 +82,6 @@ public class InvStorageResourceIT {
         InvStorage invStorage = new InvStorage()
             .storageCode(UPDATED_STORAGE_CODE)
             .storageName(UPDATED_STORAGE_NAME)
-            .storageDesc(UPDATED_STORAGE_DESC)
             .storageLocation(UPDATED_STORAGE_LOCATION);
         return invStorage;
     }
@@ -129,11 +108,7 @@ public class InvStorageResourceIT {
         InvStorage testInvStorage = invStorageList.get(invStorageList.size() - 1);
         assertThat(testInvStorage.getStorageCode()).isEqualTo(DEFAULT_STORAGE_CODE);
         assertThat(testInvStorage.getStorageName()).isEqualTo(DEFAULT_STORAGE_NAME);
-        assertThat(testInvStorage.getStorageDesc()).isEqualTo(DEFAULT_STORAGE_DESC);
         assertThat(testInvStorage.getStorageLocation()).isEqualTo(DEFAULT_STORAGE_LOCATION);
-
-        // Validate the InvStorage in Elasticsearch
-        verify(mockInvStorageSearchRepository, times(1)).save(testInvStorage);
     }
 
     @Test
@@ -154,9 +129,6 @@ public class InvStorageResourceIT {
         // Validate the InvStorage in the database
         List<InvStorage> invStorageList = invStorageRepository.findAll();
         assertThat(invStorageList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the InvStorage in Elasticsearch
-        verify(mockInvStorageSearchRepository, times(0)).save(invStorage);
     }
 
 
@@ -173,7 +145,6 @@ public class InvStorageResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(invStorage.getId().intValue())))
             .andExpect(jsonPath("$.[*].storageCode").value(hasItem(DEFAULT_STORAGE_CODE)))
             .andExpect(jsonPath("$.[*].storageName").value(hasItem(DEFAULT_STORAGE_NAME)))
-            .andExpect(jsonPath("$.[*].storageDesc").value(hasItem(DEFAULT_STORAGE_DESC)))
             .andExpect(jsonPath("$.[*].storageLocation").value(hasItem(DEFAULT_STORAGE_LOCATION.toString())));
     }
     
@@ -190,7 +161,6 @@ public class InvStorageResourceIT {
             .andExpect(jsonPath("$.id").value(invStorage.getId().intValue()))
             .andExpect(jsonPath("$.storageCode").value(DEFAULT_STORAGE_CODE))
             .andExpect(jsonPath("$.storageName").value(DEFAULT_STORAGE_NAME))
-            .andExpect(jsonPath("$.storageDesc").value(DEFAULT_STORAGE_DESC))
             .andExpect(jsonPath("$.storageLocation").value(DEFAULT_STORAGE_LOCATION.toString()));
     }
     @Test
@@ -216,7 +186,6 @@ public class InvStorageResourceIT {
         updatedInvStorage
             .storageCode(UPDATED_STORAGE_CODE)
             .storageName(UPDATED_STORAGE_NAME)
-            .storageDesc(UPDATED_STORAGE_DESC)
             .storageLocation(UPDATED_STORAGE_LOCATION);
         InvStorageDTO invStorageDTO = invStorageMapper.toDto(updatedInvStorage);
 
@@ -231,11 +200,7 @@ public class InvStorageResourceIT {
         InvStorage testInvStorage = invStorageList.get(invStorageList.size() - 1);
         assertThat(testInvStorage.getStorageCode()).isEqualTo(UPDATED_STORAGE_CODE);
         assertThat(testInvStorage.getStorageName()).isEqualTo(UPDATED_STORAGE_NAME);
-        assertThat(testInvStorage.getStorageDesc()).isEqualTo(UPDATED_STORAGE_DESC);
         assertThat(testInvStorage.getStorageLocation()).isEqualTo(UPDATED_STORAGE_LOCATION);
-
-        // Validate the InvStorage in Elasticsearch
-        verify(mockInvStorageSearchRepository, times(1)).save(testInvStorage);
     }
 
     @Test
@@ -255,9 +220,6 @@ public class InvStorageResourceIT {
         // Validate the InvStorage in the database
         List<InvStorage> invStorageList = invStorageRepository.findAll();
         assertThat(invStorageList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the InvStorage in Elasticsearch
-        verify(mockInvStorageSearchRepository, times(0)).save(invStorage);
     }
 
     @Test
@@ -276,28 +238,5 @@ public class InvStorageResourceIT {
         // Validate the database contains one less item
         List<InvStorage> invStorageList = invStorageRepository.findAll();
         assertThat(invStorageList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the InvStorage in Elasticsearch
-        verify(mockInvStorageSearchRepository, times(1)).deleteById(invStorage.getId());
-    }
-
-    @Test
-    @Transactional
-    public void searchInvStorage() throws Exception {
-        // Configure the mock search repository
-        // Initialize the database
-        invStorageRepository.saveAndFlush(invStorage);
-        when(mockInvStorageSearchRepository.search(queryStringQuery("id:" + invStorage.getId())))
-            .thenReturn(Collections.singletonList(invStorage));
-
-        // Search the invStorage
-        restInvStorageMockMvc.perform(get("/api/_search/inv-storages?query=id:" + invStorage.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(invStorage.getId().intValue())))
-            .andExpect(jsonPath("$.[*].storageCode").value(hasItem(DEFAULT_STORAGE_CODE)))
-            .andExpect(jsonPath("$.[*].storageName").value(hasItem(DEFAULT_STORAGE_NAME)))
-            .andExpect(jsonPath("$.[*].storageDesc").value(hasItem(DEFAULT_STORAGE_DESC)))
-            .andExpect(jsonPath("$.[*].storageLocation").value(hasItem(DEFAULT_STORAGE_LOCATION.toString())));
     }
 }

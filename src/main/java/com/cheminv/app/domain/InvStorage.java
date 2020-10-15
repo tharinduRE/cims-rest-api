@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +15,6 @@ import com.cheminv.app.domain.enumeration.StorageLocation;
  */
 @Entity
 @Table(name = "cims_inv_storage")
-@org.springframework.data.elasticsearch.annotations.Document(indexName = "invstorage")
 public class InvStorage implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -30,9 +28,6 @@ public class InvStorage implements Serializable {
 
     @Column(name = "storage_name")
     private String storageName;
-
-    @Column(name = "storage_desc")
-    private String storageDesc;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "storage_location")
@@ -78,19 +73,6 @@ public class InvStorage implements Serializable {
 
     public void setStorageName(String storageName) {
         this.storageName = storageName;
-    }
-
-    public String getStorageDesc() {
-        return storageDesc;
-    }
-
-    public InvStorage storageDesc(String storageDesc) {
-        this.storageDesc = storageDesc;
-        return this;
-    }
-
-    public void setStorageDesc(String storageDesc) {
-        this.storageDesc = storageDesc;
     }
 
     public StorageLocation getStorageLocation() {
@@ -168,7 +150,6 @@ public class InvStorage implements Serializable {
             "id=" + getId() +
             ", storageCode='" + getStorageCode() + "'" +
             ", storageName='" + getStorageName() + "'" +
-            ", storageDesc='" + getStorageDesc() + "'" +
             ", storageLocation='" + getStorageLocation() + "'" +
             "}";
     }
