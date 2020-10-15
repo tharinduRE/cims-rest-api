@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.time.Instant;
 
 import com.cheminv.app.domain.enumeration.TransactionType;
+import org.hibernate.annotations.CreationTimestamp;
 
 /**
  * A ItemTransaction.
@@ -35,6 +36,7 @@ public class ItemTransaction implements Serializable {
     private TransactionType transactionType;
 
     @Column(name = "transaction_date")
+    @CreationTimestamp
     private Instant transactionDate;
 
     @ManyToOne(optional = false)

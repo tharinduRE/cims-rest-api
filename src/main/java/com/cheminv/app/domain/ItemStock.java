@@ -13,6 +13,8 @@ import java.util.Set;
 import com.cheminv.app.domain.enumeration.ItemStatus;
 
 import com.cheminv.app.domain.enumeration.StockStore;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  * A ItemStock.
@@ -64,9 +66,11 @@ public class ItemStock implements Serializable {
     private Integer creatorId;
 
     @Column(name = "created_on")
+    @CreationTimestamp
     private Instant createdOn;
 
     @Column(name = "last_updated")
+    @UpdateTimestamp
     private Instant lastUpdated;
 
     @Lob

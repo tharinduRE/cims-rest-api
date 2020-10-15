@@ -1,6 +1,8 @@
 package com.cheminv.app.domain;
 
 
+import org.hibernate.annotations.UpdateTimestamp;
+
 import javax.persistence.*;
 
 import java.io.Serializable;
@@ -25,6 +27,7 @@ public class WasteVendor implements Serializable {
     private String vendorName;
 
     @Column(name = "last_issued_on")
+    @UpdateTimestamp
     private Instant lastIssuedOn;
 
     @ManyToMany
