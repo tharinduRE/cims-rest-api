@@ -14,7 +14,7 @@ public interface ItemStockMapper extends EntityMapper<ItemStockDTO, ItemStock> {
 
     @Mapping(source = "invStorage.id", target = "invStorageId")
     @Mapping(source = "storageUnit.id", target = "storageUnitId")
-    @Mapping(source = "storageUnit.name", target = "storageUnit")
+    @Mapping(source = "storageUnit.measUnit", target = "storageUnit")
     ItemStockDTO toDto(ItemStock itemStock);
 
     @Mapping(target = "itemTransactions", ignore = true)
