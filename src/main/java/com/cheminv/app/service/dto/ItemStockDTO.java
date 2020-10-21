@@ -13,7 +13,7 @@ import com.cheminv.app.domain.enumeration.StockStore;
  * A DTO for the {@link com.cheminv.app.domain.ItemStock} entity.
  */
 public class ItemStockDTO implements Serializable {
-    
+
     private Long id;
 
     @NotNull
@@ -52,7 +52,9 @@ public class ItemStockDTO implements Serializable {
     private Long invStorageId;
 
     private Long storageUnitId;
-    
+
+    private String storageUnit;
+
     public Long getId() {
         return id;
     }
@@ -203,6 +205,14 @@ public class ItemStockDTO implements Serializable {
 
     public void setStorageUnitId(Long measUnitId) {
         this.storageUnitId = measUnitId;
+    }
+
+    public String getStorageUnit() {
+        return storageUnit;
+    }
+
+    public void setStorageUnit(String storageUnit) {
+        this.storageUnit = storageUnit;
     }
 
     @Override

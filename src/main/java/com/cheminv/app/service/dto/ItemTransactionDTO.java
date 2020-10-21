@@ -9,7 +9,7 @@ import com.cheminv.app.domain.enumeration.TransactionType;
  * A DTO for the {@link com.cheminv.app.domain.ItemTransaction} entity.
  */
 public class ItemTransactionDTO implements Serializable {
-    
+
     private Long id;
 
     @NotNull
@@ -21,11 +21,12 @@ public class ItemTransactionDTO implements Serializable {
 
     private Instant transactionDate;
 
+    private String issuerName;
 
     private Long itemStockId;
 
     private Long createdById;
-    
+
     public Long getId() {
         return id;
     }
@@ -80,6 +81,14 @@ public class ItemTransactionDTO implements Serializable {
 
     public void setCreatedById(Long invUserId) {
         this.createdById = invUserId;
+    }
+
+    public String getIssuerName() {
+        return issuerName;
+    }
+
+    public void setIssuerName(String issuerName) {
+        this.issuerName = issuerName;
     }
 
     @Override

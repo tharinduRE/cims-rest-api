@@ -14,6 +14,7 @@ public interface ItemTransactionMapper extends EntityMapper<ItemTransactionDTO, 
 
     @Mapping(source = "itemStock.id", target = "itemStockId")
     @Mapping(source = "createdBy.id", target = "createdById")
+    @Mapping(source = "createdBy.firstName", target = "issuerName")
     ItemTransactionDTO toDto(ItemTransaction itemTransaction);
 
     @Mapping(source = "itemStockId", target = "itemStock")
