@@ -55,14 +55,16 @@ public class JasperReportService {
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,params,dataSource);
 
         String filename = "inventory-report-" + DateTimeFormatter.ofPattern("dd-MM-yyyy-hh-mma").format(LocalDateTime.now()) + ".pdf";
+
         InvReport invReport = new InvReport();
         invReport.setInvUser(invUserRepository.getOne(id));
         invReport.setName(filename);
+        invReport.setReport(JasperExportManager.exportReportToPdf(jasperPrint));
+        invReport.setReportContentType("application/pdf");
         invReport.setCreatedOn(Instant.now());
         invReportRepository.save(invReport);
 
-        //String fileName = "inv_report" + ".pdf";
-        //JasperExportManager.exportReportToPdfFile(jasperPrint,fileName);
+
         log.debug("Report export successfully");
         return jasperPrint;
     }
