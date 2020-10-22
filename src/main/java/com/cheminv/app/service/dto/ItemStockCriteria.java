@@ -101,6 +101,8 @@ public class ItemStockCriteria implements Serializable, Criteria {
 
     private LongFilter storageUnitId;
 
+    private LongFilter itemOrdersId;
+
     public ItemStockCriteria() {
     }
 
@@ -124,6 +126,7 @@ public class ItemStockCriteria implements Serializable, Criteria {
         this.hazardCodeId = other.hazardCodeId == null ? null : other.hazardCodeId.copy();
         this.invStorageId = other.invStorageId == null ? null : other.invStorageId.copy();
         this.storageUnitId = other.storageUnitId == null ? null : other.storageUnitId.copy();
+        this.itemOrdersId = other.itemOrdersId == null ? null : other.itemOrdersId.copy();
     }
 
     @Override
@@ -283,6 +286,14 @@ public class ItemStockCriteria implements Serializable, Criteria {
         this.storageUnitId = storageUnitId;
     }
 
+    public LongFilter getItemOrdersId() {
+        return itemOrdersId;
+    }
+
+    public void setItemOrdersId(LongFilter itemOrdersId) {
+        this.itemOrdersId = itemOrdersId;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -312,7 +323,8 @@ public class ItemStockCriteria implements Serializable, Criteria {
             Objects.equals(wasteItemId, that.wasteItemId) &&
             Objects.equals(hazardCodeId, that.hazardCodeId) &&
             Objects.equals(invStorageId, that.invStorageId) &&
-            Objects.equals(storageUnitId, that.storageUnitId);
+            Objects.equals(storageUnitId, that.storageUnitId) &&
+            Objects.equals(itemOrdersId, that.itemOrdersId);
     }
 
     @Override
@@ -336,7 +348,8 @@ public class ItemStockCriteria implements Serializable, Criteria {
         wasteItemId,
         hazardCodeId,
         invStorageId,
-        storageUnitId
+        storageUnitId,
+        itemOrdersId
         );
     }
 
@@ -363,6 +376,7 @@ public class ItemStockCriteria implements Serializable, Criteria {
                 (hazardCodeId != null ? "hazardCodeId=" + hazardCodeId + ", " : "") +
                 (invStorageId != null ? "invStorageId=" + invStorageId + ", " : "") +
                 (storageUnitId != null ? "storageUnitId=" + storageUnitId + ", " : "") +
+                (itemOrdersId != null ? "itemOrdersId=" + itemOrdersId + ", " : "") +
             "}";
     }
 

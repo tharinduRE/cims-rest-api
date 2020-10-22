@@ -13,8 +13,6 @@ import java.util.Set;
 import com.cheminv.app.domain.enumeration.ItemStatus;
 
 import com.cheminv.app.domain.enumeration.StockStore;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  * A ItemStock.
@@ -101,6 +99,9 @@ public class ItemStock implements Serializable {
     @NotNull
     @JsonIgnoreProperties(value = "itemStocks", allowSetters = true)
     private MeasUnit storageUnit;
+
+    @OneToMany(mappedBy = "itemStock")
+    private Set<Order> itemOrders = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -405,6 +406,31 @@ public class ItemStock implements Serializable {
 
     public void setStorageUnit(MeasUnit measUnit) {
         this.storageUnit = measUnit;
+    }
+
+    public Set<Order> getItemOrders() {
+        return itemOrders;
+    }
+
+    public ItemStock itemOrders(Set<Order> orders) {
+        this.itemOrders = orders;
+        return this;
+    }
+
+    public ItemStock addItemOrders(Order order) {
+        this.itemOrders.add(order);
+        order.setItemStock(this);
+        return this;
+    }
+
+    public ItemStock removeItemOrders(Order order) {
+        this.itemOrders.remove(order);
+        order.setItemStock(null);
+        return this;
+    }
+
+    public void setItemOrders(Set<Order> orders) {
+        this.itemOrders = orders;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

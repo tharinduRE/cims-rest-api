@@ -98,6 +98,12 @@
       "relationshipValidateRules": "required",
       "relationshipName": "storageUnit",
       "otherEntityField": "id"
+    },
+    {
+      "relationshipName": "itemOrders",
+      "otherEntityName": "order",
+      "relationshipType": "one-to-many",
+      "otherEntityRelationshipName": "itemStock"
     }
   ],
   "changelogDate": "20201009054454",
@@ -110,5 +116,7 @@
   "readOnly": false,
   "embedded": false,
   "clientRootFolder": "",
-  "applications": "*"
+  "applications": "*",
+  "searchEngine": false,
+  "databaseType": "sql"
 }

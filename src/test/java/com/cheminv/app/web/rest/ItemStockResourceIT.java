@@ -7,6 +7,7 @@ import com.cheminv.app.domain.WasteItem;
 import com.cheminv.app.domain.HazardCode;
 import com.cheminv.app.domain.InvStorage;
 import com.cheminv.app.domain.MeasUnit;
+import com.cheminv.app.domain.Order;
 import com.cheminv.app.repository.ItemStockRepository;
 import com.cheminv.app.service.ItemStockService;
 import com.cheminv.app.service.dto.ItemStockDTO;
@@ -1526,6 +1527,26 @@ public class ItemStockResourceIT {
 
         // Get all the itemStockList where storageUnit equals to storageUnitId + 1
         defaultItemStockShouldNotBeFound("storageUnitId.equals=" + (storageUnitId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByItemOrdersIsEqualToSomething() throws Exception {
+        // Initialize the database
+        itemStockRepository.saveAndFlush(itemStock);
+        Order itemOrders = OrderResourceIT.createEntity(em);
+        em.persist(itemOrders);
+        em.flush();
+        itemStock.addItemOrders(itemOrders);
+        itemStockRepository.saveAndFlush(itemStock);
+        Long itemOrdersId = itemOrders.getId();
+
+        // Get all the itemStockList where itemOrders equals to itemOrdersId
+        defaultItemStockShouldBeFound("itemOrdersId.equals=" + itemOrdersId);
+
+        // Get all the itemStockList where itemOrders equals to itemOrdersId + 1
+        defaultItemStockShouldNotBeFound("itemOrdersId.equals=" + (itemOrdersId + 1));
     }
 
     /**

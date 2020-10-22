@@ -34,6 +34,6 @@
     "skipClient": true,
     "skipUserManagement": true,
     "searchEngine": false,
-    "lastLiquibaseTimestamp": 1603361080000
+    "lastLiquibaseTimestamp": 1603386424000
   }
 }

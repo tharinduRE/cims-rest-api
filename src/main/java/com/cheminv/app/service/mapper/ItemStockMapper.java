@@ -24,6 +24,8 @@ public interface ItemStockMapper extends EntityMapper<ItemStockDTO, ItemStock> {
     @Mapping(target = "removeHazardCode", ignore = true)
     @Mapping(source = "invStorageId", target = "invStorage")
     @Mapping(source = "storageUnitId", target = "storageUnit")
+    @Mapping(target = "itemOrders", ignore = true)
+    @Mapping(target = "removeItemOrders", ignore = true)
     ItemStock toEntity(ItemStockDTO itemStockDTO);
 
     default ItemStock fromId(Long id) {

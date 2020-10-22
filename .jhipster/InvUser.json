@@ -67,6 +67,12 @@
       "otherEntityField": "id",
       "ownerSide": true,
       "otherEntityRelationshipName": "invUser"
+    },
+    {
+      "relationshipName": "itemOrders",
+      "otherEntityName": "order",
+      "relationshipType": "one-to-many",
+      "otherEntityRelationshipName": "invUser"
     }
   ],
   "changelogDate": "20201009054054",

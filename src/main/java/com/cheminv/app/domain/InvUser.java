@@ -67,6 +67,9 @@ public class InvUser implements Serializable {
                inverseJoinColumns = @JoinColumn(name = "inv_store_id", referencedColumnName = "id"))
     private Set<InvStore> invStores = new HashSet<>();
 
+    @OneToMany(mappedBy = "requestedBy")
+    private Set<Order> itemOrders = new HashSet<>();
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -290,6 +293,31 @@ public class InvUser implements Serializable {
 
     public void setInvStores(Set<InvStore> invStores) {
         this.invStores = invStores;
+    }
+
+    public Set<Order> getItemOrders() {
+        return itemOrders;
+    }
+
+    public InvUser itemOrders(Set<Order> orders) {
+        this.itemOrders = orders;
+        return this;
+    }
+
+    public InvUser addItemOrders(Order order) {
+        this.itemOrders.add(order);
+        order.setRequestedBy(this);
+        return this;
+    }
+
+    public InvUser removeItemOrders(Order order) {
+        this.itemOrders.remove(order);
+        order.setRequestedBy(null);
+        return this;
+    }
+
+    public void setItemOrders(Set<Order> orders) {
+        this.itemOrders = orders;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

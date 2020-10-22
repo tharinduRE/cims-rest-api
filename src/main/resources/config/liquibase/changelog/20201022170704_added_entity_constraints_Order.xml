@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <!--
+        Added the constraints for entity Order.
+    -->
+    <changeSet id="20201022170704-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="item_stock_id"
+                                 baseTableName="cims_orders"
+                                 constraintName="fk_cims_orders_item_stock_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cims_item_stock"/>
+
+        <addForeignKeyConstraint baseColumnNames="requested_by_id"
+                                 baseTableName="cims_orders"
+                                 constraintName="fk_cims_orders_requested_by_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cims_user"/>
+
+    </changeSet>
+</databaseChangeLog>

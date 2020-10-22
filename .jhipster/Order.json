@@ -1,0 +1,51 @@
+{
+  "fluentMethods": true,
+  "clientRootFolder": "",
+  "relationships": [
+    {
+      "relationshipName": "itemStock",
+      "otherEntityName": "itemStock",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": ["required"],
+      "otherEntityField": "id",
+      "otherEntityRelationshipName": "order"
+    },
+    {
+      "relationshipName": "requestedBy",
+      "otherEntityName": "invUser",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": ["required"],
+      "otherEntityField": "id",
+      "otherEntityRelationshipName": "order"
+    }
+  ],
+  "fields": [
+    {
+      "fieldName": "orderStatus",
+      "fieldType": "OrderStatus",
+      "fieldValues": "COMPLETED,CANCELLED,PENDING"
+    },
+    {
+      "fieldName": "requestDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "orderDate",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "quantity",
+      "fieldType": "Float",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "changelogDate": "20201022170704",
+  "dto": "mapstruct",
+  "searchEngine": false,
+  "service": "serviceClass",
+  "entityTableName": "cims_orders",
+  "databaseType": "sql",
+  "readOnly": false,
+  "jpaMetamodelFiltering": false,
+  "pagination": "pagination"
+}
