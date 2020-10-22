@@ -3,8 +3,10 @@ package com.cheminv.app.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,6 +32,18 @@ public class InvUser implements Serializable {
     @Column(name = "post_title")
     private String postTitle;
 
+    @Column(name = "created_on")
+    private Instant createdOn;
+
+    @Column(name = "last_updated")
+    private Instant lastUpdated;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "password")
+    private String password;
+
     @OneToMany(mappedBy = "createdBy")
     private Set<ItemTransaction> itemTransactions = new HashSet<>();
 
@@ -39,6 +53,19 @@ public class InvUser implements Serializable {
 
     @OneToMany(mappedBy = "invUser")
     private Set<InvReport> invReports = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "cims_user_authority",
+               joinColumns = @JoinColumn(name = "inv_user_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
+    private Set<Authority> authorities = new HashSet<>();
+
+    @ManyToMany
+    @NotNull
+    @JoinTable(name = "cims_user_inv_store",
+               joinColumns = @JoinColumn(name = "inv_user_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "inv_store_id", referencedColumnName = "id"))
+    private Set<InvStore> invStores = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -86,6 +113,58 @@ public class InvUser implements Serializable {
 
     public void setPostTitle(String postTitle) {
         this.postTitle = postTitle;
+    }
+
+    public Instant getCreatedOn() {
+        return createdOn;
+    }
+
+    public InvUser createdOn(Instant createdOn) {
+        this.createdOn = createdOn;
+        return this;
+    }
+
+    public void setCreatedOn(Instant createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public Instant getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public InvUser lastUpdated(Instant lastUpdated) {
+        this.lastUpdated = lastUpdated;
+        return this;
+    }
+
+    public void setLastUpdated(Instant lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public InvUser email(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public InvUser password(String password) {
+        this.password = password;
+        return this;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public Set<ItemTransaction> getItemTransactions() {
@@ -162,6 +241,56 @@ public class InvUser implements Serializable {
     public void setInvReports(Set<InvReport> invReports) {
         this.invReports = invReports;
     }
+
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public InvUser authorities(Set<Authority> authorities) {
+        this.authorities = authorities;
+        return this;
+    }
+
+    public InvUser addAuthority(Authority authority) {
+        this.authorities.add(authority);
+        authority.getInvUsers().add(this);
+        return this;
+    }
+
+    public InvUser removeAuthority(Authority authority) {
+        this.authorities.remove(authority);
+        authority.getInvUsers().remove(this);
+        return this;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
+    }
+
+    public Set<InvStore> getInvStores() {
+        return invStores;
+    }
+
+    public InvUser invStores(Set<InvStore> invStores) {
+        this.invStores = invStores;
+        return this;
+    }
+
+    public InvUser addInvStore(InvStore invStore) {
+        this.invStores.add(invStore);
+        invStore.getInvUsers().add(this);
+        return this;
+    }
+
+    public InvUser removeInvStore(InvStore invStore) {
+        this.invStores.remove(invStore);
+        invStore.getInvUsers().remove(this);
+        return this;
+    }
+
+    public void setInvStores(Set<InvStore> invStores) {
+        this.invStores = invStores;
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -188,6 +317,10 @@ public class InvUser implements Serializable {
             ", firstName='" + getFirstName() + "'" +
             ", lastName='" + getLastName() + "'" +
             ", postTitle='" + getPostTitle() + "'" +
+            ", createdOn='" + getCreatedOn() + "'" +
+            ", lastUpdated='" + getLastUpdated() + "'" +
+            ", email='" + getEmail() + "'" +
+            ", password='" + getPassword() + "'" +
             "}";
     }
 }

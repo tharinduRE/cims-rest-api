@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <!--
+        Added the constraints for entity InvUser.
+    -->
+    <changeSet id="20201009054054-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="inv_user_id"
+                                 baseTableName="cims_user_authority"
+                                 constraintName="fk_cims_user_authority_cims_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cims_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="authority_id"
+                                 baseTableName="cims_user_authority"
+                                 constraintName="fk_cims_user_authority_authority_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="authority"/>
+        
+        <addForeignKeyConstraint baseColumnNames="inv_user_id"
+                                 baseTableName="cims_user_inv_store"
+                                 constraintName="fk_cims_user_inv_store_cims_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cims_user"/>
+
+        <addForeignKeyConstraint baseColumnNames="inv_store_id"
+                                 baseTableName="cims_user_inv_store"
+                                 constraintName="fk_cims_user_inv_store_inv_store_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cims_inv_store"/>
+        
+    </changeSet>
+</databaseChangeLog>

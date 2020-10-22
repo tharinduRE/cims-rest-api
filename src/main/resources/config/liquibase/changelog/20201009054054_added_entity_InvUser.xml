@@ -25,12 +25,48 @@
             <column name="post_title" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="created_on" type="datetime">
+                <constraints nullable="true" />
+            </column>
+            <column name="last_updated" type="datetime">
+                <constraints nullable="true" />
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
+        <dropDefaultValue tableName="cims_user" columnName="created_on" columnDataType="datetime"/>
+        <dropDefaultValue tableName="cims_user" columnName="last_updated" columnDataType="datetime"/>
     </changeSet>
 
     <changeSet id="20201009054054-1-relations" author="jhipster">
 
+        <createTable tableName="cims_user_authority">
+            <column name="authority_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inv_user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="inv_user_id, authority_id" tableName="cims_user_authority"/>
+        
+        <createTable tableName="cims_user_inv_store">
+            <column name="inv_store_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inv_user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="inv_user_id, inv_store_id" tableName="cims_user_inv_store"/>
+        
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 
@@ -51,6 +87,10 @@
             <column name="first_name" type="string"/>
             <column name="last_name" type="string"/>
             <column name="post_title" type="string"/>
+            <column name="created_on" type="datetime"/>
+            <column name="last_updated" type="datetime"/>
+            <column name="email" type="string"/>
+            <column name="password" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

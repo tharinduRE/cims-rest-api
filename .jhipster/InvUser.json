@@ -12,6 +12,22 @@
     {
       "fieldName": "postTitle",
       "fieldType": "String"
+    },
+    {
+      "fieldName": "createdOn",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "lastUpdated",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "password",
+      "fieldType": "String"
     }
   ],
   "relationships": [
@@ -33,6 +49,23 @@
       "relationshipName": "invReport",
       "otherEntityName": "invReport",
       "relationshipType": "one-to-many",
+      "otherEntityRelationshipName": "invUser"
+    },
+    {
+      "relationshipName": "authority",
+      "otherEntityName": "authority",
+      "relationshipType": "many-to-many",
+      "otherEntityField": "id",
+      "ownerSide": true,
+      "otherEntityRelationshipName": "invUser"
+    },
+    {
+      "relationshipName": "invStore",
+      "otherEntityName": "invStore",
+      "relationshipType": "many-to-many",
+      "relationshipValidateRules": ["required"],
+      "otherEntityField": "id",
+      "ownerSide": true,
       "otherEntityRelationshipName": "invUser"
     }
   ],

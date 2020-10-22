@@ -9,7 +9,7 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link InvUser} and its DTO {@link InvUserDTO}.
  */
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring")
 public interface InvUserMapper extends EntityMapper<InvUserDTO, InvUser> {
 
 
@@ -19,6 +19,8 @@ public interface InvUserMapper extends EntityMapper<InvUserDTO, InvUser> {
     @Mapping(target = "removeInvDepartment", ignore = true)
     @Mapping(target = "invReports", ignore = true)
     @Mapping(target = "removeInvReport", ignore = true)
+    @Mapping(target = "removeAuthority", ignore = true)
+    @Mapping(target = "removeInvStore", ignore = true)
     InvUser toEntity(InvUserDTO invUserDTO);
 
     default InvUser fromId(Long id) {

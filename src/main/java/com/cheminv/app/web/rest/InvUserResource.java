@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -45,7 +46,7 @@ public class InvUserResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/inv-users")
-    public ResponseEntity<InvUserDTO> createInvUser(@RequestBody InvUserDTO invUserDTO) throws URISyntaxException {
+    public ResponseEntity<InvUserDTO> createInvUser(@Valid @RequestBody InvUserDTO invUserDTO) throws URISyntaxException {
         log.debug("REST request to save InvUser : {}", invUserDTO);
         if (invUserDTO.getId() != null) {
             throw new BadRequestAlertException("A new invUser cannot already have an ID", ENTITY_NAME, "idexists");
@@ -66,7 +67,7 @@ public class InvUserResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/inv-users")
-    public ResponseEntity<InvUserDTO> updateInvUser(@RequestBody InvUserDTO invUserDTO) throws URISyntaxException {
+    public ResponseEntity<InvUserDTO> updateInvUser(@Valid @RequestBody InvUserDTO invUserDTO) throws URISyntaxException {
         log.debug("REST request to update InvUser : {}", invUserDTO);
         if (invUserDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -80,10 +81,11 @@ public class InvUserResource {
     /**
      * {@code GET  /inv-users} : get all the invUsers.
      *
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of invUsers in body.
      */
     @GetMapping("/inv-users")
-    public List<InvUserDTO> getAllInvUsers() {
+    public List<InvUserDTO> getAllInvUsers(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get all InvUsers");
         return invUserService.findAll();
     }
