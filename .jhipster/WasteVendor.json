@@ -8,6 +8,18 @@
     {
       "fieldName": "lastIssuedOn",
       "fieldType": "Instant"
+    },
+    {
+      "fieldName": "vendorAddress",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "vendorContact",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "registeredOn",
+      "fieldType": "Instant"
     }
   ],
   "relationships": [
@@ -23,12 +35,14 @@
   "changelogDate": "20201009054754",
   "entityTableName": "cims_waste_vendor",
   "dto": "mapstruct",
-  "pagination": "no",
+  "pagination": "pagination",
   "service": "serviceClass",
   "jpaMetamodelFiltering": false,
   "fluentMethods": true,
   "readOnly": false,
   "embedded": false,
   "clientRootFolder": "",
-  "applications": "*"
+  "applications": "*",
+  "searchEngine": false,
+  "databaseType": "sql"
 }

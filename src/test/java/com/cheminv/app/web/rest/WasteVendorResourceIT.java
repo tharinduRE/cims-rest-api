@@ -48,6 +48,15 @@ public class WasteVendorResourceIT {
     private static final Instant DEFAULT_LAST_ISSUED_ON = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_LAST_ISSUED_ON = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
+    private static final String DEFAULT_VENDOR_ADDRESS = "AAAAAAAAAA";
+    private static final String UPDATED_VENDOR_ADDRESS = "BBBBBBBBBB";
+
+    private static final String DEFAULT_VENDOR_CONTACT = "AAAAAAAAAA";
+    private static final String UPDATED_VENDOR_CONTACT = "BBBBBBBBBB";
+
+    private static final Instant DEFAULT_REGISTERED_ON = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_REGISTERED_ON = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
     @Autowired
     private WasteVendorRepository wasteVendorRepository;
 
@@ -80,7 +89,10 @@ public class WasteVendorResourceIT {
     public static WasteVendor createEntity(EntityManager em) {
         WasteVendor wasteVendor = new WasteVendor()
             .vendorName(DEFAULT_VENDOR_NAME)
-            .lastIssuedOn(DEFAULT_LAST_ISSUED_ON);
+            .lastIssuedOn(DEFAULT_LAST_ISSUED_ON)
+            .vendorAddress(DEFAULT_VENDOR_ADDRESS)
+            .vendorContact(DEFAULT_VENDOR_CONTACT)
+            .registeredOn(DEFAULT_REGISTERED_ON);
         return wasteVendor;
     }
     /**
@@ -92,7 +104,10 @@ public class WasteVendorResourceIT {
     public static WasteVendor createUpdatedEntity(EntityManager em) {
         WasteVendor wasteVendor = new WasteVendor()
             .vendorName(UPDATED_VENDOR_NAME)
-            .lastIssuedOn(UPDATED_LAST_ISSUED_ON);
+            .lastIssuedOn(UPDATED_LAST_ISSUED_ON)
+            .vendorAddress(UPDATED_VENDOR_ADDRESS)
+            .vendorContact(UPDATED_VENDOR_CONTACT)
+            .registeredOn(UPDATED_REGISTERED_ON);
         return wasteVendor;
     }
 
@@ -118,6 +133,9 @@ public class WasteVendorResourceIT {
         WasteVendor testWasteVendor = wasteVendorList.get(wasteVendorList.size() - 1);
         assertThat(testWasteVendor.getVendorName()).isEqualTo(DEFAULT_VENDOR_NAME);
         assertThat(testWasteVendor.getLastIssuedOn()).isEqualTo(DEFAULT_LAST_ISSUED_ON);
+        assertThat(testWasteVendor.getVendorAddress()).isEqualTo(DEFAULT_VENDOR_ADDRESS);
+        assertThat(testWasteVendor.getVendorContact()).isEqualTo(DEFAULT_VENDOR_CONTACT);
+        assertThat(testWasteVendor.getRegisteredOn()).isEqualTo(DEFAULT_REGISTERED_ON);
     }
 
     @Test
@@ -153,7 +171,10 @@ public class WasteVendorResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(wasteVendor.getId().intValue())))
             .andExpect(jsonPath("$.[*].vendorName").value(hasItem(DEFAULT_VENDOR_NAME)))
-            .andExpect(jsonPath("$.[*].lastIssuedOn").value(hasItem(DEFAULT_LAST_ISSUED_ON.toString())));
+            .andExpect(jsonPath("$.[*].lastIssuedOn").value(hasItem(DEFAULT_LAST_ISSUED_ON.toString())))
+            .andExpect(jsonPath("$.[*].vendorAddress").value(hasItem(DEFAULT_VENDOR_ADDRESS)))
+            .andExpect(jsonPath("$.[*].vendorContact").value(hasItem(DEFAULT_VENDOR_CONTACT)))
+            .andExpect(jsonPath("$.[*].registeredOn").value(hasItem(DEFAULT_REGISTERED_ON.toString())));
     }
     
     @SuppressWarnings({"unchecked"})
@@ -188,7 +209,10 @@ public class WasteVendorResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(wasteVendor.getId().intValue()))
             .andExpect(jsonPath("$.vendorName").value(DEFAULT_VENDOR_NAME))
-            .andExpect(jsonPath("$.lastIssuedOn").value(DEFAULT_LAST_ISSUED_ON.toString()));
+            .andExpect(jsonPath("$.lastIssuedOn").value(DEFAULT_LAST_ISSUED_ON.toString()))
+            .andExpect(jsonPath("$.vendorAddress").value(DEFAULT_VENDOR_ADDRESS))
+            .andExpect(jsonPath("$.vendorContact").value(DEFAULT_VENDOR_CONTACT))
+            .andExpect(jsonPath("$.registeredOn").value(DEFAULT_REGISTERED_ON.toString()));
     }
     @Test
     @Transactional
@@ -212,7 +236,10 @@ public class WasteVendorResourceIT {
         em.detach(updatedWasteVendor);
         updatedWasteVendor
             .vendorName(UPDATED_VENDOR_NAME)
-            .lastIssuedOn(UPDATED_LAST_ISSUED_ON);
+            .lastIssuedOn(UPDATED_LAST_ISSUED_ON)
+            .vendorAddress(UPDATED_VENDOR_ADDRESS)
+            .vendorContact(UPDATED_VENDOR_CONTACT)
+            .registeredOn(UPDATED_REGISTERED_ON);
         WasteVendorDTO wasteVendorDTO = wasteVendorMapper.toDto(updatedWasteVendor);
 
         restWasteVendorMockMvc.perform(put("/api/waste-vendors")
@@ -226,6 +253,9 @@ public class WasteVendorResourceIT {
         WasteVendor testWasteVendor = wasteVendorList.get(wasteVendorList.size() - 1);
         assertThat(testWasteVendor.getVendorName()).isEqualTo(UPDATED_VENDOR_NAME);
         assertThat(testWasteVendor.getLastIssuedOn()).isEqualTo(UPDATED_LAST_ISSUED_ON);
+        assertThat(testWasteVendor.getVendorAddress()).isEqualTo(UPDATED_VENDOR_ADDRESS);
+        assertThat(testWasteVendor.getVendorContact()).isEqualTo(UPDATED_VENDOR_CONTACT);
+        assertThat(testWasteVendor.getRegisteredOn()).isEqualTo(UPDATED_REGISTERED_ON);
     }
 
     @Test

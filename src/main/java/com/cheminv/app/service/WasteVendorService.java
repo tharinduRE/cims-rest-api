@@ -12,10 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link WasteVendor}.
@@ -51,14 +48,14 @@ public class WasteVendorService {
     /**
      * Get all the wasteVendors.
      *
+     * @param pageable the pagination information.
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public List<WasteVendorDTO> findAll() {
+    public Page<WasteVendorDTO> findAll(Pageable pageable) {
         log.debug("Request to get all WasteVendors");
-        return wasteVendorRepository.findAllWithEagerRelationships().stream()
-            .map(wasteVendorMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
+        return wasteVendorRepository.findAll(pageable)
+            .map(wasteVendorMapper::toDto);
     }
 
 

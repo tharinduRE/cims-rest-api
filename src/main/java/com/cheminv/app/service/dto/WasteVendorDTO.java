@@ -16,6 +16,12 @@ public class WasteVendorDTO implements Serializable {
 
     private Instant lastIssuedOn;
 
+    private String vendorAddress;
+
+    private String vendorContact;
+
+    private Instant registeredOn;
+
     private Set<WasteItemDTO> wasteItems = new HashSet<>();
     
     public Long getId() {
@@ -40,6 +46,30 @@ public class WasteVendorDTO implements Serializable {
 
     public void setLastIssuedOn(Instant lastIssuedOn) {
         this.lastIssuedOn = lastIssuedOn;
+    }
+
+    public String getVendorAddress() {
+        return vendorAddress;
+    }
+
+    public void setVendorAddress(String vendorAddress) {
+        this.vendorAddress = vendorAddress;
+    }
+
+    public String getVendorContact() {
+        return vendorContact;
+    }
+
+    public void setVendorContact(String vendorContact) {
+        this.vendorContact = vendorContact;
+    }
+
+    public Instant getRegisteredOn() {
+        return registeredOn;
+    }
+
+    public void setRegisteredOn(Instant registeredOn) {
+        this.registeredOn = registeredOn;
     }
 
     public Set<WasteItemDTO> getWasteItems() {
@@ -74,6 +104,9 @@ public class WasteVendorDTO implements Serializable {
             "id=" + getId() +
             ", vendorName='" + getVendorName() + "'" +
             ", lastIssuedOn='" + getLastIssuedOn() + "'" +
+            ", vendorAddress='" + getVendorAddress() + "'" +
+            ", vendorContact='" + getVendorContact() + "'" +
+            ", registeredOn='" + getRegisteredOn() + "'" +
             ", wasteItems='" + getWasteItems() + "'" +
             "}";
     }
