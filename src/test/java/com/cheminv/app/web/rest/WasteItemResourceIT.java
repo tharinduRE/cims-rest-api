@@ -18,6 +18,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,6 +40,15 @@ public class WasteItemResourceIT {
 
     private static final Float DEFAULT_MIN_QUANTITY = 1F;
     private static final Float UPDATED_MIN_QUANTITY = 2F;
+
+    private static final Instant DEFAULT_CREATED_ON = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_CREATED_ON = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+    private static final Instant DEFAULT_LAST_UPDATED = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_LAST_UPDATED = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
+    private static final Float DEFAULT_ITEM_CAPACITY = 1F;
+    private static final Float UPDATED_ITEM_CAPACITY = 2F;
 
     @Autowired
     private WasteItemRepository wasteItemRepository;
@@ -65,7 +76,10 @@ public class WasteItemResourceIT {
     public static WasteItem createEntity(EntityManager em) {
         WasteItem wasteItem = new WasteItem()
             .itemQuantity(DEFAULT_ITEM_QUANTITY)
-            .minQuantity(DEFAULT_MIN_QUANTITY);
+            .minQuantity(DEFAULT_MIN_QUANTITY)
+            .createdOn(DEFAULT_CREATED_ON)
+            .lastUpdated(DEFAULT_LAST_UPDATED)
+            .itemCapacity(DEFAULT_ITEM_CAPACITY);
         // Add required entity
         ItemStock itemStock;
         if (TestUtil.findAll(em, ItemStock.class).isEmpty()) {
@@ -87,7 +101,10 @@ public class WasteItemResourceIT {
     public static WasteItem createUpdatedEntity(EntityManager em) {
         WasteItem wasteItem = new WasteItem()
             .itemQuantity(UPDATED_ITEM_QUANTITY)
-            .minQuantity(UPDATED_MIN_QUANTITY);
+            .minQuantity(UPDATED_MIN_QUANTITY)
+            .createdOn(UPDATED_CREATED_ON)
+            .lastUpdated(UPDATED_LAST_UPDATED)
+            .itemCapacity(UPDATED_ITEM_CAPACITY);
         // Add required entity
         ItemStock itemStock;
         if (TestUtil.findAll(em, ItemStock.class).isEmpty()) {
@@ -123,6 +140,9 @@ public class WasteItemResourceIT {
         WasteItem testWasteItem = wasteItemList.get(wasteItemList.size() - 1);
         assertThat(testWasteItem.getItemQuantity()).isEqualTo(DEFAULT_ITEM_QUANTITY);
         assertThat(testWasteItem.getMinQuantity()).isEqualTo(DEFAULT_MIN_QUANTITY);
+        assertThat(testWasteItem.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
+        assertThat(testWasteItem.getLastUpdated()).isEqualTo(DEFAULT_LAST_UPDATED);
+        assertThat(testWasteItem.getItemCapacity()).isEqualTo(DEFAULT_ITEM_CAPACITY);
     }
 
     @Test
@@ -158,7 +178,10 @@ public class WasteItemResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(wasteItem.getId().intValue())))
             .andExpect(jsonPath("$.[*].itemQuantity").value(hasItem(DEFAULT_ITEM_QUANTITY.doubleValue())))
-            .andExpect(jsonPath("$.[*].minQuantity").value(hasItem(DEFAULT_MIN_QUANTITY.doubleValue())));
+            .andExpect(jsonPath("$.[*].minQuantity").value(hasItem(DEFAULT_MIN_QUANTITY.doubleValue())))
+            .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
+            .andExpect(jsonPath("$.[*].lastUpdated").value(hasItem(DEFAULT_LAST_UPDATED.toString())))
+            .andExpect(jsonPath("$.[*].itemCapacity").value(hasItem(DEFAULT_ITEM_CAPACITY.doubleValue())));
     }
     
     @Test
@@ -173,7 +196,10 @@ public class WasteItemResourceIT {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(wasteItem.getId().intValue()))
             .andExpect(jsonPath("$.itemQuantity").value(DEFAULT_ITEM_QUANTITY.doubleValue()))
-            .andExpect(jsonPath("$.minQuantity").value(DEFAULT_MIN_QUANTITY.doubleValue()));
+            .andExpect(jsonPath("$.minQuantity").value(DEFAULT_MIN_QUANTITY.doubleValue()))
+            .andExpect(jsonPath("$.createdOn").value(DEFAULT_CREATED_ON.toString()))
+            .andExpect(jsonPath("$.lastUpdated").value(DEFAULT_LAST_UPDATED.toString()))
+            .andExpect(jsonPath("$.itemCapacity").value(DEFAULT_ITEM_CAPACITY.doubleValue()));
     }
     @Test
     @Transactional
@@ -197,7 +223,10 @@ public class WasteItemResourceIT {
         em.detach(updatedWasteItem);
         updatedWasteItem
             .itemQuantity(UPDATED_ITEM_QUANTITY)
-            .minQuantity(UPDATED_MIN_QUANTITY);
+            .minQuantity(UPDATED_MIN_QUANTITY)
+            .createdOn(UPDATED_CREATED_ON)
+            .lastUpdated(UPDATED_LAST_UPDATED)
+            .itemCapacity(UPDATED_ITEM_CAPACITY);
         WasteItemDTO wasteItemDTO = wasteItemMapper.toDto(updatedWasteItem);
 
         restWasteItemMockMvc.perform(put("/api/waste-items")
@@ -211,6 +240,9 @@ public class WasteItemResourceIT {
         WasteItem testWasteItem = wasteItemList.get(wasteItemList.size() - 1);
         assertThat(testWasteItem.getItemQuantity()).isEqualTo(UPDATED_ITEM_QUANTITY);
         assertThat(testWasteItem.getMinQuantity()).isEqualTo(UPDATED_MIN_QUANTITY);
+        assertThat(testWasteItem.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
+        assertThat(testWasteItem.getLastUpdated()).isEqualTo(UPDATED_LAST_UPDATED);
+        assertThat(testWasteItem.getItemCapacity()).isEqualTo(UPDATED_ITEM_CAPACITY);
     }
 
     @Test

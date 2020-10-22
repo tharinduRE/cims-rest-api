@@ -1,5 +1,6 @@
 package com.cheminv.app.service.dto;
 
+import java.time.Instant;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 
@@ -13,6 +14,12 @@ public class WasteItemDTO implements Serializable {
     private Float itemQuantity;
 
     private Float minQuantity;
+
+    private Instant createdOn;
+
+    private Instant lastUpdated;
+
+    private Float itemCapacity;
 
 
     private Long itemStockId;
@@ -39,6 +46,30 @@ public class WasteItemDTO implements Serializable {
 
     public void setMinQuantity(Float minQuantity) {
         this.minQuantity = minQuantity;
+    }
+
+    public Instant getCreatedOn() {
+        return createdOn;
+    }
+
+    public void setCreatedOn(Instant createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public Instant getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Instant lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public Float getItemCapacity() {
+        return itemCapacity;
+    }
+
+    public void setItemCapacity(Float itemCapacity) {
+        this.itemCapacity = itemCapacity;
     }
 
     public Long getItemStockId() {
@@ -73,6 +104,9 @@ public class WasteItemDTO implements Serializable {
             "id=" + getId() +
             ", itemQuantity=" + getItemQuantity() +
             ", minQuantity=" + getMinQuantity() +
+            ", createdOn='" + getCreatedOn() + "'" +
+            ", lastUpdated='" + getLastUpdated() + "'" +
+            ", itemCapacity=" + getItemCapacity() +
             ", itemStockId=" + getItemStockId() +
             "}";
     }

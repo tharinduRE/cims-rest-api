@@ -2,11 +2,14 @@ package com.cheminv.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +31,17 @@ public class WasteItem implements Serializable {
 
     @Column(name = "min_quantity")
     private Float minQuantity;
+
+    @CreationTimestamp
+    @Column(name = "created_on")
+    private Instant createdOn;
+
+    @UpdateTimestamp
+    @Column(name = "last_updated")
+    private Instant lastUpdated;
+
+    @Column(name = "item_capacity")
+    private Float itemCapacity;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -71,6 +85,45 @@ public class WasteItem implements Serializable {
 
     public void setMinQuantity(Float minQuantity) {
         this.minQuantity = minQuantity;
+    }
+
+    public Instant getCreatedOn() {
+        return createdOn;
+    }
+
+    public WasteItem createdOn(Instant createdOn) {
+        this.createdOn = createdOn;
+        return this;
+    }
+
+    public void setCreatedOn(Instant createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public Instant getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public WasteItem lastUpdated(Instant lastUpdated) {
+        this.lastUpdated = lastUpdated;
+        return this;
+    }
+
+    public void setLastUpdated(Instant lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public Float getItemCapacity() {
+        return itemCapacity;
+    }
+
+    public WasteItem itemCapacity(Float itemCapacity) {
+        this.itemCapacity = itemCapacity;
+        return this;
+    }
+
+    public void setItemCapacity(Float itemCapacity) {
+        this.itemCapacity = itemCapacity;
     }
 
     public ItemStock getItemStock() {
@@ -135,6 +188,9 @@ public class WasteItem implements Serializable {
             "id=" + getId() +
             ", itemQuantity=" + getItemQuantity() +
             ", minQuantity=" + getMinQuantity() +
+            ", createdOn='" + getCreatedOn() + "'" +
+            ", lastUpdated='" + getLastUpdated() + "'" +
+            ", itemCapacity=" + getItemCapacity() +
             "}";
     }
 }

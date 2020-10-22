@@ -8,6 +8,18 @@
     {
       "fieldName": "minQuantity",
       "fieldType": "Float"
+    },
+    {
+      "fieldName": "createdOn",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "lastUpdated",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "itemCapacity",
+      "fieldType": "Float"
     }
   ],
   "relationships": [
@@ -38,5 +50,7 @@
   "readOnly": false,
   "embedded": false,
   "clientRootFolder": "",
-  "applications": "*"
+  "applications": "*",
+  "searchEngine": false,
+  "databaseType": "sql"
 }
