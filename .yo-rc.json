@@ -3,7 +3,7 @@
     "promptValues": {
       "packageName": "com.cheminv.app"
     },
-    "jhipsterVersion": "6.9.1",
+    "jhipsterVersion": "6.10.4",
     "applicationType": "monolith",
     "baseName": "cims",
     "packageName": "com.cheminv.app",
