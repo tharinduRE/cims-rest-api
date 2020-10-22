@@ -8,6 +8,8 @@ import com.cheminv.app.repository.OrderRepository;
 import com.cheminv.app.service.OrderService;
 import com.cheminv.app.service.dto.OrderDTO;
 import com.cheminv.app.service.mapper.OrderMapper;
+import com.cheminv.app.service.dto.OrderCriteria;
+import com.cheminv.app.service.OrderQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,6 +50,7 @@ public class OrderResourceIT {
 
     private static final Float DEFAULT_QUANTITY = 1F;
     private static final Float UPDATED_QUANTITY = 2F;
+    private static final Float SMALLER_QUANTITY = 1F - 1F;
 
     @Autowired
     private OrderRepository orderRepository;
@@ -57,6 +60,9 @@ public class OrderResourceIT {
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private OrderQueryService orderQueryService;
 
     @Autowired
     private EntityManager em;
@@ -235,6 +241,356 @@ public class OrderResourceIT {
             .andExpect(jsonPath("$.orderDate").value(DEFAULT_ORDER_DATE.toString()))
             .andExpect(jsonPath("$.quantity").value(DEFAULT_QUANTITY.doubleValue()));
     }
+
+
+    @Test
+    @Transactional
+    public void getOrdersByIdFiltering() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        Long id = order.getId();
+
+        defaultOrderShouldBeFound("id.equals=" + id);
+        defaultOrderShouldNotBeFound("id.notEquals=" + id);
+
+        defaultOrderShouldBeFound("id.greaterThanOrEqual=" + id);
+        defaultOrderShouldNotBeFound("id.greaterThan=" + id);
+
+        defaultOrderShouldBeFound("id.lessThanOrEqual=" + id);
+        defaultOrderShouldNotBeFound("id.lessThan=" + id);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllOrdersByOrderStatusIsEqualToSomething() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where orderStatus equals to DEFAULT_ORDER_STATUS
+        defaultOrderShouldBeFound("orderStatus.equals=" + DEFAULT_ORDER_STATUS);
+
+        // Get all the orderList where orderStatus equals to UPDATED_ORDER_STATUS
+        defaultOrderShouldNotBeFound("orderStatus.equals=" + UPDATED_ORDER_STATUS);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByOrderStatusIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where orderStatus not equals to DEFAULT_ORDER_STATUS
+        defaultOrderShouldNotBeFound("orderStatus.notEquals=" + DEFAULT_ORDER_STATUS);
+
+        // Get all the orderList where orderStatus not equals to UPDATED_ORDER_STATUS
+        defaultOrderShouldBeFound("orderStatus.notEquals=" + UPDATED_ORDER_STATUS);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByOrderStatusIsInShouldWork() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where orderStatus in DEFAULT_ORDER_STATUS or UPDATED_ORDER_STATUS
+        defaultOrderShouldBeFound("orderStatus.in=" + DEFAULT_ORDER_STATUS + "," + UPDATED_ORDER_STATUS);
+
+        // Get all the orderList where orderStatus equals to UPDATED_ORDER_STATUS
+        defaultOrderShouldNotBeFound("orderStatus.in=" + UPDATED_ORDER_STATUS);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByOrderStatusIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where orderStatus is not null
+        defaultOrderShouldBeFound("orderStatus.specified=true");
+
+        // Get all the orderList where orderStatus is null
+        defaultOrderShouldNotBeFound("orderStatus.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByRequestDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where requestDate equals to DEFAULT_REQUEST_DATE
+        defaultOrderShouldBeFound("requestDate.equals=" + DEFAULT_REQUEST_DATE);
+
+        // Get all the orderList where requestDate equals to UPDATED_REQUEST_DATE
+        defaultOrderShouldNotBeFound("requestDate.equals=" + UPDATED_REQUEST_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByRequestDateIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where requestDate not equals to DEFAULT_REQUEST_DATE
+        defaultOrderShouldNotBeFound("requestDate.notEquals=" + DEFAULT_REQUEST_DATE);
+
+        // Get all the orderList where requestDate not equals to UPDATED_REQUEST_DATE
+        defaultOrderShouldBeFound("requestDate.notEquals=" + UPDATED_REQUEST_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByRequestDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where requestDate in DEFAULT_REQUEST_DATE or UPDATED_REQUEST_DATE
+        defaultOrderShouldBeFound("requestDate.in=" + DEFAULT_REQUEST_DATE + "," + UPDATED_REQUEST_DATE);
+
+        // Get all the orderList where requestDate equals to UPDATED_REQUEST_DATE
+        defaultOrderShouldNotBeFound("requestDate.in=" + UPDATED_REQUEST_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByRequestDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where requestDate is not null
+        defaultOrderShouldBeFound("requestDate.specified=true");
+
+        // Get all the orderList where requestDate is null
+        defaultOrderShouldNotBeFound("requestDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByOrderDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where orderDate equals to DEFAULT_ORDER_DATE
+        defaultOrderShouldBeFound("orderDate.equals=" + DEFAULT_ORDER_DATE);
+
+        // Get all the orderList where orderDate equals to UPDATED_ORDER_DATE
+        defaultOrderShouldNotBeFound("orderDate.equals=" + UPDATED_ORDER_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByOrderDateIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where orderDate not equals to DEFAULT_ORDER_DATE
+        defaultOrderShouldNotBeFound("orderDate.notEquals=" + DEFAULT_ORDER_DATE);
+
+        // Get all the orderList where orderDate not equals to UPDATED_ORDER_DATE
+        defaultOrderShouldBeFound("orderDate.notEquals=" + UPDATED_ORDER_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByOrderDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where orderDate in DEFAULT_ORDER_DATE or UPDATED_ORDER_DATE
+        defaultOrderShouldBeFound("orderDate.in=" + DEFAULT_ORDER_DATE + "," + UPDATED_ORDER_DATE);
+
+        // Get all the orderList where orderDate equals to UPDATED_ORDER_DATE
+        defaultOrderShouldNotBeFound("orderDate.in=" + UPDATED_ORDER_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByOrderDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where orderDate is not null
+        defaultOrderShouldBeFound("orderDate.specified=true");
+
+        // Get all the orderList where orderDate is null
+        defaultOrderShouldNotBeFound("orderDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByQuantityIsEqualToSomething() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where quantity equals to DEFAULT_QUANTITY
+        defaultOrderShouldBeFound("quantity.equals=" + DEFAULT_QUANTITY);
+
+        // Get all the orderList where quantity equals to UPDATED_QUANTITY
+        defaultOrderShouldNotBeFound("quantity.equals=" + UPDATED_QUANTITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByQuantityIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where quantity not equals to DEFAULT_QUANTITY
+        defaultOrderShouldNotBeFound("quantity.notEquals=" + DEFAULT_QUANTITY);
+
+        // Get all the orderList where quantity not equals to UPDATED_QUANTITY
+        defaultOrderShouldBeFound("quantity.notEquals=" + UPDATED_QUANTITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByQuantityIsInShouldWork() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where quantity in DEFAULT_QUANTITY or UPDATED_QUANTITY
+        defaultOrderShouldBeFound("quantity.in=" + DEFAULT_QUANTITY + "," + UPDATED_QUANTITY);
+
+        // Get all the orderList where quantity equals to UPDATED_QUANTITY
+        defaultOrderShouldNotBeFound("quantity.in=" + UPDATED_QUANTITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByQuantityIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where quantity is not null
+        defaultOrderShouldBeFound("quantity.specified=true");
+
+        // Get all the orderList where quantity is null
+        defaultOrderShouldNotBeFound("quantity.specified=false");
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByQuantityIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where quantity is greater than or equal to DEFAULT_QUANTITY
+        defaultOrderShouldBeFound("quantity.greaterThanOrEqual=" + DEFAULT_QUANTITY);
+
+        // Get all the orderList where quantity is greater than or equal to UPDATED_QUANTITY
+        defaultOrderShouldNotBeFound("quantity.greaterThanOrEqual=" + UPDATED_QUANTITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByQuantityIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where quantity is less than or equal to DEFAULT_QUANTITY
+        defaultOrderShouldBeFound("quantity.lessThanOrEqual=" + DEFAULT_QUANTITY);
+
+        // Get all the orderList where quantity is less than or equal to SMALLER_QUANTITY
+        defaultOrderShouldNotBeFound("quantity.lessThanOrEqual=" + SMALLER_QUANTITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByQuantityIsLessThanSomething() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where quantity is less than DEFAULT_QUANTITY
+        defaultOrderShouldNotBeFound("quantity.lessThan=" + DEFAULT_QUANTITY);
+
+        // Get all the orderList where quantity is less than UPDATED_QUANTITY
+        defaultOrderShouldBeFound("quantity.lessThan=" + UPDATED_QUANTITY);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByQuantityIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where quantity is greater than DEFAULT_QUANTITY
+        defaultOrderShouldNotBeFound("quantity.greaterThan=" + DEFAULT_QUANTITY);
+
+        // Get all the orderList where quantity is greater than SMALLER_QUANTITY
+        defaultOrderShouldBeFound("quantity.greaterThan=" + SMALLER_QUANTITY);
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllOrdersByItemStockIsEqualToSomething() throws Exception {
+        // Get already existing entity
+        ItemStock itemStock = order.getItemStock();
+        orderRepository.saveAndFlush(order);
+        Long itemStockId = itemStock.getId();
+
+        // Get all the orderList where itemStock equals to itemStockId
+        defaultOrderShouldBeFound("itemStockId.equals=" + itemStockId);
+
+        // Get all the orderList where itemStock equals to itemStockId + 1
+        defaultOrderShouldNotBeFound("itemStockId.equals=" + (itemStockId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllOrdersByRequestedByIsEqualToSomething() throws Exception {
+        // Get already existing entity
+        InvUser requestedBy = order.getRequestedBy();
+        orderRepository.saveAndFlush(order);
+        Long requestedById = requestedBy.getId();
+
+        // Get all the orderList where requestedBy equals to requestedById
+        defaultOrderShouldBeFound("requestedById.equals=" + requestedById);
+
+        // Get all the orderList where requestedBy equals to requestedById + 1
+        defaultOrderShouldNotBeFound("requestedById.equals=" + (requestedById + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultOrderShouldBeFound(String filter) throws Exception {
+        restOrderMockMvc.perform(get("/api/orders?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(order.getId().intValue())))
+            .andExpect(jsonPath("$.[*].orderStatus").value(hasItem(DEFAULT_ORDER_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].requestDate").value(hasItem(DEFAULT_REQUEST_DATE.toString())))
+            .andExpect(jsonPath("$.[*].orderDate").value(hasItem(DEFAULT_ORDER_DATE.toString())))
+            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY.doubleValue())));
+
+        // Check, that the count call also returns 1
+        restOrderMockMvc.perform(get("/api/orders/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultOrderShouldNotBeFound(String filter) throws Exception {
+        restOrderMockMvc.perform(get("/api/orders?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restOrderMockMvc.perform(get("/api/orders/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("0"));
+    }
+
     @Test
     @Transactional
     public void getNonExistingOrder() throws Exception {

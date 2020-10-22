@@ -3,6 +3,8 @@ package com.cheminv.app.web.rest;
 import com.cheminv.app.service.OrderService;
 import com.cheminv.app.web.rest.errors.BadRequestAlertException;
 import com.cheminv.app.service.dto.OrderDTO;
+import com.cheminv.app.service.dto.OrderCriteria;
+import com.cheminv.app.service.OrderQueryService;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
@@ -40,8 +42,11 @@ public class OrderResource {
 
     private final OrderService orderService;
 
-    public OrderResource(OrderService orderService) {
+    private final OrderQueryService orderQueryService;
+
+    public OrderResource(OrderService orderService, OrderQueryService orderQueryService) {
         this.orderService = orderService;
+        this.orderQueryService = orderQueryService;
     }
 
     /**
@@ -88,14 +93,27 @@ public class OrderResource {
      * {@code GET  /orders} : get all the orders.
      *
      * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of orders in body.
      */
     @GetMapping("/orders")
-    public ResponseEntity<List<OrderDTO>> getAllOrders(Pageable pageable) {
-        log.debug("REST request to get a page of Orders");
-        Page<OrderDTO> page = orderService.findAll(pageable);
+    public ResponseEntity<List<OrderDTO>> getAllOrders(OrderCriteria criteria, Pageable pageable) {
+        log.debug("REST request to get Orders by criteria: {}", criteria);
+        Page<OrderDTO> page = orderQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /orders/count} : count all the orders.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/orders/count")
+    public ResponseEntity<Long> countOrders(OrderCriteria criteria) {
+        log.debug("REST request to count Orders by criteria: {}", criteria);
+        return ResponseEntity.ok().body(orderQueryService.countByCriteria(criteria));
     }
 
     /**
