@@ -1,0 +1,33 @@
+{
+  "fluentMethods": true,
+  "clientRootFolder": "",
+  "relationships": [
+    {
+      "relationshipName": "invUser",
+      "otherEntityName": "invUser",
+      "relationshipType": "many-to-many",
+      "ownerSide": false,
+      "otherEntityRelationshipName": "invStore"
+    }
+  ],
+  "fields": [
+    {
+      "fieldName": "code",
+      "fieldType": "StockStore",
+      "fieldValues": "ORG"
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    }
+  ],
+  "changelogDate": "20201022100440",
+  "entityTableName": "cims_inv_store",
+  "dto": "no",
+  "searchEngine": false,
+  "service": "no",
+  "databaseType": "sql",
+  "readOnly": false,
+  "jpaMetamodelFiltering": false,
+  "pagination": "no"
+}
