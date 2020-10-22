@@ -25,6 +25,12 @@ public class ItemTransactionDTO implements Serializable {
 
     private Long itemStockId;
 
+    private String itemStockName;
+
+    private Float itemCapacity;
+
+    private String  storageUnit;
+
     private Long createdById;
 
     public Long getId() {
@@ -89,6 +95,30 @@ public class ItemTransactionDTO implements Serializable {
 
     public void setIssuerName(String issuerName) {
         this.issuerName = issuerName;
+    }
+
+    public String getItemStockName() {
+        return itemStockName;
+    }
+
+    public void setItemStockName(String itemStockName) {
+        this.itemStockName = itemStockName;
+    }
+
+    public Float getItemCapacity() {
+        return itemCapacity;
+    }
+
+    public void setItemCapacity(Float itemCapacity) {
+        this.itemCapacity = itemCapacity;
+    }
+
+    public String getStorageUnit() {
+        return storageUnit;
+    }
+
+    public void setStorageUnit(String storageUnit) {
+        this.storageUnit = storageUnit;
     }
 
     @Override
