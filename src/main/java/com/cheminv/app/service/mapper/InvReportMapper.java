@@ -13,7 +13,6 @@ import org.mapstruct.*;
 public interface InvReportMapper extends EntityMapper<InvReportDTO, InvReport> {
 
     @Mapping(source = "invUser.id", target = "invUserId")
-    @Mapping(source = "invUser.firstName", target = "createdBy")
     InvReportDTO toDto(InvReport invReport);
 
     @Mapping(source = "invUserId", target = "invUser")

@@ -1,11 +1,11 @@
-id;name;created_on
-1;hacking;2020-10-21T15:56:49
-2;24/7;2020-10-20T23:22:34
-3;applications Assurance;2020-10-21T04:49:54
-4;optical integrate Cotton;2020-10-20T18:29:17
-5;Technician Port;2020-10-21T05:18:22
-6;Pennsylvania Internal Program;2020-10-21T01:25:09
-7;Credit Card Account Sausages Tasty Cotton Pizza;2020-10-21T15:07:09
-8;platforms;2020-10-20T22:58:56
-9;payment;2020-10-20T22:56:40
-10;object-oriented;2020-10-21T03:30:25
+id;name;created_on;report;report_content_type
+1;hacking;2020-10-21T15:56:49;../fake-data/blob/hipster.png;image/png
+2;24/7;2020-10-20T23:22:34;../fake-data/blob/hipster.png;image/png
+3;applications Assurance;2020-10-21T04:49:54;../fake-data/blob/hipster.png;image/png
+4;optical integrate Cotton;2020-10-20T18:29:17;../fake-data/blob/hipster.png;image/png
+5;Technician Port;2020-10-21T05:18:22;../fake-data/blob/hipster.png;image/png
+6;Pennsylvania Internal Program;2020-10-21T01:25:09;../fake-data/blob/hipster.png;image/png
+7;Credit Card Account Sausages Tasty Cotton Pizza;2020-10-21T15:07:09;../fake-data/blob/hipster.png;image/png
+8;platforms;2020-10-20T22:58:56;../fake-data/blob/hipster.png;image/png
+9;payment;2020-10-20T22:56:40;../fake-data/blob/hipster.png;image/png
+10;object-oriented;2020-10-21T03:30:25;../fake-data/blob/hipster.png;image/png

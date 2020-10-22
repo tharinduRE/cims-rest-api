@@ -26,6 +26,13 @@ public class InvReport implements Serializable {
     @Column(name = "created_on")
     private Instant createdOn;
 
+    @Lob
+    @Column(name = "report")
+    private byte[] report;
+
+    @Column(name = "report_content_type")
+    private String reportContentType;
+
     @ManyToOne
     @JsonIgnoreProperties(value = "invReports", allowSetters = true)
     private InvUser invUser;
@@ -65,6 +72,32 @@ public class InvReport implements Serializable {
         this.createdOn = createdOn;
     }
 
+    public byte[] getReport() {
+        return report;
+    }
+
+    public InvReport report(byte[] report) {
+        this.report = report;
+        return this;
+    }
+
+    public void setReport(byte[] report) {
+        this.report = report;
+    }
+
+    public String getReportContentType() {
+        return reportContentType;
+    }
+
+    public InvReport reportContentType(String reportContentType) {
+        this.reportContentType = reportContentType;
+        return this;
+    }
+
+    public void setReportContentType(String reportContentType) {
+        this.reportContentType = reportContentType;
+    }
+
     public InvUser getInvUser() {
         return invUser;
     }
@@ -102,6 +135,8 @@ public class InvReport implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +
+            ", report='" + getReport() + "'" +
+            ", reportContentType='" + getReportContentType() + "'" +
             "}";
     }
 }

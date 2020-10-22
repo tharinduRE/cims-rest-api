@@ -18,6 +18,11 @@
     {
       "fieldName": "createdOn",
       "fieldType": "Instant"
+    },
+    {
+      "fieldName": "report",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "any"
     }
   ],
   "changelogDate": "20201021155750",

@@ -2,21 +2,26 @@ package com.cheminv.app.service.dto;
 
 import java.time.Instant;
 import java.io.Serializable;
+import javax.persistence.Lob;
 
 /**
  * A DTO for the {@link com.cheminv.app.domain.InvReport} entity.
  */
 public class InvReportDTO implements Serializable {
-
+    
     private Long id;
 
     private String name;
 
     private Instant createdOn;
 
-    private Long invUserId;
-    private String createdBy;
+    @Lob
+    private byte[] report;
 
+    private String reportContentType;
+
+    private Long invUserId;
+    
     public Long getId() {
         return id;
     }
@@ -41,20 +46,28 @@ public class InvReportDTO implements Serializable {
         this.createdOn = createdOn;
     }
 
+    public byte[] getReport() {
+        return report;
+    }
+
+    public void setReport(byte[] report) {
+        this.report = report;
+    }
+
+    public String getReportContentType() {
+        return reportContentType;
+    }
+
+    public void setReportContentType(String reportContentType) {
+        this.reportContentType = reportContentType;
+    }
+
     public Long getInvUserId() {
         return invUserId;
     }
 
     public void setInvUserId(Long invUserId) {
         this.invUserId = invUserId;
-    }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
     }
 
     @Override
@@ -81,6 +94,7 @@ public class InvReportDTO implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +
+            ", report='" + getReport() + "'" +
             ", invUserId=" + getInvUserId() +
             "}";
     }
