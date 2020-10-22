@@ -20,7 +20,7 @@
   "dto": "no",
   "searchEngine": false,
   "service": "no",
-  "entityTableName": "authority",
+  "entityTableName": "cims_authority",
   "databaseType": "sql",
   "readOnly": true,
   "jpaMetamodelFiltering": false,

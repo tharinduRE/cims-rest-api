@@ -12,7 +12,7 @@ import java.util.Set;
  * A Authority.
  */
 @Entity
-@Table(name = "authority")
+@Table(name = "cims_authority")
 public class Authority implements Serializable {
 
     private static final long serialVersionUID = 1L;

@@ -18,7 +18,7 @@
                                  baseTableName="cims_user_authority"
                                  constraintName="fk_cims_user_authority_authority_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="authority"/>
+                                 referencedTableName="cims_authority"/>
         
         <addForeignKeyConstraint baseColumnNames="inv_user_id"
                                  baseTableName="cims_user_inv_store"
