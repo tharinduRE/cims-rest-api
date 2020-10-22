@@ -1,0 +1,11 @@
+id;quantity;remarks;transaction_type;transaction_date;item_stock_id;created_by_id
+1;20486;Tasty Cotton Mouse;WASTE;2020-10-08T19:50:57;1;1
+2;46039;Cambridgeshire;ORDER;2020-10-08T19:45:53;2;2
+3;67225;card neutral Electronics;ORDER;2020-10-08T16:08:10;3;3
+4;68176;Bedfordshire Michigan;WASTE;2020-10-08T22:12:55;4;4
+5;37538;Global French Guiana Technician;ISSUE;2020-10-09T00:12:26;5;5
+6;46334;Operations Virgin Islands, British pink;ORDER;2020-10-08T12:05:58;6;6
+7;6199;Savings Account Implementation transmitter;ORDER;2020-10-08T08:37:13;7;7
+8;51752;Strategist Factors Internal;ISSUE;2020-10-09T05:32:31;8;8
+9;52530;Orchestrator Home Loan Account;ORDER;2020-10-08T07:08:46;9;9
+10;53054;Global Rustic Metal Hat;WASTE;2020-10-08T13:14:32;10;10

@@ -1,0 +1,32 @@
+{
+  "name": "MeasUnit",
+  "fields": [
+    {
+      "fieldName": "measUnit",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "measDesc",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "itemStock",
+      "otherEntityRelationshipName": "storageUnit",
+      "relationshipName": "itemStock"
+    }
+  ],
+  "changelogDate": "20201009054854",
+  "entityTableName": "cims_meas_units",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

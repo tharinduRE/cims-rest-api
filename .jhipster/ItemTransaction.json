@@ -1,0 +1,52 @@
+{
+  "name": "ItemTransaction",
+  "fields": [
+    {
+      "fieldName": "quantity",
+      "fieldType": "Float",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "remarks",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "transactionType",
+      "fieldType": "TransactionType",
+      "fieldValues": "ISSUE,ORDER,WASTE"
+    },
+    {
+      "fieldName": "transactionDate",
+      "fieldType": "Instant"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "itemStock",
+      "otherEntityRelationshipName": "itemTransaction",
+      "relationshipValidateRules": "required",
+      "relationshipName": "itemStock",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "invUser",
+      "otherEntityRelationshipName": "itemTransaction",
+      "relationshipValidateRules": "required",
+      "relationshipName": "createdBy",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20201009055054",
+  "entityTableName": "cims_item_transaction",
+  "dto": "mapstruct",
+  "pagination": "pagination",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": true,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}

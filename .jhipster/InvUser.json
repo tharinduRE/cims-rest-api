@@ -1,0 +1,52 @@
+{
+  "name": "InvUser",
+  "fields": [
+    {
+      "fieldName": "firstName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lastName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "postTitle",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "itemTransaction",
+      "otherEntityRelationshipName": "createdBy",
+      "relationshipName": "itemTransaction"
+    },
+    {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "invDepartment",
+      "otherEntityRelationshipName": "invUser",
+      "relationshipName": "invDepartment",
+      "otherEntityField": "id",
+      "ownerSide": false
+    },
+    {
+      "relationshipName": "invReport",
+      "otherEntityName": "invReport",
+      "relationshipType": "one-to-many",
+      "otherEntityRelationshipName": "invUser"
+    }
+  ],
+  "changelogDate": "20201009054054",
+  "entityTableName": "cims_user",
+  "dto": "mapstruct",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*",
+  "searchEngine": false,
+  "databaseType": "sql"
+}

@@ -1,0 +1,39 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.cheminv.app"
+    },
+    "jhipsterVersion": "6.9.1",
+    "applicationType": "monolith",
+    "baseName": "cims",
+    "packageName": "com.cheminv.app",
+    "packageFolder": "com/cheminv/app",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "ehcache",
+    "enableHibernateCache": false,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "mysql",
+    "prodDatabaseType": "mysql",
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "YmVmOWUxODA0YTVhODhiMjRmNzVjMGEyODJkNjU3MTVhMTdlOTRjZDJmZDJlMTYwODdiNzc2NTAwNmVhZmFhY2RlNDIzOWY4MDVhOGEwN2FkMDc1NmFjZTEwYWY3ZTgxZjU2NTk5YTQ1ODVhYTllODU4MTRhZDU3MjkzNTFmOTY=",
+    "embeddableLaunchScript": false,
+    "creationTimestamp": 1599139407978,
+    "testFrameworks": [],
+    "jhiPrefix": "cims",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": false,
+    "clientPackageManager": "npm",
+    "blueprints": [],
+    "skipClient": true,
+    "skipUserManagement": true,
+    "searchEngine": false,
+    "lastLiquibaseTimestamp": 1603295870000
+  }
+}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <!--
+        Added the constraints for entity WasteVendor.
+    -->
+    <changeSet id="20201009054754-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="waste_vendor_id"
+                                 baseTableName="cims_waste_vendor_waste_item"
+                                 constraintName="fk_cims_waste_vendor_waste_item_cims_waste_vendor_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cims_waste_vendor"/>
+
+        <addForeignKeyConstraint baseColumnNames="waste_item_id"
+                                 baseTableName="cims_waste_vendor_waste_item"
+                                 constraintName="fk_cims_waste_vendor_waste_item_waste_item_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cims_waste_item"/>
+        
+    </changeSet>
+</databaseChangeLog>

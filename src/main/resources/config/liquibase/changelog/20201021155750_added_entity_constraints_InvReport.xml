@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <!--
+        Added the constraints for entity InvReport.
+    -->
+    <changeSet id="20201021155750-2" author="jhipster">
+        
+        <addForeignKeyConstraint baseColumnNames="inv_user_id"
+                                 baseTableName="cims_reports"
+                                 constraintName="fk_cims_reports_inv_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cims_user"/>
+
+    </changeSet>
+</databaseChangeLog>

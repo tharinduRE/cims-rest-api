@@ -1,0 +1,114 @@
+{
+  "name": "ItemStock",
+  "fields": [
+    {
+      "fieldName": "itemName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "casNumber",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "stockBookFolio",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "itemManufacturer",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "itemCapacity",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "unitPrice",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "totalQuantity",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "minimumQuantity",
+      "fieldType": "Float"
+    },
+    {
+      "fieldName": "itemStatus",
+      "fieldType": "ItemStatus",
+      "fieldValues": "NEW,USED,OUTOFSTOCK"
+    },
+    {
+      "fieldName": "stockStore",
+      "fieldType": "StockStore",
+      "fieldValues": "ORG,INORG,ACIDS,NORM_GLASS,Q_FIT_GLASS,ORG_USED,INORG_USED"
+    },
+    {
+      "fieldName": "creatorId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "createdOn",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "lastUpdated",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "sdsfile",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "any"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "itemTransaction",
+      "otherEntityRelationshipName": "itemStock",
+      "relationshipName": "itemTransaction"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "wasteItem",
+      "otherEntityRelationshipName": "itemStock",
+      "relationshipName": "wasteItem"
+    },
+    {
+      "relationshipType": "many-to-many",
+      "otherEntityName": "hazardCode",
+      "otherEntityRelationshipName": "itemStock",
+      "relationshipName": "hazardCode",
+      "otherEntityField": "id",
+      "ownerSide": true
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "invStorage",
+      "otherEntityRelationshipName": "itemStock",
+      "relationshipValidateRules": "required",
+      "relationshipName": "invStorage",
+      "otherEntityField": "id"
+    },
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "measUnit",
+      "otherEntityRelationshipName": "itemStock",
+      "relationshipValidateRules": "required",
+      "relationshipName": "storageUnit",
+      "otherEntityField": "id"
+    }
+  ],
+  "changelogDate": "20201009054454",
+  "entityTableName": "cims_item_stock",
+  "dto": "mapstruct",
+  "pagination": "pagination",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": true,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "clientRootFolder": "",
+  "applications": "*"
+}
