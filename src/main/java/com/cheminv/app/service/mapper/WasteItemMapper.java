@@ -13,6 +13,7 @@ import org.mapstruct.*;
 public interface WasteItemMapper extends EntityMapper<WasteItemDTO, WasteItem> {
 
     @Mapping(source = "itemStock.id", target = "itemStockId")
+    @Mapping(source = "itemStock.itemName", target = "itemName")
     WasteItemDTO toDto(WasteItem wasteItem);
 
     @Mapping(source = "itemStockId", target = "itemStock")

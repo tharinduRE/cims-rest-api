@@ -8,7 +8,7 @@ import javax.persistence.Lob;
  * A DTO for the {@link com.cheminv.app.domain.InvReport} entity.
  */
 public class InvReportDTO implements Serializable {
-    
+
     private Long id;
 
     private String name;
@@ -21,7 +21,10 @@ public class InvReportDTO implements Serializable {
     private String reportContentType;
 
     private Long invUserId;
-    
+
+    private String createdBy;
+
+
     public Long getId() {
         return id;
     }
@@ -68,6 +71,14 @@ public class InvReportDTO implements Serializable {
 
     public void setInvUserId(Long invUserId) {
         this.invUserId = invUserId;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
     }
 
     @Override

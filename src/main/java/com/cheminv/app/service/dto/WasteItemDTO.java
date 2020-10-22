@@ -8,7 +8,7 @@ import java.io.Serializable;
  * A DTO for the {@link com.cheminv.app.domain.WasteItem} entity.
  */
 public class WasteItemDTO implements Serializable {
-    
+
     private Long id;
 
     private Float itemQuantity;
@@ -23,7 +23,9 @@ public class WasteItemDTO implements Serializable {
 
 
     private Long itemStockId;
-    
+
+    private String itemName;
+
     public Long getId() {
         return id;
     }
@@ -78,6 +80,14 @@ public class WasteItemDTO implements Serializable {
 
     public void setItemStockId(Long itemStockId) {
         this.itemStockId = itemStockId;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
     @Override
