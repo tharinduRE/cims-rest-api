@@ -33,6 +33,7 @@
     "blueprints": [],
     "skipClient": true,
     "skipUserManagement": true,
-    "searchEngine": false
+    "searchEngine": false,
+    "lastLiquibaseTimestamp": 1603295870000
   }
 }

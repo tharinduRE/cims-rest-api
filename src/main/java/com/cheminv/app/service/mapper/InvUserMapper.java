@@ -17,6 +17,8 @@ public interface InvUserMapper extends EntityMapper<InvUserDTO, InvUser> {
     @Mapping(target = "removeItemTransaction", ignore = true)
     @Mapping(target = "invDepartments", ignore = true)
     @Mapping(target = "removeInvDepartment", ignore = true)
+    @Mapping(target = "invReports", ignore = true)
+    @Mapping(target = "removeInvReport", ignore = true)
     InvUser toEntity(InvUserDTO invUserDTO);
 
     default InvUser fromId(Long id) {

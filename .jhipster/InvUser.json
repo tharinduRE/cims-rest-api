@@ -28,6 +28,12 @@
       "relationshipName": "invDepartment",
       "otherEntityField": "id",
       "ownerSide": false
+    },
+    {
+      "relationshipName": "invReport",
+      "otherEntityName": "invReport",
+      "relationshipType": "one-to-many",
+      "otherEntityRelationshipName": "invUser"
     }
   ],
   "changelogDate": "20201009054054",
@@ -40,5 +46,7 @@
   "readOnly": false,
   "embedded": false,
   "clientRootFolder": "",
-  "applications": "*"
+  "applications": "*",
+  "searchEngine": false,
+  "databaseType": "sql"
 }

@@ -37,6 +37,9 @@ public class InvUser implements Serializable {
     @JsonIgnore
     private Set<InvDepartment> invDepartments = new HashSet<>();
 
+    @OneToMany(mappedBy = "invUser")
+    private Set<InvReport> invReports = new HashSet<>();
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
         return id;
@@ -133,6 +136,31 @@ public class InvUser implements Serializable {
 
     public void setInvDepartments(Set<InvDepartment> invDepartments) {
         this.invDepartments = invDepartments;
+    }
+
+    public Set<InvReport> getInvReports() {
+        return invReports;
+    }
+
+    public InvUser invReports(Set<InvReport> invReports) {
+        this.invReports = invReports;
+        return this;
+    }
+
+    public InvUser addInvReport(InvReport invReport) {
+        this.invReports.add(invReport);
+        invReport.setInvUser(this);
+        return this;
+    }
+
+    public InvUser removeInvReport(InvReport invReport) {
+        this.invReports.remove(invReport);
+        invReport.setInvUser(null);
+        return this;
+    }
+
+    public void setInvReports(Set<InvReport> invReports) {
+        this.invReports = invReports;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
