@@ -33,7 +33,7 @@ public class UserJWTControllerIT {
     @Test
     public void testAuthorize() throws Exception {
         LoginVM login = new LoginVM();
-        login.setUsername("test");
+        login.setEmail("test");
         login.setPassword("test");
         mockMvc.perform(post("/api/authenticate")
             .contentType(MediaType.APPLICATION_JSON)
@@ -48,7 +48,7 @@ public class UserJWTControllerIT {
     @Test
     public void testAuthorizeWithRememberMe() throws Exception {
         LoginVM login = new LoginVM();
-        login.setUsername("test");
+        login.setEmail("test");
         login.setPassword("test");
         login.setRememberMe(true);
         mockMvc.perform(post("/api/authenticate")
@@ -64,7 +64,7 @@ public class UserJWTControllerIT {
     @Test
     public void testAuthorizeFails() throws Exception {
         LoginVM login = new LoginVM();
-        login.setUsername("wrong-user");
+        login.setEmail("wrong-user");
         login.setPassword("wrong password");
         mockMvc.perform(post("/api/authenticate")
             .contentType(MediaType.APPLICATION_JSON)

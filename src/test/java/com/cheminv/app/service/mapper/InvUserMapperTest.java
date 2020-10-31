@@ -8,15 +8,10 @@ public class InvUserMapperTest {
 
     private InvUserMapper invUserMapper;
 
-    @BeforeEach
-    public void setUp() {
-        invUserMapper = new InvUserMapperImpl();
-    }
-
     @Test
     public void testEntityFromId() {
         Long id = 1L;
-        assertThat(invUserMapper.fromId(id).getId()).isEqualTo(id);
-        assertThat(invUserMapper.fromId(null)).isNull();
+        assertThat(invUserMapper.userFromId(id).getId()).isEqualTo(id);
+        assertThat(invUserMapper.userFromId(null)).isNull();
     }
 }

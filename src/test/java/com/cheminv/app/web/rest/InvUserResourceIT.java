@@ -152,7 +152,7 @@ public class InvUserResourceIT {
     public void createInvUser() throws Exception {
         int databaseSizeBeforeCreate = invUserRepository.findAll().size();
         // Create the InvUser
-        InvUserDTO invUserDTO = invUserMapper.toDto(invUser);
+        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(invUser);
         restInvUserMockMvc.perform(post("/api/inv-users")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(invUserDTO)))
@@ -178,7 +178,7 @@ public class InvUserResourceIT {
 
         // Create the InvUser with an existing ID
         invUser.setId(1L);
-        InvUserDTO invUserDTO = invUserMapper.toDto(invUser);
+        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(invUser);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restInvUserMockMvc.perform(post("/api/inv-users")
@@ -211,8 +211,8 @@ public class InvUserResourceIT {
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
             .andExpect(jsonPath("$.[*].password").value(hasItem(DEFAULT_PASSWORD)));
     }
-    
-    @SuppressWarnings({"unchecked"})
+
+  /*  @SuppressWarnings({"unchecked"})
     public void getAllInvUsersWithEagerRelationshipsIsEnabled() throws Exception {
         when(invUserServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
@@ -230,7 +230,7 @@ public class InvUserResourceIT {
             .andExpect(status().isOk());
 
         verify(invUserServiceMock, times(1)).findAllWithEagerRelationships(any());
-    }
+    }*/
 
     @Test
     @Transactional
@@ -279,7 +279,7 @@ public class InvUserResourceIT {
             .lastUpdated(UPDATED_LAST_UPDATED)
             .email(UPDATED_EMAIL)
             .password(UPDATED_PASSWORD);
-        InvUserDTO invUserDTO = invUserMapper.toDto(updatedInvUser);
+        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(updatedInvUser);
 
         restInvUserMockMvc.perform(put("/api/inv-users")
             .contentType(MediaType.APPLICATION_JSON)
@@ -305,7 +305,7 @@ public class InvUserResourceIT {
         int databaseSizeBeforeUpdate = invUserRepository.findAll().size();
 
         // Create the InvUser
-        InvUserDTO invUserDTO = invUserMapper.toDto(invUser);
+        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(invUser);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restInvUserMockMvc.perform(put("/api/inv-users")

@@ -1,16 +1,27 @@
 package com.cheminv.app.web.rest;
 
+import com.cheminv.app.domain.InvUser;
+import com.cheminv.app.repository.InvUserRepository;
+import com.cheminv.app.security.AuthoritiesConstants;
 import com.cheminv.app.service.InvUserService;
-import com.cheminv.app.web.rest.errors.BadRequestAlertException;
 import com.cheminv.app.service.dto.InvUserDTO;
 
+import com.cheminv.app.web.rest.errors.BadRequestAlertException;
+import com.cheminv.app.web.rest.errors.EmailAlreadyUsedException;
 import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -32,87 +43,105 @@ public class InvUserResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final InvUserService invUserService;
+    private final InvUserService userService;
 
-    public InvUserResource(InvUserService invUserService) {
-        this.invUserService = invUserService;
+    private final InvUserRepository userRepository;
+
+    public InvUserResource(InvUserService invUserService, InvUserRepository userRepository) {
+        this.userService = invUserService;
+        this.userRepository = userRepository;
     }
 
     /**
-     * {@code POST  /inv-users} : Create a new invUser.
+     * {@code POST  /users}  : Creates a new user.
+     * <p>
+     * Creates a new user if the login and email are not already used, and sends an
+     * mail with an activation link.
+     * The user needs to be activated on creation.
      *
-     * @param invUserDTO the invUserDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new invUserDTO, or with status {@code 400 (Bad Request)} if the invUser has already an ID.
+     * @param userDTO the user to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new user, or with status {@code 400 (Bad Request)} if the login or email is already in use.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
-    @PostMapping("/inv-users")
-    public ResponseEntity<InvUserDTO> createInvUser(@Valid @RequestBody InvUserDTO invUserDTO) throws URISyntaxException {
-        log.debug("REST request to save InvUser : {}", invUserDTO);
-        if (invUserDTO.getId() != null) {
-            throw new BadRequestAlertException("A new invUser cannot already have an ID", ENTITY_NAME, "idexists");
+    @PostMapping("/users")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<InvUser> createUser(@Valid @RequestBody InvUserDTO userDTO) throws URISyntaxException {
+        log.debug("REST request to save User : {}", userDTO);
+
+        if (userDTO.getId() != null) {
+            throw new BadRequestAlertException("A new user cannot already have an ID", "userManagement", "idexists");
+            // Lowercase the user login before comparing with database
+        }else if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
+            throw new EmailAlreadyUsedException();
+        } else {
+            InvUser newUser = userService.createUser(userDTO);
+            return ResponseEntity.created(new URI("/api/users/" + newUser.getEmail()))
+                .headers(HeaderUtil.createAlert(applicationName,  "A user is created with identifier " + newUser.getEmail(), newUser.getEmail()))
+                .body(newUser);
         }
-        InvUserDTO result = invUserService.save(invUserDTO);
-        return ResponseEntity.created(new URI("/api/inv-users/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-            .body(result);
     }
 
     /**
-     * {@code PUT  /inv-users} : Updates an existing invUser.
+     * {@code PUT /users} : Updates an existing User.
      *
-     * @param invUserDTO the invUserDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated invUserDTO,
-     * or with status {@code 400 (Bad Request)} if the invUserDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the invUserDTO couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     * @param userDTO the user to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated user.
+     * @throws EmailAlreadyUsedException {@code 400 (Bad Request)} if the email is already in use.
      */
-    @PutMapping("/inv-users")
-    public ResponseEntity<InvUserDTO> updateInvUser(@Valid @RequestBody InvUserDTO invUserDTO) throws URISyntaxException {
-        log.debug("REST request to update InvUser : {}", invUserDTO);
-        if (invUserDTO.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+    @PutMapping("/users")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<InvUserDTO> updateUser(@Valid @RequestBody InvUserDTO userDTO) {
+        log.debug("REST request to update User : {}", userDTO);
+        Optional<InvUser> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
+        if (existingUser.isPresent() && (!existingUser.get().getId().equals(userDTO.getId()))) {
+            throw new EmailAlreadyUsedException();
         }
-        InvUserDTO result = invUserService.save(invUserDTO);
-        return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, invUserDTO.getId().toString()))
-            .body(result);
+        Optional<InvUserDTO> updatedUser = userService.updateUser(userDTO);
+
+        return ResponseUtil.wrapOrNotFound(updatedUser,
+            HeaderUtil.createAlert(applicationName, "A user is updated with identifier " + userDTO.getEmail(), userDTO.getEmail()));
     }
 
+
+
     /**
-     * {@code GET  /inv-users} : get all the invUsers.
-     *
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of invUsers in body.
+     * Gets a list of all roles.
+     * @return a string list of all roles.
      */
-    @GetMapping("/inv-users")
-    public List<InvUserDTO> getAllInvUsers(@RequestParam(required = false, defaultValue = "false") boolean eagerload) {
-        log.debug("REST request to get all InvUsers");
-        return invUserService.findAll();
+    @GetMapping("/users/authorities")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public List<String> getAuthorities() {
+        return userService.getAuthorities();
     }
 
     /**
-     * {@code GET  /inv-users/:id} : get the "id" invUser.
+     * {@code GET /users} : get all users.
      *
-     * @param id the id of the invUserDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the invUserDTO, or with status {@code 404 (Not Found)}.
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body all users.
      */
-    @GetMapping("/inv-users/{id}")
-    public ResponseEntity<InvUserDTO> getInvUser(@PathVariable Long id) {
-        log.debug("REST request to get InvUser : {}", id);
-        Optional<InvUserDTO> invUserDTO = invUserService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(invUserDTO);
+    @GetMapping("/users")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<List<InvUserDTO>> getAllUsers(Pageable pageable) {
+        final Page<InvUserDTO> page = userService.getAllManagedUsers(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
-     * {@code DELETE  /inv-users/:id} : delete the "id" invUser.
+     * {@code DELETE /users/:email} : delete the "login" User.
      *
-     * @param id the id of the invUserDTO to delete.
+     * @param email the email of the user to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/inv-users/{id}")
-    public ResponseEntity<Void> deleteInvUser(@PathVariable Long id) {
-        log.debug("REST request to delete InvUser : {}", id);
-        invUserService.delete(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString())).build();
+    @DeleteMapping("/users/{email}")
+    @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
+    public ResponseEntity<Void> deleteUser(@PathVariable String email) {
+        log.debug("REST request to delete User: {}", email);
+        userService.deleteUser(email);
+        return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName,  "A user is deleted with identifier " + email, email)).build();
     }
+
+
 }

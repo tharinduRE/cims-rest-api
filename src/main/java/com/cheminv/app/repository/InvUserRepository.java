@@ -17,6 +17,16 @@ import java.util.Optional;
 @Repository
 public interface InvUserRepository extends JpaRepository<InvUser, Long> {
 
+    @EntityGraph(attributePaths = "authorities")
+    Optional<InvUser> findOneWithAuthoritiesByEmailIgnoreCase(String email);
+
+    @EntityGraph(attributePaths = "authorities")
+    Optional<InvUser> findOneWithAuthoritiesByEmail(String email);
+
+    Optional<InvUser> findOneByEmailIgnoreCase(String email);
+
+    Page<InvUser> findAllByEmailNot(Pageable pageable, String email);
+
     @Query(value = "select distinct invUser from InvUser invUser left join fetch invUser.authorities left join fetch invUser.invStores",
         countQuery = "select count(distinct invUser) from InvUser invUser")
     Page<InvUser> findAllWithEagerRelationships(Pageable pageable);

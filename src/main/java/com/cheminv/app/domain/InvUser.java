@@ -1,6 +1,8 @@
 package com.cheminv.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -32,15 +34,18 @@ public class InvUser implements Serializable {
     @Column(name = "post_title")
     private String postTitle;
 
+    @CreationTimestamp
     @Column(name = "created_on")
     private Instant createdOn;
 
+    @UpdateTimestamp
     @Column(name = "last_updated")
     private Instant lastUpdated;
 
     @Column(name = "email")
     private String email;
 
+    @JsonIgnore
     @Column(name = "password")
     private String password;
 
@@ -60,7 +65,7 @@ public class InvUser implements Serializable {
                inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
     private Set<Authority> authorities = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @NotNull
     @JoinTable(name = "cims_user_inv_store",
                joinColumns = @JoinColumn(name = "inv_user_id", referencedColumnName = "id"),
@@ -348,7 +353,7 @@ public class InvUser implements Serializable {
             ", createdOn='" + getCreatedOn() + "'" +
             ", lastUpdated='" + getLastUpdated() + "'" +
             ", email='" + getEmail() + "'" +
-            ", password='" + getPassword() + "'" +
+            ", authStores='" + getInvStores() + "'" +
             "}";
     }
 }
