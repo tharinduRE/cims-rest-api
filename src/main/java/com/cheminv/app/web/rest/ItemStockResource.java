@@ -1,11 +1,13 @@
 package com.cheminv.app.web.rest;
 
+import com.cheminv.app.domain.enumeration.StockStore;
 import com.cheminv.app.service.ItemStockService;
 import com.cheminv.app.web.rest.errors.BadRequestAlertException;
 import com.cheminv.app.service.dto.ItemStockDTO;
 import com.cheminv.app.service.dto.ItemStockCriteria;
 import com.cheminv.app.service.ItemStockQueryService;
 
+import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,6 +92,7 @@ public class ItemStockResource {
             .body(result);
     }
 
+
     /**
      * {@code GET  /item-stocks} : get all the itemStocks.
      *
@@ -100,6 +104,19 @@ public class ItemStockResource {
     public ResponseEntity<List<ItemStockDTO>> getAllItemStocks(ItemStockCriteria criteria, Pageable pageable) {
         log.debug("REST request to get ItemStocks by criteria: {}", criteria);
         Page<ItemStockDTO> page = itemStockQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /** {@code GET /item-stocks/low} : get all low inventory items
+     *
+     * @param pageable the pagination info
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of itemStocks in body.
+     */
+    @GetMapping("/item-stocks/low")
+    public ResponseEntity<List<ItemStockDTO>> getAllLowInventory(@RequestParam(required = false) List<StockStore> stores, Pageable pageable){
+        log.debug("REST request to get all low inventory in stores: {}",stores);
+        Page<ItemStockDTO> page = itemStockService.findAllLow(stores,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

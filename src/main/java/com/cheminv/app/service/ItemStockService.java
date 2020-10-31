@@ -1,6 +1,7 @@
 package com.cheminv.app.service;
 
 import com.cheminv.app.domain.ItemStock;
+import com.cheminv.app.domain.enumeration.StockStore;
 import com.cheminv.app.repository.ItemStockRepository;
 import com.cheminv.app.service.dto.ItemStockDTO;
 import com.cheminv.app.service.mapper.ItemStockMapper;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -55,6 +57,13 @@ public class ItemStockService {
     public Page<ItemStockDTO> findAll(Pageable pageable) {
         log.debug("Request to get all ItemStocks");
         return itemStockRepository.findAll(pageable)
+            .map(itemStockMapper::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ItemStockDTO> findAllLow(List<StockStore> stores, Pageable pageable) {
+        log.debug("Request to get all ItemStocks");
+        return itemStockRepository.findAllByLessThanOrEqualToMinimum(pageable)
             .map(itemStockMapper::toDto);
     }
 
