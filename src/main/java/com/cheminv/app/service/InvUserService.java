@@ -71,7 +71,11 @@ public class InvUserService {
         return newUser;
     }
 
-    public InvUser createUser(InvUserDTO userDTO) {
+    public InvUser createUser(InvUserDTO userDTO,String password) {
+        invUserRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).ifPresent(s->
+        {
+            throw new EmailAlreadyUsedException();
+        });
         InvUser user = new InvUser();
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
@@ -80,8 +84,7 @@ public class InvUserService {
         if (userDTO.getEmail() != null) {
             user.setEmail(userDTO.getEmail().toLowerCase());
         }
-        String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
-        user.setPassword(encryptedPassword);
+        user.setPassword(passwordEncoder.encode(password));
         if (userDTO.getAuthorities() != null) {
             Set<Authority> authorities = userDTO.getAuthorities().stream()
                 .map(authorityRepository::findByName)

@@ -6,11 +6,15 @@ import com.cheminv.app.security.AuthoritiesConstants;
 import com.cheminv.app.service.InvUserService;
 import com.cheminv.app.service.dto.InvUserDTO;
 
+import com.cheminv.app.service.mapper.InvUserMapper;
 import com.cheminv.app.web.rest.errors.BadRequestAlertException;
 import com.cheminv.app.web.rest.errors.EmailAlreadyUsedException;
+import com.cheminv.app.web.rest.errors.InvalidPasswordException;
+import com.cheminv.app.web.rest.vm.ManagedUserVM;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,10 +49,13 @@ public class InvUserResource {
 
     private final InvUserService userService;
 
+    private final InvUserMapper userMapper;
+
     private final InvUserRepository userRepository;
 
-    public InvUserResource(InvUserService invUserService, InvUserRepository userRepository) {
+    public InvUserResource(InvUserService invUserService, InvUserMapper userMapper, InvUserRepository userRepository) {
         this.userService = invUserService;
+        this.userMapper = userMapper;
         this.userRepository = userRepository;
     }
 
@@ -59,27 +66,27 @@ public class InvUserResource {
      * mail with an activation link.
      * The user needs to be activated on creation.
      *
-     * @param userDTO the user to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new user, or with status {@code 400 (Bad Request)} if the login or email is already in use.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      * @throws BadRequestAlertException {@code 400 (Bad Request)} if the login or email is already in use.
      */
     @PostMapping("/users")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<InvUser> createUser(@Valid @RequestBody InvUserDTO userDTO) throws URISyntaxException {
-        log.debug("REST request to save User : {}", userDTO);
-
-        if (userDTO.getId() != null) {
-            throw new BadRequestAlertException("A new user cannot already have an ID", "userManagement", "idexists");
-            // Lowercase the user login before comparing with database
-        }else if (userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
-            throw new EmailAlreadyUsedException();
-        } else {
-            InvUser newUser = userService.createUser(userDTO);
+    public ResponseEntity<InvUserDTO> createUser(@Valid @RequestBody ManagedUserVM managedUserVM) throws URISyntaxException {
+        if (!checkPasswordLength(managedUserVM.getPassword())) {
+            throw new InvalidPasswordException();
+        }else {
+            InvUser newUser = userService.createUser(managedUserVM,managedUserVM.getPassword());
             return ResponseEntity.created(new URI("/api/users/" + newUser.getEmail()))
                 .headers(HeaderUtil.createAlert(applicationName,  "A user is created with identifier " + newUser.getEmail(), newUser.getEmail()))
-                .body(newUser);
+                .body(userMapper.userToUserDTO(newUser));
         }
+    }
+
+    private static boolean checkPasswordLength(String password) {
+        return !StringUtils.isEmpty(password) &&
+            password.length() >= ManagedUserVM.PASSWORD_MIN_LENGTH &&
+            password.length() <= ManagedUserVM.PASSWORD_MAX_LENGTH;
     }
 
     /**
