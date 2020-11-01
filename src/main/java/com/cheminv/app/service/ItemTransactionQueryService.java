@@ -103,6 +103,10 @@ public class ItemTransactionQueryService extends QueryService<ItemTransaction> {
             if (criteria.getTransactionDate() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getTransactionDate(), ItemTransaction_.transactionDate));
             }
+            if(criteria.getStockStore() != null){
+                specification = specification.and(buildSpecification(criteria.getStockStore(),
+                    root-> root.join(ItemTransaction_.itemStock,JoinType.LEFT).get(ItemStock_.stockStore)));
+            }
             if (criteria.getItemStockId() != null) {
                 specification = specification.and(buildSpecification(criteria.getItemStockId(),
                     root -> root.join(ItemTransaction_.itemStock, JoinType.LEFT).get(ItemStock_.id)));

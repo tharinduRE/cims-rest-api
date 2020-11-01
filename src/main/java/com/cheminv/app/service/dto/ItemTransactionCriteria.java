@@ -2,6 +2,8 @@ package com.cheminv.app.service.dto;
 
 import java.io.Serializable;
 import java.util.Objects;
+
+import com.cheminv.app.domain.enumeration.StockStore;
 import io.github.jhipster.service.Criteria;
 import com.cheminv.app.domain.enumeration.TransactionType;
 import io.github.jhipster.service.filter.BooleanFilter;
@@ -41,6 +43,24 @@ public class ItemTransactionCriteria implements Serializable, Criteria {
         }
 
     }
+    /**
+     * Class for filtering StockStore
+     */
+    public static class StockStoreFilter extends Filter<StockStore> {
+
+        public StockStoreFilter() {
+        }
+
+        public StockStoreFilter(StockStoreFilter filter) {
+            super(filter);
+        }
+
+        @Override
+        public StockStoreFilter copy() {
+            return new StockStoreFilter(this);
+        }
+
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -56,6 +76,8 @@ public class ItemTransactionCriteria implements Serializable, Criteria {
 
     private LongFilter itemStockId;
 
+    private StockStoreFilter stockStore;
+
     private LongFilter createdById;
 
     public ItemTransactionCriteria() {
@@ -68,6 +90,7 @@ public class ItemTransactionCriteria implements Serializable, Criteria {
         this.transactionType = other.transactionType == null ? null : other.transactionType.copy();
         this.transactionDate = other.transactionDate == null ? null : other.transactionDate.copy();
         this.itemStockId = other.itemStockId == null ? null : other.itemStockId.copy();
+        this.stockStore = other.stockStore == null ? null : other.stockStore.copy();
         this.createdById = other.createdById == null ? null : other.createdById.copy();
     }
 
@@ -124,6 +147,14 @@ public class ItemTransactionCriteria implements Serializable, Criteria {
         this.itemStockId = itemStockId;
     }
 
+    public StockStoreFilter getStockStore() {
+        return stockStore;
+    }
+
+    public void setStockStore(StockStoreFilter stockStore) {
+        this.stockStore = stockStore;
+    }
+
     public LongFilter getCreatedById() {
         return createdById;
     }
@@ -149,7 +180,8 @@ public class ItemTransactionCriteria implements Serializable, Criteria {
             Objects.equals(transactionType, that.transactionType) &&
             Objects.equals(transactionDate, that.transactionDate) &&
             Objects.equals(itemStockId, that.itemStockId) &&
-            Objects.equals(createdById, that.createdById);
+                Objects.equals(stockStore, that.stockStore) &&
+                Objects.equals(createdById, that.createdById);
     }
 
     @Override
@@ -161,7 +193,9 @@ public class ItemTransactionCriteria implements Serializable, Criteria {
         transactionType,
         transactionDate,
         itemStockId,
-        createdById
+            stockStore,
+
+            createdById
         );
     }
 
@@ -175,7 +209,8 @@ public class ItemTransactionCriteria implements Serializable, Criteria {
                 (transactionType != null ? "transactionType=" + transactionType + ", " : "") +
                 (transactionDate != null ? "transactionDate=" + transactionDate + ", " : "") +
                 (itemStockId != null ? "itemStockId=" + itemStockId + ", " : "") +
-                (createdById != null ? "createdById=" + createdById + ", " : "") +
+            (stockStore != null ? "stockStore=" + stockStore + ", " : "") +
+            (createdById != null ? "createdById=" + createdById + ", " : "") +
             "}";
     }
 
