@@ -103,6 +103,9 @@ public class OrderQueryService extends QueryService<Order> {
             if (criteria.getQuantity() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getQuantity(), Order_.quantity));
             }
+            if (criteria.getCancelDate() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getCancelDate(), Order_.cancelDate));
+            }
             if (criteria.getItemStockId() != null) {
                 specification = specification.and(buildSpecification(criteria.getItemStockId(),
                     root -> root.join(Order_.itemStock, JoinType.LEFT).get(ItemStock_.id)));

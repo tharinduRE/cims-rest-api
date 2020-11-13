@@ -1,6 +1,7 @@
 package com.cheminv.app.service;
 
 import com.cheminv.app.domain.Order;
+import com.cheminv.app.domain.enumeration.OrderStatus;
 import com.cheminv.app.repository.OrderRepository;
 import com.cheminv.app.service.dto.OrderDTO;
 import com.cheminv.app.service.mapper.OrderMapper;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Optional;
 
 /**
@@ -39,6 +41,12 @@ public class OrderService {
      * @return the persisted entity.
      */
     public OrderDTO save(OrderDTO orderDTO) {
+        if(orderDTO.getOrderStatus().equals(OrderStatus.PENDING))
+            orderDTO.setRequestDate(Instant.now());
+        if(orderDTO.getOrderStatus().equals(OrderStatus.CANCELLED))
+            orderDTO.setCancelDate(Instant.now());
+        if(orderDTO.getOrderStatus().equals(OrderStatus.COMPLETED))
+            orderDTO.setOrderDate(Instant.now());
         log.debug("Request to save Order : {}", orderDTO);
         Order order = orderMapper.toEntity(orderDTO);
         order = orderRepository.save(order);

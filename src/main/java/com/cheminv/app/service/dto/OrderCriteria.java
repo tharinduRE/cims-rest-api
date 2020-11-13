@@ -54,6 +54,8 @@ public class OrderCriteria implements Serializable, Criteria {
 
     private FloatFilter quantity;
 
+    private InstantFilter cancelDate;
+
     private LongFilter itemStockId;
 
     private LongFilter requestedById;
@@ -67,6 +69,7 @@ public class OrderCriteria implements Serializable, Criteria {
         this.requestDate = other.requestDate == null ? null : other.requestDate.copy();
         this.orderDate = other.orderDate == null ? null : other.orderDate.copy();
         this.quantity = other.quantity == null ? null : other.quantity.copy();
+        this.cancelDate = other.cancelDate == null ? null : other.cancelDate.copy();
         this.itemStockId = other.itemStockId == null ? null : other.itemStockId.copy();
         this.requestedById = other.requestedById == null ? null : other.requestedById.copy();
     }
@@ -116,6 +119,14 @@ public class OrderCriteria implements Serializable, Criteria {
         this.quantity = quantity;
     }
 
+    public InstantFilter getCancelDate() {
+        return cancelDate;
+    }
+
+    public void setCancelDate(InstantFilter cancelDate) {
+        this.cancelDate = cancelDate;
+    }
+
     public LongFilter getItemStockId() {
         return itemStockId;
     }
@@ -148,6 +159,7 @@ public class OrderCriteria implements Serializable, Criteria {
             Objects.equals(requestDate, that.requestDate) &&
             Objects.equals(orderDate, that.orderDate) &&
             Objects.equals(quantity, that.quantity) &&
+            Objects.equals(cancelDate, that.cancelDate) &&
             Objects.equals(itemStockId, that.itemStockId) &&
             Objects.equals(requestedById, that.requestedById);
     }
@@ -160,6 +172,7 @@ public class OrderCriteria implements Serializable, Criteria {
         requestDate,
         orderDate,
         quantity,
+        cancelDate,
         itemStockId,
         requestedById
         );
@@ -174,6 +187,7 @@ public class OrderCriteria implements Serializable, Criteria {
                 (requestDate != null ? "requestDate=" + requestDate + ", " : "") +
                 (orderDate != null ? "orderDate=" + orderDate + ", " : "") +
                 (quantity != null ? "quantity=" + quantity + ", " : "") +
+                (cancelDate != null ? "cancelDate=" + cancelDate + ", " : "") +
                 (itemStockId != null ? "itemStockId=" + itemStockId + ", " : "") +
                 (requestedById != null ? "requestedById=" + requestedById + ", " : "") +
             "}";

@@ -21,6 +21,8 @@ public class OrderDTO implements Serializable {
     @NotNull
     private Float quantity;
 
+    private Instant cancelDate;
+
 
     private Long itemStockId;
 
@@ -72,6 +74,14 @@ public class OrderDTO implements Serializable {
 
     public void setQuantity(Float quantity) {
         this.quantity = quantity;
+    }
+
+    public Instant getCancelDate() {
+        return cancelDate;
+    }
+
+    public void setCancelDate(Instant cancelDate) {
+        this.cancelDate = cancelDate;
     }
 
     public Long getItemStockId() {
@@ -148,6 +158,7 @@ public class OrderDTO implements Serializable {
             ", requestDate='" + getRequestDate() + "'" +
             ", orderDate='" + getOrderDate() + "'" +
             ", quantity=" + getQuantity() +
+            ", cancelDate='" + getCancelDate() + "'" +
             ", itemStockId=" + getItemStockId() +
             ", requestedById=" + getRequestedById() +
             "}";

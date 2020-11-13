@@ -37,6 +37,10 @@
       "fieldName": "quantity",
       "fieldType": "Float",
       "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "cancelDate",
+      "fieldType": "Instant"
     }
   ],
   "changelogDate": "20201022170704",

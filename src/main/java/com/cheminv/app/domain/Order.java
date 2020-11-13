@@ -37,9 +37,12 @@ public class Order implements Serializable {
     @Column(name = "quantity", nullable = false)
     private Float quantity;
 
+    @Column(name = "cancel_date")
+    private Instant cancelDate;
+
     @ManyToOne(optional = false)
     @NotNull
-    @JsonIgnoreProperties(value = "itemOrders", allowSetters = true)
+    @JsonIgnoreProperties(value = "orders", allowSetters = true)
     private ItemStock itemStock;
 
     @ManyToOne(optional = false)
@@ -108,6 +111,19 @@ public class Order implements Serializable {
         this.quantity = quantity;
     }
 
+    public Instant getCancelDate() {
+        return cancelDate;
+    }
+
+    public Order cancelDate(Instant cancelDate) {
+        this.cancelDate = cancelDate;
+        return this;
+    }
+
+    public void setCancelDate(Instant cancelDate) {
+        this.cancelDate = cancelDate;
+    }
+
     public ItemStock getItemStock() {
         return itemStock;
     }
@@ -160,6 +176,7 @@ public class Order implements Serializable {
             ", requestDate='" + getRequestDate() + "'" +
             ", orderDate='" + getOrderDate() + "'" +
             ", quantity=" + getQuantity() +
+            ", cancelDate='" + getCancelDate() + "'" +
             "}";
     }
 }

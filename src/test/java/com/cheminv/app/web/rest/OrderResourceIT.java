@@ -52,6 +52,9 @@ public class OrderResourceIT {
     private static final Float UPDATED_QUANTITY = 2F;
     private static final Float SMALLER_QUANTITY = 1F - 1F;
 
+    private static final Instant DEFAULT_CANCEL_DATE = Instant.ofEpochMilli(0L);
+    private static final Instant UPDATED_CANCEL_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
+
     @Autowired
     private OrderRepository orderRepository;
 
@@ -83,7 +86,8 @@ public class OrderResourceIT {
             .orderStatus(DEFAULT_ORDER_STATUS)
             .requestDate(DEFAULT_REQUEST_DATE)
             .orderDate(DEFAULT_ORDER_DATE)
-            .quantity(DEFAULT_QUANTITY);
+            .quantity(DEFAULT_QUANTITY)
+            .cancelDate(DEFAULT_CANCEL_DATE);
         // Add required entity
         ItemStock itemStock;
         if (TestUtil.findAll(em, ItemStock.class).isEmpty()) {
@@ -117,7 +121,8 @@ public class OrderResourceIT {
             .orderStatus(UPDATED_ORDER_STATUS)
             .requestDate(UPDATED_REQUEST_DATE)
             .orderDate(UPDATED_ORDER_DATE)
-            .quantity(UPDATED_QUANTITY);
+            .quantity(UPDATED_QUANTITY)
+            .cancelDate(UPDATED_CANCEL_DATE);
         // Add required entity
         ItemStock itemStock;
         if (TestUtil.findAll(em, ItemStock.class).isEmpty()) {
@@ -165,6 +170,7 @@ public class OrderResourceIT {
         assertThat(testOrder.getRequestDate()).isEqualTo(DEFAULT_REQUEST_DATE);
         assertThat(testOrder.getOrderDate()).isEqualTo(DEFAULT_ORDER_DATE);
         assertThat(testOrder.getQuantity()).isEqualTo(DEFAULT_QUANTITY);
+        assertThat(testOrder.getCancelDate()).isEqualTo(DEFAULT_CANCEL_DATE);
     }
 
     @Test
@@ -222,7 +228,8 @@ public class OrderResourceIT {
             .andExpect(jsonPath("$.[*].orderStatus").value(hasItem(DEFAULT_ORDER_STATUS.toString())))
             .andExpect(jsonPath("$.[*].requestDate").value(hasItem(DEFAULT_REQUEST_DATE.toString())))
             .andExpect(jsonPath("$.[*].orderDate").value(hasItem(DEFAULT_ORDER_DATE.toString())))
-            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY.doubleValue())));
+            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY.doubleValue())))
+            .andExpect(jsonPath("$.[*].cancelDate").value(hasItem(DEFAULT_CANCEL_DATE.toString())));
     }
     
     @Test
@@ -239,7 +246,8 @@ public class OrderResourceIT {
             .andExpect(jsonPath("$.orderStatus").value(DEFAULT_ORDER_STATUS.toString()))
             .andExpect(jsonPath("$.requestDate").value(DEFAULT_REQUEST_DATE.toString()))
             .andExpect(jsonPath("$.orderDate").value(DEFAULT_ORDER_DATE.toString()))
-            .andExpect(jsonPath("$.quantity").value(DEFAULT_QUANTITY.doubleValue()));
+            .andExpect(jsonPath("$.quantity").value(DEFAULT_QUANTITY.doubleValue()))
+            .andExpect(jsonPath("$.cancelDate").value(DEFAULT_CANCEL_DATE.toString()));
     }
 
 
@@ -525,6 +533,58 @@ public class OrderResourceIT {
 
     @Test
     @Transactional
+    public void getAllOrdersByCancelDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where cancelDate equals to DEFAULT_CANCEL_DATE
+        defaultOrderShouldBeFound("cancelDate.equals=" + DEFAULT_CANCEL_DATE);
+
+        // Get all the orderList where cancelDate equals to UPDATED_CANCEL_DATE
+        defaultOrderShouldNotBeFound("cancelDate.equals=" + UPDATED_CANCEL_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByCancelDateIsNotEqualToSomething() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where cancelDate not equals to DEFAULT_CANCEL_DATE
+        defaultOrderShouldNotBeFound("cancelDate.notEquals=" + DEFAULT_CANCEL_DATE);
+
+        // Get all the orderList where cancelDate not equals to UPDATED_CANCEL_DATE
+        defaultOrderShouldBeFound("cancelDate.notEquals=" + UPDATED_CANCEL_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByCancelDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where cancelDate in DEFAULT_CANCEL_DATE or UPDATED_CANCEL_DATE
+        defaultOrderShouldBeFound("cancelDate.in=" + DEFAULT_CANCEL_DATE + "," + UPDATED_CANCEL_DATE);
+
+        // Get all the orderList where cancelDate equals to UPDATED_CANCEL_DATE
+        defaultOrderShouldNotBeFound("cancelDate.in=" + UPDATED_CANCEL_DATE);
+    }
+
+    @Test
+    @Transactional
+    public void getAllOrdersByCancelDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        orderRepository.saveAndFlush(order);
+
+        // Get all the orderList where cancelDate is not null
+        defaultOrderShouldBeFound("cancelDate.specified=true");
+
+        // Get all the orderList where cancelDate is null
+        defaultOrderShouldNotBeFound("cancelDate.specified=false");
+    }
+
+    @Test
+    @Transactional
     public void getAllOrdersByItemStockIsEqualToSomething() throws Exception {
         // Get already existing entity
         ItemStock itemStock = order.getItemStock();
@@ -565,7 +625,8 @@ public class OrderResourceIT {
             .andExpect(jsonPath("$.[*].orderStatus").value(hasItem(DEFAULT_ORDER_STATUS.toString())))
             .andExpect(jsonPath("$.[*].requestDate").value(hasItem(DEFAULT_REQUEST_DATE.toString())))
             .andExpect(jsonPath("$.[*].orderDate").value(hasItem(DEFAULT_ORDER_DATE.toString())))
-            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY.doubleValue())));
+            .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY.doubleValue())))
+            .andExpect(jsonPath("$.[*].cancelDate").value(hasItem(DEFAULT_CANCEL_DATE.toString())));
 
         // Check, that the count call also returns 1
         restOrderMockMvc.perform(get("/api/orders/count?sort=id,desc&" + filter))
@@ -615,7 +676,8 @@ public class OrderResourceIT {
             .orderStatus(UPDATED_ORDER_STATUS)
             .requestDate(UPDATED_REQUEST_DATE)
             .orderDate(UPDATED_ORDER_DATE)
-            .quantity(UPDATED_QUANTITY);
+            .quantity(UPDATED_QUANTITY)
+            .cancelDate(UPDATED_CANCEL_DATE);
         OrderDTO orderDTO = orderMapper.toDto(updatedOrder);
 
         restOrderMockMvc.perform(put("/api/orders")
@@ -631,6 +693,7 @@ public class OrderResourceIT {
         assertThat(testOrder.getRequestDate()).isEqualTo(UPDATED_REQUEST_DATE);
         assertThat(testOrder.getOrderDate()).isEqualTo(UPDATED_ORDER_DATE);
         assertThat(testOrder.getQuantity()).isEqualTo(UPDATED_QUANTITY);
+        assertThat(testOrder.getCancelDate()).isEqualTo(UPDATED_CANCEL_DATE);
     }
 
     @Test
