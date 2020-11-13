@@ -1,11 +1,13 @@
 id;meas_unit;meas_desc
-1;Multi-lateral calculating;hack
-2;Accounts unleash;PNG
-3;bifurcated grey;Chips
-4;Investment Account bypassing;artificial intelligence
-5;Marketing;Euro deposit El Salvador Colon US Dollar
-6;lavender Salad;Solutions Practical Gorgeous Granite Car
-7;payment;Auto Loan Account synergize applications
-8;Internal Vermont;SMTP
-9;Unbranded connect;Automotive
-10;Plastic;Director primary
+1;g;default_units
+2;mg;default_units
+3;kg;default_units
+4;μg;default_units
+5;lbs;default_units
+6;l;default_units
+7;ml;default_units
+8;oz;default_units
+9;gal;default_units
+10;gal;default_units
+11;units;default_units
+12;cu ft;default_units
