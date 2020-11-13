@@ -49,6 +49,9 @@ public class InvUser implements Serializable {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "avatar_url")
+    private String avatarUrl;
+
     @OneToMany(mappedBy = "createdBy")
     private Set<ItemTransaction> itemTransactions = new HashSet<>();
 
@@ -173,6 +176,19 @@ public class InvUser implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public InvUser avatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+        return this;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     public Set<ItemTransaction> getItemTransactions() {

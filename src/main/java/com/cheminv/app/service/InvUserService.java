@@ -117,6 +117,7 @@ public class InvUserService {
                 }
                 user.setPostTitle(userDTO.getPostTitle());
                 user.setInvStores(userDTO.getAuthStores());
+                user.setAvatarUrl(userDTO.getAvatarUrl());
                 Set<Authority> managedAuthorities = user.getAuthorities();
                 managedAuthorities.clear();
                 userDTO.getAuthorities().stream()
@@ -138,7 +139,7 @@ public class InvUserService {
      * @param lastName  last name of user.
      * @param email     email id of user.
      */
-    public void updateUser(String firstName, String lastName, String email, String postTitle) {
+    public void updateUser(String firstName, String lastName, String email, String postTitle,String avatarUrl) {
         SecurityUtils.getCurrentUserLogin()
             .flatMap(invUserRepository::findOneByEmailIgnoreCase)
             .ifPresent(user -> {
@@ -148,6 +149,9 @@ public class InvUserService {
                     user.setEmail(email.toLowerCase());
                 }
                 user.setPostTitle(postTitle);
+                if (avatarUrl != null) {
+                    user.setAvatarUrl(avatarUrl);
+                }
                 log.debug("Changed Information for User: {}", user);
             });
     }

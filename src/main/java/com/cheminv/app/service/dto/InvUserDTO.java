@@ -28,6 +28,8 @@ public class InvUserDTO implements Serializable {
 
     private Instant lastUpdated;
 
+    private String avatarUrl;
+
     @NotBlank
     @Email
     @Size(min = 5, max = 254)
@@ -48,6 +50,7 @@ public class InvUserDTO implements Serializable {
         this.createdOn = user.getCreatedOn();
         this.lastUpdated = user.getLastUpdated();
         this.email = user.getEmail();
+        this.avatarUrl = user.getAvatarUrl();
         this.authStores = user.getInvStores();
         this.authorities = user.getAuthorities().stream()
             .map(Authority::getName)
@@ -124,6 +127,14 @@ public class InvUserDTO implements Serializable {
 
     public void setAuthStores(Set<InvStore> authStores) {
         this.authStores = authStores;
+    }
+
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
     }
 
     @Override

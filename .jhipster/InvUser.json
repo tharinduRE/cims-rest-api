@@ -28,6 +28,10 @@
     {
       "fieldName": "password",
       "fieldType": "String"
+    },
+    {
+      "fieldName": "avatarUrl",
+      "fieldType": "String"
     }
   ],
   "relationships": [
