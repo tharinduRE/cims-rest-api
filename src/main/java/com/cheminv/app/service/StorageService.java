@@ -25,8 +25,6 @@ public class StorageService {
 
     private static final Path USER_AVATAR_FOLDER = Paths.get(UPLOAD_FOLDER +"/user-avatar");
 
-    private static final Path REPORTS_FOLDER = Paths.get(UPLOAD_FOLDER +"/reports");
-
     public void init() throws IOException {
         if(!Files.exists(UPLOAD_FOLDER)){
             Files.createDirectories(UPLOAD_FOLDER);
