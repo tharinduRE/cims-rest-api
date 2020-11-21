@@ -18,6 +18,8 @@ import java.util.Optional;
 @Repository
 public interface ItemStockRepository extends JpaRepository<ItemStock, Long>, JpaSpecificationExecutor<ItemStock> {
 
+    List<ItemStock> findAllByStockStoreEquals(StockStore stockStore);
+
     @Query("select distinct itemStock from ItemStock itemStock where itemStock.totalQuantity <= itemStock.minimumQuantity")
     Page<ItemStock> findAllByLessThanOrEqualToMinimum(Pageable pageable);
 

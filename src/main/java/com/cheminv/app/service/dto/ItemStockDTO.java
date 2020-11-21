@@ -37,6 +37,8 @@ public class ItemStockDTO implements Serializable {
 
     private StockStore stockStore;
 
+    private String store;
+
     private Integer creatorId;
 
     private Instant createdOn;
@@ -213,6 +215,14 @@ public class ItemStockDTO implements Serializable {
 
     public void setStorageUnit(String storageUnit) {
         this.storageUnit = storageUnit;
+    }
+
+    public String getStore() {
+        return store;
+    }
+
+    public void setStore(String store) {
+        this.store = store;
     }
 
     @Override

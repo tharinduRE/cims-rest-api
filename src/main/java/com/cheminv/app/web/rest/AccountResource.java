@@ -11,23 +11,16 @@ import com.cheminv.app.web.rest.errors.EmailAlreadyUsedException;
 import com.cheminv.app.web.rest.errors.InvalidPasswordException;
 import com.cheminv.app.web.rest.errors.LoginAlreadyUsedException;
 import com.cheminv.app.web.rest.vm.ManagedUserVM;
-import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.InputStream;
 import java.util.Optional;
 
 @RestController
@@ -120,21 +113,16 @@ public class AccountResource {
             userDTO.getPostTitle(),userDTO.getAvatarUrl());
     }
 
-    @PostMapping(path = "/account/change-avatar")
+    /***
+     *
+     * @param file the user image upload file
+     * @throws Exception if there's error
+     */
+    @PostMapping(path = "/account/avatar")
     public ResponseEntity<String> changeAvatar(@RequestParam MultipartFile file) throws Exception {
         String fileName = storageService.saveUserAvatar(file);
         return ResponseEntity.status(HttpStatus.OK)
             .body(fileName);
-    }
-
-    @GetMapping(path = "/account/avatar/{fileName}")
-    public ResponseEntity<byte[]> getUserAvatar(@PathVariable String fileName) throws Exception {
-        Resource resource =  storageService.loadUserAvatar(fileName);
-        InputStream in = resource.getInputStream();
-        return ResponseEntity.status(HttpStatus.OK)
-            .header(HttpHeaders.CONTENT_DISPOSITION,"inline;filename="+resource.getFilename())
-            .header(HttpHeaders.CONTENT_TYPE,new MimetypesFileTypeMap().getContentType(resource.getFilename()))
-            .body(IOUtils.toByteArray(in));
     }
 
     /**
