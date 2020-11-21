@@ -52,7 +52,7 @@ public class InvUser implements Serializable {
     @Column(name = "avatar_url")
     private String avatarUrl;
 
-    @OneToMany(mappedBy = "createdBy")
+    @OneToMany(mappedBy = "createdBy",cascade = CascadeType.ALL)
     private Set<ItemTransaction> itemTransactions = new HashSet<>();
 
     @ManyToMany(mappedBy = "invUsers")
@@ -75,7 +75,7 @@ public class InvUser implements Serializable {
                inverseJoinColumns = @JoinColumn(name = "inv_store_id", referencedColumnName = "id"))
     private Set<InvStore> invStores = new HashSet<>();
 
-    @OneToMany(mappedBy = "requestedBy")
+    @OneToMany(mappedBy = "requestedBy",cascade = CascadeType.ALL)
     private Set<Order> itemOrders = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
