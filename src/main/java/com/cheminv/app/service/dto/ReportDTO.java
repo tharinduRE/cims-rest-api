@@ -1,11 +1,18 @@
 package com.cheminv.app.service.dto;
 
+import com.cheminv.app.domain.enumeration.StockStore;
+
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Objects;
 
 public class ReportDTO  implements Serializable {
 
+    @NotBlank
     private Long userId;
+
+    @NotBlank
+    private StockStore stockStore;
 
     public Long getUserId() {
         return userId;
@@ -13,6 +20,14 @@ public class ReportDTO  implements Serializable {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public StockStore getStockStore() {
+        return stockStore;
+    }
+
+    public void setStockStore(StockStore stockStore) {
+        this.stockStore = stockStore;
     }
 
     @Override
