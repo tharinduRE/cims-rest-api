@@ -1,6 +1,10 @@
-# cims
+<p align="center">
+    <img src="docs/logo-512w.png" alt="Chakra logo" width="100" />
+</p>
+<h1 align="center"> Chemical Inventory Management System </h1> <br>
 
-This application was generated using JHipster 6.10.4, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v6.10.4](https://www.jhipster.tech/documentation-archive/v6.10.4).
+
+REST api for the chemical inventory management system 
 
 ## Development
 
