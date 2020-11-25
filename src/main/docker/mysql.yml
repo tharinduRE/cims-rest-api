@@ -1,9 +1,10 @@
-version: '2'
+version: '3'
 services:
   cims-mysql:
-    image: mysql:8.0.20
-    # volumes:
-    #     - ~/volumes/jhipster/cims/mysql/:/var/lib/mysql/
+    image: mysql:latest
+    container_name: cims-mysql
+    volumes:
+      - ~/volumes/jhipster/cims/mysql/:/var/lib/mysql/
     environment:
       - MYSQL_USER=root
       - MYSQL_ALLOW_EMPTY_PASSWORD=yes
