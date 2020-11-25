@@ -68,8 +68,7 @@ public class InvUser implements Serializable {
                inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
     private Set<Authority> authorities = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @NotNull
+    @ManyToMany
     @JoinTable(name = "cims_user_inv_store",
                joinColumns = @JoinColumn(name = "inv_user_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "inv_store_id", referencedColumnName = "id"))

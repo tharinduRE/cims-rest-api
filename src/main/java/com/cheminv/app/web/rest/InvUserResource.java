@@ -125,15 +125,13 @@ public class InvUserResource {
     /**
      * {@code GET /users} : get all users.
      *
-     * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body all users.
      */
     @GetMapping("/users")
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
-    public ResponseEntity<List<InvUserDTO>> getAllUsers(Pageable pageable) {
-        final Page<InvUserDTO> page = userService.getAllManagedUsers(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    public ResponseEntity<List<InvUserDTO>> getAllUsers() {
+        final List<InvUserDTO> list = userService.getAllManagedUsers();
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     /**

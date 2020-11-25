@@ -181,8 +181,9 @@ public class InvUserService {
 
 
     @Transactional(readOnly = true)
-    public Page<InvUserDTO> getAllManagedUsers(Pageable pageable) {
-        return invUserRepository.findAllByEmailNot(pageable, Constants.ANONYMOUS_USER).map(InvUserDTO::new);
+    public List<InvUserDTO> getAllManagedUsers() {
+        List<InvUser> managedUserList = invUserRepository.findAllByEmailNot(Constants.SYSTEM_ACCOUNT);
+        return invUserMapper.usersToUserDTOs(managedUserList);
     }
 
     @Transactional(readOnly = true)
