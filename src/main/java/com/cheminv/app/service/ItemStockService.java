@@ -63,7 +63,7 @@ public class ItemStockService {
     @Transactional(readOnly = true)
     public Page<ItemStockDTO> findAllLow(List<StockStore> stores, Pageable pageable) {
         log.debug("Request to get all ItemStocks");
-        return itemStockRepository.findAllByLessThanOrEqualToMinimum(pageable)
+        return itemStockRepository.findAllByLessThanOrEqualToMinimum(stores,pageable)
             .map(itemStockMapper::toDto);
     }
 

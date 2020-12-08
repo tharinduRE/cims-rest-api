@@ -20,8 +20,8 @@ public interface ItemStockRepository extends JpaRepository<ItemStock, Long>, Jpa
 
     List<ItemStock> findAllByStockStoreEquals(StockStore stockStore);
 
-    @Query("select distinct itemStock from ItemStock itemStock where itemStock.totalQuantity <= itemStock.minimumQuantity")
-    Page<ItemStock> findAllByLessThanOrEqualToMinimum(Pageable pageable);
+    @Query("select distinct itemStock from ItemStock itemStock where itemStock.totalQuantity <= itemStock.minimumQuantity and itemStock.stockStore in :stores")
+    Page<ItemStock> findAllByLessThanOrEqualToMinimum(@Param("stores") List<StockStore> stores,Pageable pageable);
 
     @Query(value = "select distinct itemStock from ItemStock itemStock left join fetch itemStock.hazardCodes",
         countQuery = "select count(distinct itemStock) from ItemStock itemStock")
