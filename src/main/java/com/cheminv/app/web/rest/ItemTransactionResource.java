@@ -50,26 +50,26 @@ public class ItemTransactionResource {
     }
 
     /**
-     * {@code POST  /item-transactions} : Create a new itemTransaction.
+     * {@code POST  /transactions} : Create a new itemTransaction.
      *
      * @param itemTransactionDTO the itemTransactionDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new itemTransactionDTO, or with status {@code 400 (Bad Request)} if the itemTransaction has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/item-transactions")
+    @PostMapping("/transactions")
     public ResponseEntity<ItemTransactionDTO> createItemTransaction(@Valid @RequestBody ItemTransactionDTO itemTransactionDTO) throws URISyntaxException {
         log.debug("REST request to save ItemTransaction : {}", itemTransactionDTO);
         if (itemTransactionDTO.getId() != null) {
             throw new BadRequestAlertException("A new itemTransaction cannot already have an ID", ENTITY_NAME, "idexists");
         }
         ItemTransactionDTO result = itemTransactionService.save(itemTransactionDTO);
-        return ResponseEntity.created(new URI("/api/item-transactions/" + result.getId()))
+        return ResponseEntity.created(new URI("/api/transactions/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * {@code PUT  /item-transactions} : Updates an existing itemTransaction.
+     * {@code PUT  /transactions} : Updates an existing itemTransaction.
      *
      * @param itemTransactionDTO the itemTransactionDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated itemTransactionDTO,
@@ -77,7 +77,7 @@ public class ItemTransactionResource {
      * or with status {@code 500 (Internal Server Error)} if the itemTransactionDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/item-transactions")
+    @PutMapping("/transactions")
     public ResponseEntity<ItemTransactionDTO> updateItemTransaction(@Valid @RequestBody ItemTransactionDTO itemTransactionDTO) throws URISyntaxException {
         log.debug("REST request to update ItemTransaction : {}", itemTransactionDTO);
         if (itemTransactionDTO.getId() == null) {
@@ -90,13 +90,13 @@ public class ItemTransactionResource {
     }
 
     /**
-     * {@code GET  /item-transactions} : get all the itemTransactions.
+     * {@code GET  /transactions} : get all the itemTransactions.
      *
      * @param pageable the pagination information.
      * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of itemTransactions in body.
      */
-    @GetMapping("/item-transactions")
+    @GetMapping("/transactions")
     public ResponseEntity<List<ItemTransactionDTO>> getAllItemTransactions(ItemTransactionCriteria criteria, Pageable pageable) {
         log.debug("REST request to get ItemTransactions by criteria: {}", criteria);
         Page<ItemTransactionDTO> page = itemTransactionQueryService.findByCriteria(criteria, pageable);
@@ -105,24 +105,24 @@ public class ItemTransactionResource {
     }
 
     /**
-     * {@code GET  /item-transactions/count} : count all the itemTransactions.
+     * {@code GET  /transactions/count} : count all the itemTransactions.
      *
      * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
      */
-    @GetMapping("/item-transactions/count")
+    @GetMapping("/transactions/count")
     public ResponseEntity<Long> countItemTransactions(ItemTransactionCriteria criteria) {
         log.debug("REST request to count ItemTransactions by criteria: {}", criteria);
         return ResponseEntity.ok().body(itemTransactionQueryService.countByCriteria(criteria));
     }
 
     /**
-     * {@code GET  /item-transactions/:id} : get the "id" itemTransaction.
+     * {@code GET  /transactions/:id} : get the "id" itemTransaction.
      *
      * @param id the id of the itemTransactionDTO to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the itemTransactionDTO, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/item-transactions/{id}")
+    @GetMapping("/transactions/{id}")
     public ResponseEntity<ItemTransactionDTO> getItemTransaction(@PathVariable Long id) {
         log.debug("REST request to get ItemTransaction : {}", id);
         Optional<ItemTransactionDTO> itemTransactionDTO = itemTransactionService.findOne(id);
@@ -130,12 +130,12 @@ public class ItemTransactionResource {
     }
 
     /**
-     * {@code DELETE  /item-transactions/:id} : delete the "id" itemTransaction.
+     * {@code DELETE  /transactions/:id} : delete the "id" itemTransaction.
      *
      * @param id the id of the itemTransactionDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/item-transactions/{id}")
+    @DeleteMapping("/transactions/{id}")
     public ResponseEntity<Void> deleteItemTransaction(@PathVariable Long id) {
         log.debug("REST request to delete ItemTransaction : {}", id);
         itemTransactionService.delete(id);
