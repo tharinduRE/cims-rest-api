@@ -2,7 +2,6 @@ package com.cheminv.app.repository;
 
 import com.cheminv.app.domain.ItemStock;
 
-import com.cheminv.app.domain.enumeration.StockStore;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
@@ -18,10 +17,10 @@ import java.util.Optional;
 @Repository
 public interface ItemStockRepository extends JpaRepository<ItemStock, Long>, JpaSpecificationExecutor<ItemStock> {
 
-    List<ItemStock> findAllByStockStoreEquals(StockStore stockStore);
+    /*List<ItemStock> findAllByStockStoreEquals(StockStore stockStore);
 
     @Query("select distinct itemStock from ItemStock itemStock where itemStock.totalQuantity <= itemStock.minimumQuantity and itemStock.stockStore in :stores")
-    Page<ItemStock> findAllByLessThanOrEqualToMinimum(@Param("stores") List<StockStore> stores,Pageable pageable);
+    Page<ItemStock> findAllByLessThanOrEqualToMinimum(@Param("stores") List<StockStore> stores,Pageable pageable);*/
 
     @Query(value = "select distinct itemStock from ItemStock itemStock left join fetch itemStock.hazardCodes",
         countQuery = "select count(distinct itemStock) from ItemStock itemStock")

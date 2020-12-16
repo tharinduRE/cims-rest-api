@@ -40,15 +40,6 @@
       "fieldValues": "NEW,USED,OUTOFSTOCK"
     },
     {
-      "fieldName": "stockStore",
-      "fieldType": "StockStore",
-      "fieldValues": "ORG,INORG,ACIDS,NORM_GLASS,Q_FIT_GLASS,ORG_USED,INORG_USED"
-    },
-    {
-      "fieldName": "creatorId",
-      "fieldType": "Integer"
-    },
-    {
       "fieldName": "createdOn",
       "fieldType": "Instant"
     },

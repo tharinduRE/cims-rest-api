@@ -7,13 +7,12 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.Lob;
 import com.cheminv.app.domain.enumeration.ItemStatus;
-import com.cheminv.app.domain.enumeration.StockStore;
 
 /**
  * A DTO for the {@link com.cheminv.app.domain.ItemStock} entity.
  */
 public class ItemStockDTO implements Serializable {
-
+    
     private Long id;
 
     @NotNull
@@ -34,12 +33,6 @@ public class ItemStockDTO implements Serializable {
     private Float minimumQuantity;
 
     private ItemStatus itemStatus;
-
-    private StockStore stockStore;
-
-    private String store;
-
-    private Integer creatorId;
 
     private Instant createdOn;
 
@@ -137,22 +130,6 @@ public class ItemStockDTO implements Serializable {
         this.itemStatus = itemStatus;
     }
 
-    public StockStore getStockStore() {
-        return stockStore;
-    }
-
-    public void setStockStore(StockStore stockStore) {
-        this.stockStore = stockStore;
-    }
-
-    public Integer getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(Integer creatorId) {
-        this.creatorId = creatorId;
-    }
-
     public Instant getCreatedOn() {
         return createdOn;
     }
@@ -217,14 +194,6 @@ public class ItemStockDTO implements Serializable {
         this.storageUnit = storageUnit;
     }
 
-    public String getStore() {
-        return store;
-    }
-
-    public void setStore(String store) {
-        this.store = store;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -256,8 +225,6 @@ public class ItemStockDTO implements Serializable {
             ", totalQuantity=" + getTotalQuantity() +
             ", minimumQuantity=" + getMinimumQuantity() +
             ", itemStatus='" + getItemStatus() + "'" +
-            ", stockStore='" + getStockStore() + "'" +
-            ", creatorId=" + getCreatorId() +
             ", createdOn='" + getCreatedOn() + "'" +
             ", lastUpdated='" + getLastUpdated() + "'" +
             ", sdsfile='" + getSdsfile() + "'" +

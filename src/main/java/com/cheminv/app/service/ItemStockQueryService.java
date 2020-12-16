@@ -118,12 +118,6 @@ public class ItemStockQueryService extends QueryService<ItemStock> {
             if (criteria.getItemStatus() != null) {
                 specification = specification.and(buildSpecification(criteria.getItemStatus(), ItemStock_.itemStatus));
             }
-            if (criteria.getStockStore() != null) {
-                specification = specification.and(buildSpecification(criteria.getStockStore(), ItemStock_.stockStore));
-            }
-            if (criteria.getCreatorId() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getCreatorId(), ItemStock_.creatorId));
-            }
             if (criteria.getCreatedOn() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getCreatedOn(), ItemStock_.createdOn));
             }

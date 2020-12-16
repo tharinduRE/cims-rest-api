@@ -1,13 +1,11 @@
 package com.cheminv.app.web.rest;
 
-import com.cheminv.app.domain.enumeration.StockStore;
 import com.cheminv.app.service.ItemStockService;
 import com.cheminv.app.web.rest.errors.BadRequestAlertException;
 import com.cheminv.app.service.dto.ItemStockDTO;
 import com.cheminv.app.service.dto.ItemStockCriteria;
 import com.cheminv.app.service.ItemStockQueryService;
 
-import io.github.jhipster.service.filter.FloatFilter;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -25,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,13 +110,13 @@ public class ItemStockResource {
      * @param pageable the pagination info
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of itemStocks in body.
      */
-    @GetMapping("/item-stocks/low")
-    public ResponseEntity<List<ItemStockDTO>> getAllLowInventory(@RequestParam(required = false) List<StockStore> stockStore, Pageable pageable){
-        log.debug("REST request to get all low inventory in stores: {}",stockStore);
-        Page<ItemStockDTO> page = itemStockService.findAllLow(stockStore,pageable);
+    /*@GetMapping("/item-stocks/low")
+    public ResponseEntity<List<ItemStockDTO>> getAllLowInventory( Pageable pageable){
+        log.debug("REST request to get all low inventory in stores: {}");
+        Page<ItemStockDTO> page = itemStockService.findAllLow(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
-    }
+    }*/
 
     /**
      * {@code GET  /item-stocks/count} : count all the itemStocks.

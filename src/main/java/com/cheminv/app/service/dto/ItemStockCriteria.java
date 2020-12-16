@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.Objects;
 import io.github.jhipster.service.Criteria;
 import com.cheminv.app.domain.enumeration.ItemStatus;
-import com.cheminv.app.domain.enumeration.StockStore;
 import io.github.jhipster.service.filter.BooleanFilter;
 import io.github.jhipster.service.filter.DoubleFilter;
 import io.github.jhipster.service.filter.Filter;
@@ -42,24 +41,6 @@ public class ItemStockCriteria implements Serializable, Criteria {
         }
 
     }
-    /**
-     * Class for filtering StockStore
-     */
-    public static class StockStoreFilter extends Filter<StockStore> {
-
-        public StockStoreFilter() {
-        }
-
-        public StockStoreFilter(StockStoreFilter filter) {
-            super(filter);
-        }
-
-        @Override
-        public StockStoreFilter copy() {
-            return new StockStoreFilter(this);
-        }
-
-    }
 
     private static final long serialVersionUID = 1L;
 
@@ -82,10 +63,6 @@ public class ItemStockCriteria implements Serializable, Criteria {
     private FloatFilter minimumQuantity;
 
     private ItemStatusFilter itemStatus;
-
-    private StockStoreFilter stockStore;
-
-    private IntegerFilter creatorId;
 
     private InstantFilter createdOn;
 
@@ -117,8 +94,6 @@ public class ItemStockCriteria implements Serializable, Criteria {
         this.totalQuantity = other.totalQuantity == null ? null : other.totalQuantity.copy();
         this.minimumQuantity = other.minimumQuantity == null ? null : other.minimumQuantity.copy();
         this.itemStatus = other.itemStatus == null ? null : other.itemStatus.copy();
-        this.stockStore = other.stockStore == null ? null : other.stockStore.copy();
-        this.creatorId = other.creatorId == null ? null : other.creatorId.copy();
         this.createdOn = other.createdOn == null ? null : other.createdOn.copy();
         this.lastUpdated = other.lastUpdated == null ? null : other.lastUpdated.copy();
         this.itemTransactionId = other.itemTransactionId == null ? null : other.itemTransactionId.copy();
@@ -214,22 +189,6 @@ public class ItemStockCriteria implements Serializable, Criteria {
         this.itemStatus = itemStatus;
     }
 
-    public StockStoreFilter getStockStore() {
-        return stockStore;
-    }
-
-    public void setStockStore(StockStoreFilter stockStore) {
-        this.stockStore = stockStore;
-    }
-
-    public IntegerFilter getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(IntegerFilter creatorId) {
-        this.creatorId = creatorId;
-    }
-
     public InstantFilter getCreatedOn() {
         return createdOn;
     }
@@ -315,8 +274,6 @@ public class ItemStockCriteria implements Serializable, Criteria {
             Objects.equals(totalQuantity, that.totalQuantity) &&
             Objects.equals(minimumQuantity, that.minimumQuantity) &&
             Objects.equals(itemStatus, that.itemStatus) &&
-            Objects.equals(stockStore, that.stockStore) &&
-            Objects.equals(creatorId, that.creatorId) &&
             Objects.equals(createdOn, that.createdOn) &&
             Objects.equals(lastUpdated, that.lastUpdated) &&
             Objects.equals(itemTransactionId, that.itemTransactionId) &&
@@ -340,8 +297,6 @@ public class ItemStockCriteria implements Serializable, Criteria {
         totalQuantity,
         minimumQuantity,
         itemStatus,
-        stockStore,
-        creatorId,
         createdOn,
         lastUpdated,
         itemTransactionId,
@@ -367,8 +322,6 @@ public class ItemStockCriteria implements Serializable, Criteria {
                 (totalQuantity != null ? "totalQuantity=" + totalQuantity + ", " : "") +
                 (minimumQuantity != null ? "minimumQuantity=" + minimumQuantity + ", " : "") +
                 (itemStatus != null ? "itemStatus=" + itemStatus + ", " : "") +
-                (stockStore != null ? "stockStore=" + stockStore + ", " : "") +
-                (creatorId != null ? "creatorId=" + creatorId + ", " : "") +
                 (createdOn != null ? "createdOn=" + createdOn + ", " : "") +
                 (lastUpdated != null ? "lastUpdated=" + lastUpdated + ", " : "") +
                 (itemTransactionId != null ? "itemTransactionId=" + itemTransactionId + ", " : "") +

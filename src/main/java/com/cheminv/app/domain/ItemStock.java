@@ -12,7 +12,6 @@ import java.util.Set;
 
 import com.cheminv.app.domain.enumeration.ItemStatus;
 
-import com.cheminv.app.domain.enumeration.StockStore;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -57,13 +56,6 @@ public class ItemStock implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "item_status")
     private ItemStatus itemStatus;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "stock_store")
-    private StockStore stockStore;
-
-    @Column(name = "creator_id")
-    private Integer creatorId;
 
     @Column(name = "created_on")
     @CreationTimestamp
@@ -229,32 +221,6 @@ public class ItemStock implements Serializable {
 
     public void setItemStatus(ItemStatus itemStatus) {
         this.itemStatus = itemStatus;
-    }
-
-    public StockStore getStockStore() {
-        return stockStore;
-    }
-
-    public ItemStock stockStore(StockStore stockStore) {
-        this.stockStore = stockStore;
-        return this;
-    }
-
-    public void setStockStore(StockStore stockStore) {
-        this.stockStore = stockStore;
-    }
-
-    public Integer getCreatorId() {
-        return creatorId;
-    }
-
-    public ItemStock creatorId(Integer creatorId) {
-        this.creatorId = creatorId;
-        return this;
-    }
-
-    public void setCreatorId(Integer creatorId) {
-        this.creatorId = creatorId;
     }
 
     public Instant getCreatedOn() {
@@ -466,8 +432,6 @@ public class ItemStock implements Serializable {
             ", totalQuantity=" + getTotalQuantity() +
             ", minimumQuantity=" + getMinimumQuantity() +
             ", itemStatus='" + getItemStatus() + "'" +
-            ", stockStore='" + getStockStore() + "'" +
-            ", creatorId=" + getCreatorId() +
             ", createdOn='" + getCreatedOn() + "'" +
             ", lastUpdated='" + getLastUpdated() + "'" +
             ", sdsfile='" + getSdsfile() + "'" +

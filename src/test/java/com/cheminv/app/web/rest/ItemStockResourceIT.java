@@ -43,7 +43,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.cheminv.app.domain.enumeration.ItemStatus;
-import com.cheminv.app.domain.enumeration.StockStore;
 /**
  * Integration tests for the {@link ItemStockResource} REST controller.
  */
@@ -83,13 +82,6 @@ public class ItemStockResourceIT {
 
     private static final ItemStatus DEFAULT_ITEM_STATUS = ItemStatus.NEW;
     private static final ItemStatus UPDATED_ITEM_STATUS = ItemStatus.USED;
-
-    private static final StockStore DEFAULT_STOCK_STORE = StockStore.ORG;
-    private static final StockStore UPDATED_STOCK_STORE = StockStore.INORG;
-
-    private static final Integer DEFAULT_CREATOR_ID = 1;
-    private static final Integer UPDATED_CREATOR_ID = 2;
-    private static final Integer SMALLER_CREATOR_ID = 1 - 1;
 
     private static final Instant DEFAULT_CREATED_ON = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_CREATED_ON = Instant.now().truncatedTo(ChronoUnit.MILLIS);
@@ -145,8 +137,6 @@ public class ItemStockResourceIT {
             .totalQuantity(DEFAULT_TOTAL_QUANTITY)
             .minimumQuantity(DEFAULT_MINIMUM_QUANTITY)
             .itemStatus(DEFAULT_ITEM_STATUS)
-            .stockStore(DEFAULT_STOCK_STORE)
-            .creatorId(DEFAULT_CREATOR_ID)
             .createdOn(DEFAULT_CREATED_ON)
             .lastUpdated(DEFAULT_LAST_UPDATED)
             .sdsfile(DEFAULT_SDSFILE)
@@ -190,8 +180,6 @@ public class ItemStockResourceIT {
             .totalQuantity(UPDATED_TOTAL_QUANTITY)
             .minimumQuantity(UPDATED_MINIMUM_QUANTITY)
             .itemStatus(UPDATED_ITEM_STATUS)
-            .stockStore(UPDATED_STOCK_STORE)
-            .creatorId(UPDATED_CREATOR_ID)
             .createdOn(UPDATED_CREATED_ON)
             .lastUpdated(UPDATED_LAST_UPDATED)
             .sdsfile(UPDATED_SDSFILE)
@@ -248,8 +236,6 @@ public class ItemStockResourceIT {
         assertThat(testItemStock.getTotalQuantity()).isEqualTo(DEFAULT_TOTAL_QUANTITY);
         assertThat(testItemStock.getMinimumQuantity()).isEqualTo(DEFAULT_MINIMUM_QUANTITY);
         assertThat(testItemStock.getItemStatus()).isEqualTo(DEFAULT_ITEM_STATUS);
-        assertThat(testItemStock.getStockStore()).isEqualTo(DEFAULT_STOCK_STORE);
-        assertThat(testItemStock.getCreatorId()).isEqualTo(DEFAULT_CREATOR_ID);
         assertThat(testItemStock.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
         assertThat(testItemStock.getLastUpdated()).isEqualTo(DEFAULT_LAST_UPDATED);
         assertThat(testItemStock.getSdsfile()).isEqualTo(DEFAULT_SDSFILE);
@@ -317,8 +303,6 @@ public class ItemStockResourceIT {
             .andExpect(jsonPath("$.[*].totalQuantity").value(hasItem(DEFAULT_TOTAL_QUANTITY.doubleValue())))
             .andExpect(jsonPath("$.[*].minimumQuantity").value(hasItem(DEFAULT_MINIMUM_QUANTITY.doubleValue())))
             .andExpect(jsonPath("$.[*].itemStatus").value(hasItem(DEFAULT_ITEM_STATUS.toString())))
-            .andExpect(jsonPath("$.[*].stockStore").value(hasItem(DEFAULT_STOCK_STORE.toString())))
-            .andExpect(jsonPath("$.[*].creatorId").value(hasItem(DEFAULT_CREATOR_ID)))
             .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
             .andExpect(jsonPath("$.[*].lastUpdated").value(hasItem(DEFAULT_LAST_UPDATED.toString())))
             .andExpect(jsonPath("$.[*].sdsfileContentType").value(hasItem(DEFAULT_SDSFILE_CONTENT_TYPE)))
@@ -365,8 +349,6 @@ public class ItemStockResourceIT {
             .andExpect(jsonPath("$.totalQuantity").value(DEFAULT_TOTAL_QUANTITY.doubleValue()))
             .andExpect(jsonPath("$.minimumQuantity").value(DEFAULT_MINIMUM_QUANTITY.doubleValue()))
             .andExpect(jsonPath("$.itemStatus").value(DEFAULT_ITEM_STATUS.toString()))
-            .andExpect(jsonPath("$.stockStore").value(DEFAULT_STOCK_STORE.toString()))
-            .andExpect(jsonPath("$.creatorId").value(DEFAULT_CREATOR_ID))
             .andExpect(jsonPath("$.createdOn").value(DEFAULT_CREATED_ON.toString()))
             .andExpect(jsonPath("$.lastUpdated").value(DEFAULT_LAST_UPDATED.toString()))
             .andExpect(jsonPath("$.sdsfileContentType").value(DEFAULT_SDSFILE_CONTENT_TYPE))
@@ -1179,163 +1161,6 @@ public class ItemStockResourceIT {
 
     @Test
     @Transactional
-    public void getAllItemStocksByStockStoreIsEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where stockStore equals to DEFAULT_STOCK_STORE
-        defaultItemStockShouldBeFound("stockStore.equals=" + DEFAULT_STOCK_STORE);
-
-        // Get all the itemStockList where stockStore equals to UPDATED_STOCK_STORE
-        defaultItemStockShouldNotBeFound("stockStore.equals=" + UPDATED_STOCK_STORE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByStockStoreIsNotEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where stockStore not equals to DEFAULT_STOCK_STORE
-        defaultItemStockShouldNotBeFound("stockStore.notEquals=" + DEFAULT_STOCK_STORE);
-
-        // Get all the itemStockList where stockStore not equals to UPDATED_STOCK_STORE
-        defaultItemStockShouldBeFound("stockStore.notEquals=" + UPDATED_STOCK_STORE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByStockStoreIsInShouldWork() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where stockStore in DEFAULT_STOCK_STORE or UPDATED_STOCK_STORE
-        defaultItemStockShouldBeFound("stockStore.in=" + DEFAULT_STOCK_STORE + "," + UPDATED_STOCK_STORE);
-
-        // Get all the itemStockList where stockStore equals to UPDATED_STOCK_STORE
-        defaultItemStockShouldNotBeFound("stockStore.in=" + UPDATED_STOCK_STORE);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByStockStoreIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where stockStore is not null
-        defaultItemStockShouldBeFound("stockStore.specified=true");
-
-        // Get all the itemStockList where stockStore is null
-        defaultItemStockShouldNotBeFound("stockStore.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByCreatorIdIsEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where creatorId equals to DEFAULT_CREATOR_ID
-        defaultItemStockShouldBeFound("creatorId.equals=" + DEFAULT_CREATOR_ID);
-
-        // Get all the itemStockList where creatorId equals to UPDATED_CREATOR_ID
-        defaultItemStockShouldNotBeFound("creatorId.equals=" + UPDATED_CREATOR_ID);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByCreatorIdIsNotEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where creatorId not equals to DEFAULT_CREATOR_ID
-        defaultItemStockShouldNotBeFound("creatorId.notEquals=" + DEFAULT_CREATOR_ID);
-
-        // Get all the itemStockList where creatorId not equals to UPDATED_CREATOR_ID
-        defaultItemStockShouldBeFound("creatorId.notEquals=" + UPDATED_CREATOR_ID);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByCreatorIdIsInShouldWork() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where creatorId in DEFAULT_CREATOR_ID or UPDATED_CREATOR_ID
-        defaultItemStockShouldBeFound("creatorId.in=" + DEFAULT_CREATOR_ID + "," + UPDATED_CREATOR_ID);
-
-        // Get all the itemStockList where creatorId equals to UPDATED_CREATOR_ID
-        defaultItemStockShouldNotBeFound("creatorId.in=" + UPDATED_CREATOR_ID);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByCreatorIdIsNullOrNotNull() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where creatorId is not null
-        defaultItemStockShouldBeFound("creatorId.specified=true");
-
-        // Get all the itemStockList where creatorId is null
-        defaultItemStockShouldNotBeFound("creatorId.specified=false");
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByCreatorIdIsGreaterThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where creatorId is greater than or equal to DEFAULT_CREATOR_ID
-        defaultItemStockShouldBeFound("creatorId.greaterThanOrEqual=" + DEFAULT_CREATOR_ID);
-
-        // Get all the itemStockList where creatorId is greater than or equal to UPDATED_CREATOR_ID
-        defaultItemStockShouldNotBeFound("creatorId.greaterThanOrEqual=" + UPDATED_CREATOR_ID);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByCreatorIdIsLessThanOrEqualToSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where creatorId is less than or equal to DEFAULT_CREATOR_ID
-        defaultItemStockShouldBeFound("creatorId.lessThanOrEqual=" + DEFAULT_CREATOR_ID);
-
-        // Get all the itemStockList where creatorId is less than or equal to SMALLER_CREATOR_ID
-        defaultItemStockShouldNotBeFound("creatorId.lessThanOrEqual=" + SMALLER_CREATOR_ID);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByCreatorIdIsLessThanSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where creatorId is less than DEFAULT_CREATOR_ID
-        defaultItemStockShouldNotBeFound("creatorId.lessThan=" + DEFAULT_CREATOR_ID);
-
-        // Get all the itemStockList where creatorId is less than UPDATED_CREATOR_ID
-        defaultItemStockShouldBeFound("creatorId.lessThan=" + UPDATED_CREATOR_ID);
-    }
-
-    @Test
-    @Transactional
-    public void getAllItemStocksByCreatorIdIsGreaterThanSomething() throws Exception {
-        // Initialize the database
-        itemStockRepository.saveAndFlush(itemStock);
-
-        // Get all the itemStockList where creatorId is greater than DEFAULT_CREATOR_ID
-        defaultItemStockShouldNotBeFound("creatorId.greaterThan=" + DEFAULT_CREATOR_ID);
-
-        // Get all the itemStockList where creatorId is greater than SMALLER_CREATOR_ID
-        defaultItemStockShouldBeFound("creatorId.greaterThan=" + SMALLER_CREATOR_ID);
-    }
-
-
-    @Test
-    @Transactional
     public void getAllItemStocksByCreatedOnIsEqualToSomething() throws Exception {
         // Initialize the database
         itemStockRepository.saveAndFlush(itemStock);
@@ -1566,8 +1391,6 @@ public class ItemStockResourceIT {
             .andExpect(jsonPath("$.[*].totalQuantity").value(hasItem(DEFAULT_TOTAL_QUANTITY.doubleValue())))
             .andExpect(jsonPath("$.[*].minimumQuantity").value(hasItem(DEFAULT_MINIMUM_QUANTITY.doubleValue())))
             .andExpect(jsonPath("$.[*].itemStatus").value(hasItem(DEFAULT_ITEM_STATUS.toString())))
-            .andExpect(jsonPath("$.[*].stockStore").value(hasItem(DEFAULT_STOCK_STORE.toString())))
-            .andExpect(jsonPath("$.[*].creatorId").value(hasItem(DEFAULT_CREATOR_ID)))
             .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
             .andExpect(jsonPath("$.[*].lastUpdated").value(hasItem(DEFAULT_LAST_UPDATED.toString())))
             .andExpect(jsonPath("$.[*].sdsfileContentType").value(hasItem(DEFAULT_SDSFILE_CONTENT_TYPE)))
@@ -1627,8 +1450,6 @@ public class ItemStockResourceIT {
             .totalQuantity(UPDATED_TOTAL_QUANTITY)
             .minimumQuantity(UPDATED_MINIMUM_QUANTITY)
             .itemStatus(UPDATED_ITEM_STATUS)
-            .stockStore(UPDATED_STOCK_STORE)
-            .creatorId(UPDATED_CREATOR_ID)
             .createdOn(UPDATED_CREATED_ON)
             .lastUpdated(UPDATED_LAST_UPDATED)
             .sdsfile(UPDATED_SDSFILE)
@@ -1653,8 +1474,6 @@ public class ItemStockResourceIT {
         assertThat(testItemStock.getTotalQuantity()).isEqualTo(UPDATED_TOTAL_QUANTITY);
         assertThat(testItemStock.getMinimumQuantity()).isEqualTo(UPDATED_MINIMUM_QUANTITY);
         assertThat(testItemStock.getItemStatus()).isEqualTo(UPDATED_ITEM_STATUS);
-        assertThat(testItemStock.getStockStore()).isEqualTo(UPDATED_STOCK_STORE);
-        assertThat(testItemStock.getCreatorId()).isEqualTo(UPDATED_CREATOR_ID);
         assertThat(testItemStock.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
         assertThat(testItemStock.getLastUpdated()).isEqualTo(UPDATED_LAST_UPDATED);
         assertThat(testItemStock.getSdsfile()).isEqualTo(UPDATED_SDSFILE);

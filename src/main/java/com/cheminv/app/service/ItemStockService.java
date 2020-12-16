@@ -1,7 +1,6 @@
 package com.cheminv.app.service;
 
 import com.cheminv.app.domain.ItemStock;
-import com.cheminv.app.domain.enumeration.StockStore;
 import com.cheminv.app.repository.ItemStockRepository;
 import com.cheminv.app.service.dto.ItemStockDTO;
 import com.cheminv.app.service.mapper.ItemStockMapper;
@@ -60,12 +59,12 @@ public class ItemStockService {
             .map(itemStockMapper::toDto);
     }
 
-    @Transactional(readOnly = true)
-    public Page<ItemStockDTO> findAllLow(List<StockStore> stores, Pageable pageable) {
+    /*@Transactional(readOnly = true)
+    public Page<ItemStockDTO> findAllLow(Pageable pageable) {
         log.debug("Request to get all ItemStocks");
         return itemStockRepository.findAllByLessThanOrEqualToMinimum(stores,pageable)
             .map(itemStockMapper::toDto);
-    }
+    }*/
 
 
     /**

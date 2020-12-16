@@ -43,12 +43,6 @@
             <column name="item_status" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="stock_store" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="creator_id" type="integer">
-                <constraints nullable="true" />
-            </column>
             <column name="created_on" type="datetime">
                 <constraints nullable="true" />
             </column>
@@ -112,8 +106,6 @@
             <column name="total_quantity" type="numeric"/>
             <column name="minimum_quantity" type="numeric"/>
             <column name="item_status" type="string"/>
-            <column name="stock_store" type="string"/>
-            <column name="creator_id" type="numeric"/>
             <column name="created_on" type="datetime"/>
             <column name="last_updated" type="datetime"/>
             <column name="sdsfile" type="blob"/>
