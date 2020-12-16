@@ -31,6 +31,18 @@
                                  constraintName="fk_cims_user_inv_store_inv_store_id"
                                  referencedColumnNames="id"
                                  referencedTableName="cims_inv_store"/>
-        
+
+        <loadData tableName="cims_user_authority"  file="config/liquibase/data/cims_user_authorities.csv"
+                  separator=";">
+            <column name="inv_user_id" type="numeric"/>
+            <column name="authority_id" type="numeric"/>
+
+        </loadData>
+        <loadData tableName="cims_user_inv_store" file="config/liquibase/data/cims_auth_stores.csv"
+                  separator=";">
+            <column name="inv_user_id" type="numeric"/>
+            <column name="inv_store_id" type="numeric"/>
+        </loadData>
     </changeSet>
+
 </databaseChangeLog>

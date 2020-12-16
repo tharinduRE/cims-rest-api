@@ -38,7 +38,7 @@
     -->
     <changeSet id="20201022093109-1-data" author="jhipster" context="faker">
         <loadData
-                  file="config/liquibase/fake-data/cims_authority.csv"
+                  file="config/liquibase/data/cims_authority.csv"
                   separator=";"
                   tableName="cims_authority">
             <column name="id" type="numeric"/>
