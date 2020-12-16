@@ -30,7 +30,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Base64Utils;
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -90,11 +89,6 @@ public class ItemStockResourceIT {
     private static final Instant DEFAULT_LAST_UPDATED = Instant.ofEpochMilli(0L);
     private static final Instant UPDATED_LAST_UPDATED = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
-    private static final byte[] DEFAULT_SDSFILE = TestUtil.createByteArray(1, "0");
-    private static final byte[] UPDATED_SDSFILE = TestUtil.createByteArray(1, "1");
-    private static final String DEFAULT_SDSFILE_CONTENT_TYPE = "image/jpg";
-    private static final String UPDATED_SDSFILE_CONTENT_TYPE = "image/png";
-
     @Autowired
     private ItemStockRepository itemStockRepository;
 
@@ -139,9 +133,7 @@ public class ItemStockResourceIT {
             .minimumQuantity(DEFAULT_MINIMUM_QUANTITY)
             .itemStatus(DEFAULT_ITEM_STATUS)
             .createdOn(DEFAULT_CREATED_ON)
-            .lastUpdated(DEFAULT_LAST_UPDATED)
-            .sdsfile(DEFAULT_SDSFILE)
-            .sdsfileContentType(DEFAULT_SDSFILE_CONTENT_TYPE);
+            .lastUpdated(DEFAULT_LAST_UPDATED);
         // Add required entity
         InvStorage invStorage;
         if (TestUtil.findAll(em, InvStorage.class).isEmpty()) {
@@ -192,9 +184,7 @@ public class ItemStockResourceIT {
             .minimumQuantity(UPDATED_MINIMUM_QUANTITY)
             .itemStatus(UPDATED_ITEM_STATUS)
             .createdOn(UPDATED_CREATED_ON)
-            .lastUpdated(UPDATED_LAST_UPDATED)
-            .sdsfile(UPDATED_SDSFILE)
-            .sdsfileContentType(UPDATED_SDSFILE_CONTENT_TYPE);
+            .lastUpdated(UPDATED_LAST_UPDATED);
         // Add required entity
         InvStorage invStorage;
         if (TestUtil.findAll(em, InvStorage.class).isEmpty()) {
@@ -259,8 +249,6 @@ public class ItemStockResourceIT {
         assertThat(testItemStock.getItemStatus()).isEqualTo(DEFAULT_ITEM_STATUS);
         assertThat(testItemStock.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
         assertThat(testItemStock.getLastUpdated()).isEqualTo(DEFAULT_LAST_UPDATED);
-        assertThat(testItemStock.getSdsfile()).isEqualTo(DEFAULT_SDSFILE);
-        assertThat(testItemStock.getSdsfileContentType()).isEqualTo(DEFAULT_SDSFILE_CONTENT_TYPE);
     }
 
     @Test
@@ -325,9 +313,7 @@ public class ItemStockResourceIT {
             .andExpect(jsonPath("$.[*].minimumQuantity").value(hasItem(DEFAULT_MINIMUM_QUANTITY.doubleValue())))
             .andExpect(jsonPath("$.[*].itemStatus").value(hasItem(DEFAULT_ITEM_STATUS.toString())))
             .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
-            .andExpect(jsonPath("$.[*].lastUpdated").value(hasItem(DEFAULT_LAST_UPDATED.toString())))
-            .andExpect(jsonPath("$.[*].sdsfileContentType").value(hasItem(DEFAULT_SDSFILE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].sdsfile").value(hasItem(Base64Utils.encodeToString(DEFAULT_SDSFILE))));
+            .andExpect(jsonPath("$.[*].lastUpdated").value(hasItem(DEFAULT_LAST_UPDATED.toString())));
     }
     
     @SuppressWarnings({"unchecked"})
@@ -371,9 +357,7 @@ public class ItemStockResourceIT {
             .andExpect(jsonPath("$.minimumQuantity").value(DEFAULT_MINIMUM_QUANTITY.doubleValue()))
             .andExpect(jsonPath("$.itemStatus").value(DEFAULT_ITEM_STATUS.toString()))
             .andExpect(jsonPath("$.createdOn").value(DEFAULT_CREATED_ON.toString()))
-            .andExpect(jsonPath("$.lastUpdated").value(DEFAULT_LAST_UPDATED.toString()))
-            .andExpect(jsonPath("$.sdsfileContentType").value(DEFAULT_SDSFILE_CONTENT_TYPE))
-            .andExpect(jsonPath("$.sdsfile").value(Base64Utils.encodeToString(DEFAULT_SDSFILE)));
+            .andExpect(jsonPath("$.lastUpdated").value(DEFAULT_LAST_UPDATED.toString()));
     }
 
 
@@ -1429,9 +1413,7 @@ public class ItemStockResourceIT {
             .andExpect(jsonPath("$.[*].minimumQuantity").value(hasItem(DEFAULT_MINIMUM_QUANTITY.doubleValue())))
             .andExpect(jsonPath("$.[*].itemStatus").value(hasItem(DEFAULT_ITEM_STATUS.toString())))
             .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
-            .andExpect(jsonPath("$.[*].lastUpdated").value(hasItem(DEFAULT_LAST_UPDATED.toString())))
-            .andExpect(jsonPath("$.[*].sdsfileContentType").value(hasItem(DEFAULT_SDSFILE_CONTENT_TYPE)))
-            .andExpect(jsonPath("$.[*].sdsfile").value(hasItem(Base64Utils.encodeToString(DEFAULT_SDSFILE))));
+            .andExpect(jsonPath("$.[*].lastUpdated").value(hasItem(DEFAULT_LAST_UPDATED.toString())));
 
         // Check, that the count call also returns 1
         restItemStockMockMvc.perform(get("/api/item-stocks/count?sort=id,desc&" + filter))
@@ -1488,9 +1470,7 @@ public class ItemStockResourceIT {
             .minimumQuantity(UPDATED_MINIMUM_QUANTITY)
             .itemStatus(UPDATED_ITEM_STATUS)
             .createdOn(UPDATED_CREATED_ON)
-            .lastUpdated(UPDATED_LAST_UPDATED)
-            .sdsfile(UPDATED_SDSFILE)
-            .sdsfileContentType(UPDATED_SDSFILE_CONTENT_TYPE);
+            .lastUpdated(UPDATED_LAST_UPDATED);
         ItemStockDTO itemStockDTO = itemStockMapper.toDto(updatedItemStock);
 
         restItemStockMockMvc.perform(put("/api/item-stocks")
@@ -1513,8 +1493,6 @@ public class ItemStockResourceIT {
         assertThat(testItemStock.getItemStatus()).isEqualTo(UPDATED_ITEM_STATUS);
         assertThat(testItemStock.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
         assertThat(testItemStock.getLastUpdated()).isEqualTo(UPDATED_LAST_UPDATED);
-        assertThat(testItemStock.getSdsfile()).isEqualTo(UPDATED_SDSFILE);
-        assertThat(testItemStock.getSdsfileContentType()).isEqualTo(UPDATED_SDSFILE_CONTENT_TYPE);
     }
 
     @Test

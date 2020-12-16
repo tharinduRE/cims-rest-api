@@ -46,11 +46,6 @@
     {
       "fieldName": "lastUpdated",
       "fieldType": "Instant"
-    },
-    {
-      "fieldName": "sdsfile",
-      "fieldType": "byte[]",
-      "fieldTypeBlobContent": "any"
     }
   ],
   "relationships": [

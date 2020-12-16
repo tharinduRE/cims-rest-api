@@ -49,12 +49,6 @@
             <column name="last_updated" type="datetime">
                 <constraints nullable="true" />
             </column>
-            <column name="sdsfile" type="longblob">
-                <constraints nullable="true" />
-            </column>
-            <column name="sdsfile_content_type" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
             <column name="inv_storage_id" type="bigint">
                 <constraints nullable="false" />
             </column>
@@ -111,8 +105,6 @@
             <column name="item_status" type="string"/>
             <column name="created_on" type="datetime"/>
             <column name="last_updated" type="datetime"/>
-            <column name="sdsfile" type="blob"/>
-            <column name="sdsfile_content_type" type="string"/>
             <column name="inv_storage_id" type="numeric"/>
             <column name="storage_unit_id" type="numeric"/>
             <column name="store_id" type="numeric"/>

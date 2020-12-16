@@ -5,7 +5,6 @@ import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Lob;
 
 import com.cheminv.app.domain.InvStore;
 import com.cheminv.app.domain.enumeration.ItemStatus;
@@ -40,10 +39,6 @@ public class ItemStockDTO implements Serializable {
 
     private Instant lastUpdated;
 
-    @Lob
-    private byte[] sdsfile;
-
-    private String sdsfileContentType;
     private Set<HazardCodeDTO> hazardCodes = new HashSet<>();
 
     private Long invStorageId;
@@ -150,22 +145,6 @@ public class ItemStockDTO implements Serializable {
         this.lastUpdated = lastUpdated;
     }
 
-    public byte[] getSdsfile() {
-        return sdsfile;
-    }
-
-    public void setSdsfile(byte[] sdsfile) {
-        this.sdsfile = sdsfile;
-    }
-
-    public String getSdsfileContentType() {
-        return sdsfileContentType;
-    }
-
-    public void setSdsfileContentType(String sdsfileContentType) {
-        this.sdsfileContentType = sdsfileContentType;
-    }
-
     public Set<HazardCodeDTO> getHazardCodes() {
         return hazardCodes;
     }
@@ -239,7 +218,6 @@ public class ItemStockDTO implements Serializable {
             ", itemStatus='" + getItemStatus() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +
             ", lastUpdated='" + getLastUpdated() + "'" +
-            ", sdsfile='" + getSdsfile() + "'" +
             ", hazardCodes='" + getHazardCodes() + "'" +
             ", invStorageId=" + getInvStorageId() +
             ", storageUnitId=" + getStorageUnitId() +

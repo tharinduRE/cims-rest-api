@@ -65,13 +65,6 @@ public class ItemStock implements Serializable {
     @UpdateTimestamp
     private Instant lastUpdated;
 
-    @Lob
-    @Column(name = "sdsfile")
-    private byte[] sdsfile;
-
-    @Column(name = "sdsfile_content_type")
-    private String sdsfileContentType;
-
     @OneToMany(mappedBy = "itemStock")
     private Set<ItemTransaction> itemTransactions = new HashSet<>();
 
@@ -254,32 +247,6 @@ public class ItemStock implements Serializable {
         this.lastUpdated = lastUpdated;
     }
 
-    public byte[] getSdsfile() {
-        return sdsfile;
-    }
-
-    public ItemStock sdsfile(byte[] sdsfile) {
-        this.sdsfile = sdsfile;
-        return this;
-    }
-
-    public void setSdsfile(byte[] sdsfile) {
-        this.sdsfile = sdsfile;
-    }
-
-    public String getSdsfileContentType() {
-        return sdsfileContentType;
-    }
-
-    public ItemStock sdsfileContentType(String sdsfileContentType) {
-        this.sdsfileContentType = sdsfileContentType;
-        return this;
-    }
-
-    public void setSdsfileContentType(String sdsfileContentType) {
-        this.sdsfileContentType = sdsfileContentType;
-    }
-
     public Set<ItemTransaction> getItemTransactions() {
         return itemTransactions;
     }
@@ -452,8 +419,6 @@ public class ItemStock implements Serializable {
             ", itemStatus='" + getItemStatus() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +
             ", lastUpdated='" + getLastUpdated() + "'" +
-            ", sdsfile='" + getSdsfile() + "'" +
-            ", sdsfileContentType='" + getSdsfileContentType() + "'" +
             "}";
     }
 }
