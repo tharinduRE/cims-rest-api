@@ -9,12 +9,12 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link ItemStock} and its DTO {@link ItemStockDTO}.
  */
-@Mapper(componentModel = "spring", uses = {HazardCodeMapper.class, InvStorageMapper.class, MeasUnitMapper.class, InvStoreMapper.class})
+@Mapper(componentModel = "spring", uses = {HazardCodeMapper.class, InvStorageMapper.class, MeasUnitMapper.class})
 public interface ItemStockMapper extends EntityMapper<ItemStockDTO, ItemStock> {
 
     @Mapping(source = "invStorage.id", target = "invStorageId")
     @Mapping(source = "storageUnit.id", target = "storageUnitId")
-    @Mapping(source = "store.id", target = "storeId")
+    @Mapping(source = "storageUnit.measUnit", target = "storageUnit")
     ItemStockDTO toDto(ItemStock itemStock);
 
     @Mapping(target = "itemTransactions", ignore = true)
@@ -26,7 +26,6 @@ public interface ItemStockMapper extends EntityMapper<ItemStockDTO, ItemStock> {
     @Mapping(source = "storageUnitId", target = "storageUnit")
     @Mapping(target = "itemOrders", ignore = true)
     @Mapping(target = "removeItemOrders", ignore = true)
-    @Mapping(source = "storeId", target = "store")
     ItemStock toEntity(ItemStockDTO itemStockDTO);
 
     default ItemStock fromId(Long id) {
