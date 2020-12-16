@@ -1,7 +1,5 @@
 package com.cheminv.app.service.dto;
 
-import com.cheminv.app.domain.enumeration.StockStore;
-
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Objects;
@@ -12,7 +10,7 @@ public class ReportDTO  implements Serializable {
     private Long userId;
 
     @NotBlank
-    private StockStore stockStore;
+    private Long storeId;
 
     public Long getUserId() {
         return userId;
@@ -22,12 +20,12 @@ public class ReportDTO  implements Serializable {
         this.userId = userId;
     }
 
-    public StockStore getStockStore() {
-        return stockStore;
+    public Long getStoreId() {
+        return storeId;
     }
 
-    public void setStockStore(StockStore stockStore) {
-        this.stockStore = stockStore;
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
     }
 
     @Override

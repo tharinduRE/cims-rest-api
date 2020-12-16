@@ -43,7 +43,7 @@ public class ReportsResource {
         response.setContentType("application/x-download");
         response.setHeader("Content-Disposition",String.format("attachment; filename=\"%s.pdf\"",filename));
         OutputStream out = response.getOutputStream();
-        JasperExportManager.exportReportToPdfStream(jasperReportService.generateReports(reportDTO.getUserId(),reportDTO.getStockStore()),out);
+        JasperExportManager.exportReportToPdfStream(jasperReportService.generateReports(reportDTO.getUserId(),reportDTO.getStoreId()),out);
         out.flush();
         out.close();
     }

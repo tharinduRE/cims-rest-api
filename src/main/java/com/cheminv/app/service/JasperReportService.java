@@ -1,9 +1,8 @@
 package com.cheminv.app.service;
 
 import com.cheminv.app.domain.InvReport;
-import com.cheminv.app.domain.ItemStock;
-import com.cheminv.app.domain.enumeration.StockStore;
 import com.cheminv.app.repository.InvReportRepository;
+import com.cheminv.app.repository.InvStoreRepository;
 import com.cheminv.app.repository.InvUserRepository;
 import com.cheminv.app.repository.ItemStockRepository;
 import com.cheminv.app.service.dto.ItemStockDTO;
@@ -26,7 +25,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -46,25 +44,29 @@ public class JasperReportService {
 
     private final InvUserRepository invUserRepository;
 
+    private final InvStoreRepository invStoreRepository;
+
     private final ItemStockMapper itemStockMapper;
 
     public JasperReportService(ItemStockRepository itemStockRepository, InvReportRepository invReportRepository,
-                               InvUserRepository invUserRepository, ItemStockMapper itemStockMapper) {
+                               InvUserRepository invUserRepository, InvStoreRepository invStoreRepository, ItemStockMapper itemStockMapper) {
         this.itemStockRepository = itemStockRepository;
         this.invReportRepository = invReportRepository;
         this.invUserRepository = invUserRepository;
+        this.invStoreRepository = invStoreRepository;
         this.itemStockMapper = itemStockMapper;
     }
 
-    public JasperPrint generateReports(Long id,StockStore stockStore) throws IOException, JRException {
+    public JasperPrint generateReports(Long id,Long storeId) throws IOException, JRException {
         List<ItemStockDTO> reportItems = itemStockMapper.toDto(
-            itemStockRepository.findAllByStockStoreEquals(stockStore));
+            itemStockRepository.findAllByStore(storeId));
         JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(reportItems);
         JasperReport jasperReport = JasperCompileManager.compileReport(jasperTemplate.getInputStream());
         BufferedImage image = ImageIO.read(headerImage.getInputStream());
         Map<String,Object> params = new HashMap<>();
         params.put("logo",image);
-        params.put("category",stockStore.getName().toUpperCase());
+        String storeName = invStoreRepository.getOne(storeId).getName();
+        params.put("category",storeName.toUpperCase());
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,params,dataSource);
 
         String filename = "inventory-report-"
