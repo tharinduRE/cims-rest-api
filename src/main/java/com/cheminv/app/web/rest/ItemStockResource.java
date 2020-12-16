@@ -114,9 +114,9 @@ public class ItemStockResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of itemStocks in body.
      */
     @GetMapping("/item-stocks/low")
-    public ResponseEntity<List<ItemStockDTO>> getAllLowInventory(@RequestParam(required = false) List<StockStore> stores, Pageable pageable){
-        log.debug("REST request to get all low inventory in stores: {}",stores);
-        Page<ItemStockDTO> page = itemStockService.findAllLow(stores,pageable);
+    public ResponseEntity<List<ItemStockDTO>> getAllLowInventory(@RequestParam(required = false) List<StockStore> stockStore, Pageable pageable){
+        log.debug("REST request to get all low inventory in stores: {}",stockStore);
+        Page<ItemStockDTO> page = itemStockService.findAllLow(stockStore,pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
