@@ -3,12 +3,11 @@ package com.cheminv.app.web.rest;
 import com.cheminv.app.CimsApp;
 import com.cheminv.app.domain.Order;
 import com.cheminv.app.domain.ItemStock;
-import com.cheminv.app.domain.InvUser;
+import com.cheminv.app.domain.User;
 import com.cheminv.app.repository.OrderRepository;
 import com.cheminv.app.service.OrderService;
 import com.cheminv.app.service.dto.OrderDTO;
 import com.cheminv.app.service.mapper.OrderMapper;
-import com.cheminv.app.service.dto.OrderCriteria;
 import com.cheminv.app.service.OrderQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -99,15 +98,15 @@ public class OrderResourceIT {
         }
         order.setItemStock(itemStock);
         // Add required entity
-        InvUser invUser;
-        if (TestUtil.findAll(em, InvUser.class).isEmpty()) {
-            invUser = InvUserResourceIT.createEntity(em);
-            em.persist(invUser);
+        User user;
+        if (TestUtil.findAll(em, User.class).isEmpty()) {
+            user = UserResourceIT.createEntity(em);
+            em.persist(user);
             em.flush();
         } else {
-            invUser = TestUtil.findAll(em, InvUser.class).get(0);
+            user = TestUtil.findAll(em, User.class).get(0);
         }
-        order.setRequestedBy(invUser);
+        order.setRequestedBy(user);
         return order;
     }
     /**
@@ -134,15 +133,15 @@ public class OrderResourceIT {
         }
         order.setItemStock(itemStock);
         // Add required entity
-        InvUser invUser;
-        if (TestUtil.findAll(em, InvUser.class).isEmpty()) {
-            invUser = InvUserResourceIT.createUpdatedEntity(em);
-            em.persist(invUser);
+        User user;
+        if (TestUtil.findAll(em, User.class).isEmpty()) {
+            user = UserResourceIT.createUpdatedEntity(em);
+            em.persist(user);
             em.flush();
         } else {
-            invUser = TestUtil.findAll(em, InvUser.class).get(0);
+            user = TestUtil.findAll(em, User.class).get(0);
         }
-        order.setRequestedBy(invUser);
+        order.setRequestedBy(user);
         return order;
     }
 
@@ -603,7 +602,7 @@ public class OrderResourceIT {
     @Transactional
     public void getAllOrdersByRequestedByIsEqualToSomething() throws Exception {
         // Get already existing entity
-        InvUser requestedBy = order.getRequestedBy();
+        User requestedBy = order.getRequestedBy();
         orderRepository.saveAndFlush(order);
         Long requestedById = requestedBy.getId();
 

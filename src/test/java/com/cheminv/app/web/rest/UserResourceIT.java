@@ -1,10 +1,10 @@
 package com.cheminv.app.web.rest;
 
 import com.cheminv.app.CimsApp;
-import com.cheminv.app.domain.InvUser;
-import com.cheminv.app.domain.InvStore;
-import com.cheminv.app.repository.InvUserRepository;
-import com.cheminv.app.service.InvUserService;
+import com.cheminv.app.domain.User;
+import com.cheminv.app.domain.Store;
+import com.cheminv.app.repository.UserRepository;
+import com.cheminv.app.service.UserService;
 import com.cheminv.app.service.dto.InvUserDTO;
 import com.cheminv.app.service.mapper.InvUserMapper;
 
@@ -16,8 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,23 +23,21 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Integration tests for the {@link InvUserResource} REST controller.
+ * Integration tests for the {@link UserResource} REST controller.
  */
 @SpringBootTest(classes = CimsApp.class)
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
-public class InvUserResourceIT {
+public class UserResourceIT {
 
     private static final String DEFAULT_FIRST_NAME = "AAAAAAAAAA";
     private static final String UPDATED_FIRST_NAME = "BBBBBBBBBB";
@@ -65,19 +61,19 @@ public class InvUserResourceIT {
     private static final String UPDATED_PASSWORD = "BBBBBBBBBB";
 
     @Autowired
-    private InvUserRepository invUserRepository;
+    private UserRepository userRepository;
 
     @Mock
-    private InvUserRepository invUserRepositoryMock;
+    private UserRepository userRepositoryMock;
 
     @Autowired
     private InvUserMapper invUserMapper;
 
     @Mock
-    private InvUserService invUserServiceMock;
+    private UserService userServiceMock;
 
     @Autowired
-    private InvUserService invUserService;
+    private UserService userService;
 
     @Autowired
     private EntityManager em;
@@ -85,7 +81,7 @@ public class InvUserResourceIT {
     @Autowired
     private MockMvc restInvUserMockMvc;
 
-    private InvUser invUser;
+    private User user;
 
     /**
      * Create an entity for this test.
@@ -93,8 +89,8 @@ public class InvUserResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static InvUser createEntity(EntityManager em) {
-        InvUser invUser = new InvUser()
+    public static User createEntity(EntityManager em) {
+        User user = new User()
             .firstName(DEFAULT_FIRST_NAME)
             .lastName(DEFAULT_LAST_NAME)
             .postTitle(DEFAULT_POST_TITLE)
@@ -103,16 +99,16 @@ public class InvUserResourceIT {
             .email(DEFAULT_EMAIL)
             .password(DEFAULT_PASSWORD);
         // Add required entity
-        InvStore invStore;
-        if (TestUtil.findAll(em, InvStore.class).isEmpty()) {
-            invStore = InvStoreResourceIT.createEntity(em);
-            em.persist(invStore);
+        Store store;
+        if (TestUtil.findAll(em, Store.class).isEmpty()) {
+            store = StoreResourceIT.createEntity(em);
+            em.persist(store);
             em.flush();
         } else {
-            invStore = TestUtil.findAll(em, InvStore.class).get(0);
+            store = TestUtil.findAll(em, Store.class).get(0);
         }
-        invUser.getInvStores().add(invStore);
-        return invUser;
+        user.getInvStores().add(store);
+        return user;
     }
     /**
      * Create an updated entity for this test.
@@ -120,8 +116,8 @@ public class InvUserResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static InvUser createUpdatedEntity(EntityManager em) {
-        InvUser invUser = new InvUser()
+    public static User createUpdatedEntity(EntityManager em) {
+        User user = new User()
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
             .postTitle(UPDATED_POST_TITLE)
@@ -130,55 +126,55 @@ public class InvUserResourceIT {
             .email(UPDATED_EMAIL)
             .password(UPDATED_PASSWORD);
         // Add required entity
-        InvStore invStore;
-        if (TestUtil.findAll(em, InvStore.class).isEmpty()) {
-            invStore = InvStoreResourceIT.createUpdatedEntity(em);
-            em.persist(invStore);
+        Store store;
+        if (TestUtil.findAll(em, Store.class).isEmpty()) {
+            store = StoreResourceIT.createUpdatedEntity(em);
+            em.persist(store);
             em.flush();
         } else {
-            invStore = TestUtil.findAll(em, InvStore.class).get(0);
+            store = TestUtil.findAll(em, Store.class).get(0);
         }
-        invUser.getInvStores().add(invStore);
-        return invUser;
+        user.getInvStores().add(store);
+        return user;
     }
 
     @BeforeEach
     public void initTest() {
-        invUser = createEntity(em);
+        user = createEntity(em);
     }
 
     @Test
     @Transactional
     public void createInvUser() throws Exception {
-        int databaseSizeBeforeCreate = invUserRepository.findAll().size();
-        // Create the InvUser
-        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(invUser);
+        int databaseSizeBeforeCreate = userRepository.findAll().size();
+        // Create the User
+        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(user);
         restInvUserMockMvc.perform(post("/api/inv-users")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(invUserDTO)))
             .andExpect(status().isCreated());
 
-        // Validate the InvUser in the database
-        List<InvUser> invUserList = invUserRepository.findAll();
-        assertThat(invUserList).hasSize(databaseSizeBeforeCreate + 1);
-        InvUser testInvUser = invUserList.get(invUserList.size() - 1);
-        assertThat(testInvUser.getFirstName()).isEqualTo(DEFAULT_FIRST_NAME);
-        assertThat(testInvUser.getLastName()).isEqualTo(DEFAULT_LAST_NAME);
-        assertThat(testInvUser.getPostTitle()).isEqualTo(DEFAULT_POST_TITLE);
-        assertThat(testInvUser.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
-        assertThat(testInvUser.getLastUpdated()).isEqualTo(DEFAULT_LAST_UPDATED);
-        assertThat(testInvUser.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(testInvUser.getPassword()).isEqualTo(DEFAULT_PASSWORD);
+        // Validate the User in the database
+        List<User> userList = userRepository.findAll();
+        assertThat(userList).hasSize(databaseSizeBeforeCreate + 1);
+        User testUser = userList.get(userList.size() - 1);
+        assertThat(testUser.getFirstName()).isEqualTo(DEFAULT_FIRST_NAME);
+        assertThat(testUser.getLastName()).isEqualTo(DEFAULT_LAST_NAME);
+        assertThat(testUser.getPostTitle()).isEqualTo(DEFAULT_POST_TITLE);
+        assertThat(testUser.getCreatedOn()).isEqualTo(DEFAULT_CREATED_ON);
+        assertThat(testUser.getLastUpdated()).isEqualTo(DEFAULT_LAST_UPDATED);
+        assertThat(testUser.getEmail()).isEqualTo(DEFAULT_EMAIL);
+        assertThat(testUser.getPassword()).isEqualTo(DEFAULT_PASSWORD);
     }
 
     @Test
     @Transactional
     public void createInvUserWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = invUserRepository.findAll().size();
+        int databaseSizeBeforeCreate = userRepository.findAll().size();
 
-        // Create the InvUser with an existing ID
-        invUser.setId(1L);
-        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(invUser);
+        // Create the User with an existing ID
+        user.setId(1L);
+        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(user);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restInvUserMockMvc.perform(post("/api/inv-users")
@@ -186,9 +182,9 @@ public class InvUserResourceIT {
             .content(TestUtil.convertObjectToJsonBytes(invUserDTO)))
             .andExpect(status().isBadRequest());
 
-        // Validate the InvUser in the database
-        List<InvUser> invUserList = invUserRepository.findAll();
-        assertThat(invUserList).hasSize(databaseSizeBeforeCreate);
+        // Validate the User in the database
+        List<User> userList = userRepository.findAll();
+        assertThat(userList).hasSize(databaseSizeBeforeCreate);
     }
 
 
@@ -196,13 +192,13 @@ public class InvUserResourceIT {
     @Transactional
     public void getAllInvUsers() throws Exception {
         // Initialize the database
-        invUserRepository.saveAndFlush(invUser);
+        userRepository.saveAndFlush(user);
 
         // Get all the invUserList
         restInvUserMockMvc.perform(get("/api/inv-users?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(invUser.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(user.getId().intValue())))
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
             .andExpect(jsonPath("$.[*].postTitle").value(hasItem(DEFAULT_POST_TITLE)))
@@ -236,13 +232,13 @@ public class InvUserResourceIT {
     @Transactional
     public void getInvUser() throws Exception {
         // Initialize the database
-        invUserRepository.saveAndFlush(invUser);
+        userRepository.saveAndFlush(user);
 
-        // Get the invUser
-        restInvUserMockMvc.perform(get("/api/inv-users/{id}", invUser.getId()))
+        // Get the user
+        restInvUserMockMvc.perform(get("/api/inv-users/{id}", user.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(invUser.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(user.getId().intValue()))
             .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRST_NAME))
             .andExpect(jsonPath("$.lastName").value(DEFAULT_LAST_NAME))
             .andExpect(jsonPath("$.postTitle").value(DEFAULT_POST_TITLE))
@@ -254,7 +250,7 @@ public class InvUserResourceIT {
     @Test
     @Transactional
     public void getNonExistingInvUser() throws Exception {
-        // Get the invUser
+        // Get the user
         restInvUserMockMvc.perform(get("/api/inv-users/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }
@@ -263,15 +259,15 @@ public class InvUserResourceIT {
     @Transactional
     public void updateInvUser() throws Exception {
         // Initialize the database
-        invUserRepository.saveAndFlush(invUser);
+        userRepository.saveAndFlush(user);
 
-        int databaseSizeBeforeUpdate = invUserRepository.findAll().size();
+        int databaseSizeBeforeUpdate = userRepository.findAll().size();
 
-        // Update the invUser
-        InvUser updatedInvUser = invUserRepository.findById(invUser.getId()).get();
-        // Disconnect from session so that the updates on updatedInvUser are not directly saved in db
-        em.detach(updatedInvUser);
-        updatedInvUser
+        // Update the user
+        User updatedUser = userRepository.findById(user.getId()).get();
+        // Disconnect from session so that the updates on updatedUser are not directly saved in db
+        em.detach(updatedUser);
+        updatedUser
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
             .postTitle(UPDATED_POST_TITLE)
@@ -279,33 +275,33 @@ public class InvUserResourceIT {
             .lastUpdated(UPDATED_LAST_UPDATED)
             .email(UPDATED_EMAIL)
             .password(UPDATED_PASSWORD);
-        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(updatedInvUser);
+        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(updatedUser);
 
         restInvUserMockMvc.perform(put("/api/inv-users")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(invUserDTO)))
             .andExpect(status().isOk());
 
-        // Validate the InvUser in the database
-        List<InvUser> invUserList = invUserRepository.findAll();
-        assertThat(invUserList).hasSize(databaseSizeBeforeUpdate);
-        InvUser testInvUser = invUserList.get(invUserList.size() - 1);
-        assertThat(testInvUser.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
-        assertThat(testInvUser.getLastName()).isEqualTo(UPDATED_LAST_NAME);
-        assertThat(testInvUser.getPostTitle()).isEqualTo(UPDATED_POST_TITLE);
-        assertThat(testInvUser.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
-        assertThat(testInvUser.getLastUpdated()).isEqualTo(UPDATED_LAST_UPDATED);
-        assertThat(testInvUser.getEmail()).isEqualTo(UPDATED_EMAIL);
-        assertThat(testInvUser.getPassword()).isEqualTo(UPDATED_PASSWORD);
+        // Validate the User in the database
+        List<User> userList = userRepository.findAll();
+        assertThat(userList).hasSize(databaseSizeBeforeUpdate);
+        User testUser = userList.get(userList.size() - 1);
+        assertThat(testUser.getFirstName()).isEqualTo(UPDATED_FIRST_NAME);
+        assertThat(testUser.getLastName()).isEqualTo(UPDATED_LAST_NAME);
+        assertThat(testUser.getPostTitle()).isEqualTo(UPDATED_POST_TITLE);
+        assertThat(testUser.getCreatedOn()).isEqualTo(UPDATED_CREATED_ON);
+        assertThat(testUser.getLastUpdated()).isEqualTo(UPDATED_LAST_UPDATED);
+        assertThat(testUser.getEmail()).isEqualTo(UPDATED_EMAIL);
+        assertThat(testUser.getPassword()).isEqualTo(UPDATED_PASSWORD);
     }
 
     @Test
     @Transactional
     public void updateNonExistingInvUser() throws Exception {
-        int databaseSizeBeforeUpdate = invUserRepository.findAll().size();
+        int databaseSizeBeforeUpdate = userRepository.findAll().size();
 
-        // Create the InvUser
-        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(invUser);
+        // Create the User
+        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(user);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restInvUserMockMvc.perform(put("/api/inv-users")
@@ -313,26 +309,26 @@ public class InvUserResourceIT {
             .content(TestUtil.convertObjectToJsonBytes(invUserDTO)))
             .andExpect(status().isBadRequest());
 
-        // Validate the InvUser in the database
-        List<InvUser> invUserList = invUserRepository.findAll();
-        assertThat(invUserList).hasSize(databaseSizeBeforeUpdate);
+        // Validate the User in the database
+        List<User> userList = userRepository.findAll();
+        assertThat(userList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
     public void deleteInvUser() throws Exception {
         // Initialize the database
-        invUserRepository.saveAndFlush(invUser);
+        userRepository.saveAndFlush(user);
 
-        int databaseSizeBeforeDelete = invUserRepository.findAll().size();
+        int databaseSizeBeforeDelete = userRepository.findAll().size();
 
-        // Delete the invUser
-        restInvUserMockMvc.perform(delete("/api/inv-users/{id}", invUser.getId())
+        // Delete the user
+        restInvUserMockMvc.perform(delete("/api/inv-users/{id}", user.getId())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<InvUser> invUserList = invUserRepository.findAll();
-        assertThat(invUserList).hasSize(databaseSizeBeforeDelete - 1);
+        List<User> userList = userRepository.findAll();
+        assertThat(userList).hasSize(databaseSizeBeforeDelete - 1);
     }
 }

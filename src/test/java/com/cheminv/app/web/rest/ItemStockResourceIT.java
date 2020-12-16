@@ -8,12 +8,11 @@ import com.cheminv.app.domain.HazardCode;
 import com.cheminv.app.domain.InvStorage;
 import com.cheminv.app.domain.MeasUnit;
 import com.cheminv.app.domain.Order;
-import com.cheminv.app.domain.InvStore;
+import com.cheminv.app.domain.Store;
 import com.cheminv.app.repository.ItemStockRepository;
 import com.cheminv.app.service.ItemStockService;
 import com.cheminv.app.service.dto.ItemStockDTO;
 import com.cheminv.app.service.mapper.ItemStockMapper;
-import com.cheminv.app.service.dto.ItemStockCriteria;
 import com.cheminv.app.service.ItemStockQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -155,15 +153,15 @@ public class ItemStockResourceIT {
         }
         itemStock.setStorageUnit(measUnit);
         // Add required entity
-        InvStore invStore;
-        if (TestUtil.findAll(em, InvStore.class).isEmpty()) {
-            invStore = InvStoreResourceIT.createEntity(em);
-            em.persist(invStore);
+        Store store;
+        if (TestUtil.findAll(em, Store.class).isEmpty()) {
+            store = StoreResourceIT.createEntity(em);
+            em.persist(store);
             em.flush();
         } else {
-            invStore = TestUtil.findAll(em, InvStore.class).get(0);
+            store = TestUtil.findAll(em, Store.class).get(0);
         }
-        itemStock.setStore(invStore);
+        itemStock.setStore(store);
         return itemStock;
     }
     /**
@@ -206,15 +204,15 @@ public class ItemStockResourceIT {
         }
         itemStock.setStorageUnit(measUnit);
         // Add required entity
-        InvStore invStore;
-        if (TestUtil.findAll(em, InvStore.class).isEmpty()) {
-            invStore = InvStoreResourceIT.createUpdatedEntity(em);
-            em.persist(invStore);
+        Store store;
+        if (TestUtil.findAll(em, Store.class).isEmpty()) {
+            store = StoreResourceIT.createUpdatedEntity(em);
+            em.persist(store);
             em.flush();
         } else {
-            invStore = TestUtil.findAll(em, InvStore.class).get(0);
+            store = TestUtil.findAll(em, Store.class).get(0);
         }
-        itemStock.setStore(invStore);
+        itemStock.setStore(store);
         return itemStock;
     }
 
@@ -1384,7 +1382,7 @@ public class ItemStockResourceIT {
     @Transactional
     public void getAllItemStocksByStoreIsEqualToSomething() throws Exception {
         // Get already existing entity
-        InvStore store = itemStock.getStore();
+        Store store = itemStock.getStore();
         itemStockRepository.saveAndFlush(itemStock);
         Long storeId = store.getId();
 

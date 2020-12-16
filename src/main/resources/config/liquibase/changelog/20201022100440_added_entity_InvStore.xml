@@ -9,7 +9,7 @@
         <property name="autoIncrement" value="true"/>
 
     <!--
-        Added the entity InvStore.
+        Added the entity Store.
     -->
     <changeSet id="20201022100440-1" author="jhipster">
         <createTable tableName="cims_inv_store">

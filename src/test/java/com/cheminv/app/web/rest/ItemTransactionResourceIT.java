@@ -3,12 +3,11 @@ package com.cheminv.app.web.rest;
 import com.cheminv.app.CimsApp;
 import com.cheminv.app.domain.ItemTransaction;
 import com.cheminv.app.domain.ItemStock;
-import com.cheminv.app.domain.InvUser;
+import com.cheminv.app.domain.User;
 import com.cheminv.app.repository.ItemTransactionRepository;
 import com.cheminv.app.service.ItemTransactionService;
 import com.cheminv.app.service.dto.ItemTransactionDTO;
 import com.cheminv.app.service.mapper.ItemTransactionMapper;
-import com.cheminv.app.service.dto.ItemTransactionCriteria;
 import com.cheminv.app.service.ItemTransactionQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -95,15 +94,15 @@ public class ItemTransactionResourceIT {
         }
         itemTransaction.setItemStock(itemStock);
         // Add required entity
-        InvUser invUser;
-        if (TestUtil.findAll(em, InvUser.class).isEmpty()) {
-            invUser = InvUserResourceIT.createEntity(em);
-            em.persist(invUser);
+        User user;
+        if (TestUtil.findAll(em, User.class).isEmpty()) {
+            user = UserResourceIT.createEntity(em);
+            em.persist(user);
             em.flush();
         } else {
-            invUser = TestUtil.findAll(em, InvUser.class).get(0);
+            user = TestUtil.findAll(em, User.class).get(0);
         }
-        itemTransaction.setCreatedBy(invUser);
+        itemTransaction.setCreatedBy(user);
         return itemTransaction;
     }
     /**
@@ -129,15 +128,15 @@ public class ItemTransactionResourceIT {
         }
         itemTransaction.setItemStock(itemStock);
         // Add required entity
-        InvUser invUser;
-        if (TestUtil.findAll(em, InvUser.class).isEmpty()) {
-            invUser = InvUserResourceIT.createUpdatedEntity(em);
-            em.persist(invUser);
+        User user;
+        if (TestUtil.findAll(em, User.class).isEmpty()) {
+            user = UserResourceIT.createUpdatedEntity(em);
+            em.persist(user);
             em.flush();
         } else {
-            invUser = TestUtil.findAll(em, InvUser.class).get(0);
+            user = TestUtil.findAll(em, User.class).get(0);
         }
-        itemTransaction.setCreatedBy(invUser);
+        itemTransaction.setCreatedBy(user);
         return itemTransaction;
     }
 
@@ -569,7 +568,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByCreatedByIsEqualToSomething() throws Exception {
         // Get already existing entity
-        InvUser createdBy = itemTransaction.getCreatedBy();
+        User createdBy = itemTransaction.getCreatedBy();
         itemTransactionRepository.saveAndFlush(itemTransaction);
         Long createdById = createdBy.getId();
 

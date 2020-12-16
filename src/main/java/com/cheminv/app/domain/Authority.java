@@ -26,7 +26,7 @@ public class Authority implements Serializable {
 
     @ManyToMany(mappedBy = "authorities")
     @JsonIgnore
-    private Set<InvUser> invUsers = new HashSet<>();
+    private Set<User> users = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -50,29 +50,29 @@ public class Authority implements Serializable {
         this.name = name;
     }
 
-    public Set<InvUser> getInvUsers() {
-        return invUsers;
+    public Set<User> getInvUsers() {
+        return users;
     }
 
-    public Authority invUsers(Set<InvUser> invUsers) {
-        this.invUsers = invUsers;
+    public Authority invUsers(Set<User> users) {
+        this.users = users;
         return this;
     }
 
-    public Authority addInvUser(InvUser invUser) {
-        this.invUsers.add(invUser);
-        invUser.getAuthorities().add(this);
+    public Authority addInvUser(User user) {
+        this.users.add(user);
+        user.getAuthorities().add(this);
         return this;
     }
 
-    public Authority removeInvUser(InvUser invUser) {
-        this.invUsers.remove(invUser);
-        invUser.getAuthorities().remove(this);
+    public Authority removeInvUser(User user) {
+        this.users.remove(user);
+        user.getAuthorities().remove(this);
         return this;
     }
 
-    public void setInvUsers(Set<InvUser> invUsers) {
-        this.invUsers = invUsers;
+    public void setInvUsers(Set<User> users) {
+        this.users = users;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

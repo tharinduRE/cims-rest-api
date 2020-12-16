@@ -1,9 +1,9 @@
 package com.cheminv.app.service;
 
-import com.cheminv.app.domain.InvReport;
-import com.cheminv.app.repository.InvReportRepository;
-import com.cheminv.app.repository.InvStoreRepository;
-import com.cheminv.app.repository.InvUserRepository;
+import com.cheminv.app.domain.Report;
+import com.cheminv.app.repository.ReportRepository;
+import com.cheminv.app.repository.StoreRepository;
+import com.cheminv.app.repository.UserRepository;
 import com.cheminv.app.repository.ItemStockRepository;
 import com.cheminv.app.service.dto.ItemStockDTO;
 import com.cheminv.app.service.mapper.ItemStockMapper;
@@ -40,20 +40,20 @@ public class JasperReportService {
 
     private final ItemStockRepository itemStockRepository;
 
-    private final InvReportRepository invReportRepository;
+    private final ReportRepository reportRepository;
 
-    private final InvUserRepository invUserRepository;
+    private final UserRepository userRepository;
 
-    private final InvStoreRepository invStoreRepository;
+    private final StoreRepository storeRepository;
 
     private final ItemStockMapper itemStockMapper;
 
-    public JasperReportService(ItemStockRepository itemStockRepository, InvReportRepository invReportRepository,
-                               InvUserRepository invUserRepository, InvStoreRepository invStoreRepository, ItemStockMapper itemStockMapper) {
+    public JasperReportService(ItemStockRepository itemStockRepository, ReportRepository reportRepository,
+                               UserRepository userRepository, StoreRepository storeRepository, ItemStockMapper itemStockMapper) {
         this.itemStockRepository = itemStockRepository;
-        this.invReportRepository = invReportRepository;
-        this.invUserRepository = invUserRepository;
-        this.invStoreRepository = invStoreRepository;
+        this.reportRepository = reportRepository;
+        this.userRepository = userRepository;
+        this.storeRepository = storeRepository;
         this.itemStockMapper = itemStockMapper;
     }
 
@@ -65,20 +65,20 @@ public class JasperReportService {
         BufferedImage image = ImageIO.read(headerImage.getInputStream());
         Map<String,Object> params = new HashMap<>();
         params.put("logo",image);
-        String storeName = invStoreRepository.getOne(storeId).getName();
+        String storeName = storeRepository.getOne(storeId).getName();
         params.put("category",storeName.toUpperCase());
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,params,dataSource);
 
         String filename = "inventory-report-"
             + DateTimeFormatter.ofPattern("dd-MM-yyyy-hh-mma").format(LocalDateTime.now()) + ".pdf";
 
-        InvReport invReport = new InvReport();
-        invReport.setInvUser(invUserRepository.getOne(id));
-        invReport.setName(filename);
-        invReport.setReport(JasperExportManager.exportReportToPdf(jasperPrint));
-        invReport.setReportContentType("application/pdf");
-        invReport.setCreatedOn(Instant.now());
-        invReportRepository.save(invReport);
+        Report report = new Report();
+        report.setInvUser(userRepository.getOne(id));
+        report.setName(filename);
+        report.setReport(JasperExportManager.exportReportToPdf(jasperPrint));
+        report.setReportContentType("application/pdf");
+        report.setCreatedOn(Instant.now());
+        reportRepository.save(report);
 
 
         log.debug("Report export successfully");

@@ -47,7 +47,7 @@ public class ItemTransaction implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties(value = "itemTransactions", allowSetters = true)
-    private InvUser createdBy;
+    private User createdBy;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -123,17 +123,17 @@ public class ItemTransaction implements Serializable {
         this.itemStock = itemStock;
     }
 
-    public InvUser getCreatedBy() {
+    public User getCreatedBy() {
         return createdBy;
     }
 
-    public ItemTransaction createdBy(InvUser invUser) {
-        this.createdBy = invUser;
+    public ItemTransaction createdBy(User user) {
+        this.createdBy = user;
         return this;
     }
 
-    public void setCreatedBy(InvUser invUser) {
-        this.createdBy = invUser;
+    public void setCreatedBy(User user) {
+        this.createdBy = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

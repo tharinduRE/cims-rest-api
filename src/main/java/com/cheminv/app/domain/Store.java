@@ -10,11 +10,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A InvStore.
+ * A Store.
  */
 @Entity
 @Table(name = "cims_inv_store")
-public class InvStore implements Serializable {
+public class Store implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -27,15 +27,15 @@ public class InvStore implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties(value = "subStores", allowSetters = true)
-    private InvStore parentStore;
+    private Store parentStore;
 
     @OneToMany(mappedBy = "parentStore")
     @JsonIgnore
-    private Set<InvStore> subStores = new HashSet<>();
+    private Set<Store> subStores = new HashSet<>();
 
-    @ManyToMany(mappedBy = "invStores")
+    @ManyToMany(mappedBy = "stores")
     @JsonIgnore
-    private Set<InvUser> invUsers = new HashSet<>();
+    private Set<User> users = new HashSet<>();
 
     @OneToMany(mappedBy = "store",fetch = FetchType.LAZY)
     @JsonIgnore
@@ -54,7 +54,7 @@ public class InvStore implements Serializable {
         return name;
     }
 
-    public InvStore name(String name) {
+    public Store name(String name) {
         this.name = name;
         return this;
     }
@@ -63,85 +63,85 @@ public class InvStore implements Serializable {
         this.name = name;
     }
 
-    public Set<InvUser> getInvUsers() {
-        return invUsers;
+    public Set<User> getInvUsers() {
+        return users;
     }
 
-    public InvStore invUsers(Set<InvUser> invUsers) {
-        this.invUsers = invUsers;
+    public Store invUsers(Set<User> users) {
+        this.users = users;
         return this;
     }
 
-    public InvStore addInvUser(InvUser invUser) {
-        this.invUsers.add(invUser);
-        invUser.getInvStores().add(this);
+    public Store addInvUser(User user) {
+        this.users.add(user);
+        user.getInvStores().add(this);
         return this;
     }
 
-    public InvStore removeInvUser(InvUser invUser) {
-        this.invUsers.remove(invUser);
-        invUser.getInvStores().remove(this);
+    public Store removeInvUser(User user) {
+        this.users.remove(user);
+        user.getInvStores().remove(this);
         return this;
     }
 
-    public void setInvUsers(Set<InvUser> invUsers) {
-        this.invUsers = invUsers;
+    public void setInvUsers(Set<User> users) {
+        this.users = users;
     }
 
-    public Set<InvStore> getSubStores() {
+    public Set<Store> getSubStores() {
         return subStores;
     }
 
-    public InvStore subStores(Set<InvStore> invStores) {
-        this.subStores = invStores;
+    public Store subStores(Set<Store> stores) {
+        this.subStores = stores;
         return this;
     }
 
-    public InvStore addSubStore(InvStore invStore) {
-        this.subStores.add(invStore);
-        invStore.setParentStore(this);
+    public Store addSubStore(Store store) {
+        this.subStores.add(store);
+        store.setParentStore(this);
         return this;
     }
 
-    public InvStore removeSubStore(InvStore invStore) {
-        this.subStores.remove(invStore);
-        invStore.setParentStore(null);
+    public Store removeSubStore(Store store) {
+        this.subStores.remove(store);
+        store.setParentStore(null);
         return this;
     }
 
-    public void setSubStores(Set<InvStore> invStores) {
-        this.subStores = invStores;
+    public void setSubStores(Set<Store> stores) {
+        this.subStores = stores;
     }
 
-    public InvStore getParentStore() {
+    public Store getParentStore() {
         return parentStore;
     }
 
-    public InvStore parentStore(InvStore invStore) {
-        this.parentStore = invStore;
+    public Store parentStore(Store store) {
+        this.parentStore = store;
         return this;
     }
 
-    public void setParentStore(InvStore invStore) {
-        this.parentStore = invStore;
+    public void setParentStore(Store store) {
+        this.parentStore = store;
     }
 
     public Set<ItemStock> getItemStocks() {
         return itemStocks;
     }
 
-    public InvStore itemStocks(Set<ItemStock> itemStocks) {
+    public Store itemStocks(Set<ItemStock> itemStocks) {
         this.itemStocks = itemStocks;
         return this;
     }
 
-    public InvStore addItemStock(ItemStock itemStock) {
+    public Store addItemStock(ItemStock itemStock) {
         this.itemStocks.add(itemStock);
         itemStock.setStore(this);
         return this;
     }
 
-    public InvStore removeItemStock(ItemStock itemStock) {
+    public Store removeItemStock(ItemStock itemStock) {
         this.itemStocks.remove(itemStock);
         itemStock.setStore(null);
         return this;
@@ -157,10 +157,10 @@ public class InvStore implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof InvStore)) {
+        if (!(o instanceof Store)) {
             return false;
         }
-        return id != null && id.equals(((InvStore) o).id);
+        return id != null && id.equals(((Store) o).id);
     }
 
     @Override
@@ -171,7 +171,7 @@ public class InvStore implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "InvStore{" +
+        return "Store{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
             "}";

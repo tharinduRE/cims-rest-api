@@ -1,7 +1,7 @@
 package com.cheminv.app.service;
 
-import com.cheminv.app.domain.InvDepartment;
-import com.cheminv.app.repository.InvDepartmentRepository;
+import com.cheminv.app.domain.Department;
+import com.cheminv.app.repository.DepartmentRepository;
 import com.cheminv.app.service.dto.InvDepartmentDTO;
 import com.cheminv.app.service.mapper.InvDepartmentMapper;
 import org.slf4j.Logger;
@@ -18,20 +18,20 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * Service Implementation for managing {@link InvDepartment}.
+ * Service Implementation for managing {@link Department}.
  */
 @Service
 @Transactional
-public class InvDepartmentService {
+public class DepartmentService {
 
-    private final Logger log = LoggerFactory.getLogger(InvDepartmentService.class);
+    private final Logger log = LoggerFactory.getLogger(DepartmentService.class);
 
-    private final InvDepartmentRepository invDepartmentRepository;
+    private final DepartmentRepository departmentRepository;
 
     private final InvDepartmentMapper invDepartmentMapper;
 
-    public InvDepartmentService(InvDepartmentRepository invDepartmentRepository, InvDepartmentMapper invDepartmentMapper) {
-        this.invDepartmentRepository = invDepartmentRepository;
+    public DepartmentService(DepartmentRepository departmentRepository, InvDepartmentMapper invDepartmentMapper) {
+        this.departmentRepository = departmentRepository;
         this.invDepartmentMapper = invDepartmentMapper;
     }
 
@@ -42,10 +42,10 @@ public class InvDepartmentService {
      * @return the persisted entity.
      */
     public InvDepartmentDTO save(InvDepartmentDTO invDepartmentDTO) {
-        log.debug("Request to save InvDepartment : {}", invDepartmentDTO);
-        InvDepartment invDepartment = invDepartmentMapper.toEntity(invDepartmentDTO);
-        invDepartment = invDepartmentRepository.save(invDepartment);
-        return invDepartmentMapper.toDto(invDepartment);
+        log.debug("Request to save Department : {}", invDepartmentDTO);
+        Department department = invDepartmentMapper.toEntity(invDepartmentDTO);
+        department = departmentRepository.save(department);
+        return invDepartmentMapper.toDto(department);
     }
 
     /**
@@ -56,7 +56,7 @@ public class InvDepartmentService {
     @Transactional(readOnly = true)
     public List<InvDepartmentDTO> findAll() {
         log.debug("Request to get all InvDepartments");
-        return invDepartmentRepository.findAllWithEagerRelationships().stream()
+        return departmentRepository.findAllWithEagerRelationships().stream()
             .map(invDepartmentMapper::toDto)
             .collect(Collectors.toCollection(LinkedList::new));
     }
@@ -68,7 +68,7 @@ public class InvDepartmentService {
      * @return the list of entities.
      */
     public Page<InvDepartmentDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return invDepartmentRepository.findAllWithEagerRelationships(pageable).map(invDepartmentMapper::toDto);
+        return departmentRepository.findAllWithEagerRelationships(pageable).map(invDepartmentMapper::toDto);
     }
 
     /**
@@ -79,8 +79,8 @@ public class InvDepartmentService {
      */
     @Transactional(readOnly = true)
     public Optional<InvDepartmentDTO> findOne(Long id) {
-        log.debug("Request to get InvDepartment : {}", id);
-        return invDepartmentRepository.findOneWithEagerRelationships(id)
+        log.debug("Request to get Department : {}", id);
+        return departmentRepository.findOneWithEagerRelationships(id)
             .map(invDepartmentMapper::toDto);
     }
 
@@ -90,7 +90,7 @@ public class InvDepartmentService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete InvDepartment : {}", id);
-        invDepartmentRepository.deleteById(id);
+        log.debug("Request to delete Department : {}", id);
+        departmentRepository.deleteById(id);
     }
 }

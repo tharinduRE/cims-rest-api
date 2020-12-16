@@ -2,6 +2,7 @@ package com.cheminv.app.web.rest;
 
 import com.cheminv.app.CimsApp;
 import com.cheminv.app.service.JasperReportService;
+import com.cheminv.app.service.ReportService;
 import com.cheminv.app.service.dto.ReportDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,8 @@ public class ReportsResourceIT {
         MockitoAnnotations.initMocks(this);
 
         JasperReportService jasperReportService = null;
-        ReportsResource reportsResource = new ReportsResource(jasperReportService);
+        ReportService reportService = null;
+        ReportResource reportsResource = new ReportResource(reportService,jasperReportService);
         restMockMvc = MockMvcBuilders
             .standaloneSetup(reportsResource)
             .build();

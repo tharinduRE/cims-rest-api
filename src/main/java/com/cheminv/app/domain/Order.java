@@ -48,7 +48,7 @@ public class Order implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties(value = "orders", allowSetters = true)
-    private InvUser requestedBy;
+    private User requestedBy;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -137,17 +137,17 @@ public class Order implements Serializable {
         this.itemStock = itemStock;
     }
 
-    public InvUser getRequestedBy() {
+    public User getRequestedBy() {
         return requestedBy;
     }
 
-    public Order requestedBy(InvUser invUser) {
-        this.requestedBy = invUser;
+    public Order requestedBy(User user) {
+        this.requestedBy = user;
         return this;
     }
 
-    public void setRequestedBy(InvUser invUser) {
-        this.requestedBy = invUser;
+    public void setRequestedBy(User user) {
+        this.requestedBy = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

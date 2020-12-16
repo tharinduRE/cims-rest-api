@@ -1,8 +1,7 @@
 package com.cheminv.app.security;
 
-import com.cheminv.app.domain.InvUser;
-import com.cheminv.app.repository.InvUserRepository;
-import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
+import com.cheminv.app.domain.User;
+import com.cheminv.app.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,14 +18,14 @@ import java.util.stream.Collectors;
 /**
  * Authenticate a user from the database.
  */
-@Component("userDetailsService")
+@Component("UserDetailsService")
 public class DomainUserDetailsService implements UserDetailsService {
 
     private final Logger log = LoggerFactory.getLogger(DomainUserDetailsService.class);
 
-    private final InvUserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public DomainUserDetailsService(InvUserRepository userRepository) {
+    public DomainUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
@@ -41,7 +40,7 @@ public class DomainUserDetailsService implements UserDetailsService {
 
     }
 
-    private org.springframework.security.core.userdetails.User createSpringSecurityUser(InvUser user) {
+    private org.springframework.security.core.userdetails.User createSpringSecurityUser(User user) {
 
         List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
             .map(authority -> new SimpleGrantedAuthority(authority.getName()))

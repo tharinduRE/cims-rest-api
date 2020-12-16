@@ -9,7 +9,7 @@
         <property name="autoIncrement" value="true"/>
 
     <!--
-        Added the entity InvReport.
+        Added the entity Report.
     -->
     <changeSet id="20201021155750-1" author="jhipster">
         <createTable tableName="cims_reports">

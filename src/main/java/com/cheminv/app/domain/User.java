@@ -5,7 +5,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -13,11 +12,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A InvUser.
+ * A User.
  */
 @Entity
 @Table(name = "cims_user")
-public class InvUser implements Serializable {
+public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -55,12 +54,12 @@ public class InvUser implements Serializable {
     @OneToMany(mappedBy = "createdBy",cascade = CascadeType.ALL)
     private Set<ItemTransaction> itemTransactions = new HashSet<>();
 
-    @ManyToMany(mappedBy = "invUsers")
+    @ManyToMany(mappedBy = "users")
     @JsonIgnore
-    private Set<InvDepartment> invDepartments = new HashSet<>();
+    private Set<Department> departments = new HashSet<>();
 
-    @OneToMany(mappedBy = "invUser")
-    private Set<InvReport> invReports = new HashSet<>();
+    @OneToMany(mappedBy = "user")
+    private Set<Report> reports = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "cims_user_authority",
@@ -72,7 +71,7 @@ public class InvUser implements Serializable {
     @JoinTable(name = "cims_user_inv_store",
                joinColumns = @JoinColumn(name = "inv_user_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "inv_store_id", referencedColumnName = "id"))
-    private Set<InvStore> invStores = new HashSet<>();
+    private Set<Store> stores = new HashSet<>();
 
     @OneToMany(mappedBy = "requestedBy",cascade = CascadeType.ALL)
     private Set<Order> itemOrders = new HashSet<>();
@@ -90,7 +89,7 @@ public class InvUser implements Serializable {
         return firstName;
     }
 
-    public InvUser firstName(String firstName) {
+    public User firstName(String firstName) {
         this.firstName = firstName;
         return this;
     }
@@ -103,7 +102,7 @@ public class InvUser implements Serializable {
         return lastName;
     }
 
-    public InvUser lastName(String lastName) {
+    public User lastName(String lastName) {
         this.lastName = lastName;
         return this;
     }
@@ -116,7 +115,7 @@ public class InvUser implements Serializable {
         return postTitle;
     }
 
-    public InvUser postTitle(String postTitle) {
+    public User postTitle(String postTitle) {
         this.postTitle = postTitle;
         return this;
     }
@@ -129,7 +128,7 @@ public class InvUser implements Serializable {
         return createdOn;
     }
 
-    public InvUser createdOn(Instant createdOn) {
+    public User createdOn(Instant createdOn) {
         this.createdOn = createdOn;
         return this;
     }
@@ -142,7 +141,7 @@ public class InvUser implements Serializable {
         return lastUpdated;
     }
 
-    public InvUser lastUpdated(Instant lastUpdated) {
+    public User lastUpdated(Instant lastUpdated) {
         this.lastUpdated = lastUpdated;
         return this;
     }
@@ -155,7 +154,7 @@ public class InvUser implements Serializable {
         return email;
     }
 
-    public InvUser email(String email) {
+    public User email(String email) {
         this.email = email;
         return this;
     }
@@ -168,7 +167,7 @@ public class InvUser implements Serializable {
         return password;
     }
 
-    public InvUser password(String password) {
+    public User password(String password) {
         this.password = password;
         return this;
     }
@@ -181,7 +180,7 @@ public class InvUser implements Serializable {
         return avatarUrl;
     }
 
-    public InvUser avatarUrl(String avatarUrl) {
+    public User avatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
         return this;
     }
@@ -194,18 +193,18 @@ public class InvUser implements Serializable {
         return itemTransactions;
     }
 
-    public InvUser itemTransactions(Set<ItemTransaction> itemTransactions) {
+    public User itemTransactions(Set<ItemTransaction> itemTransactions) {
         this.itemTransactions = itemTransactions;
         return this;
     }
 
-    public InvUser addItemTransaction(ItemTransaction itemTransaction) {
+    public User addItemTransaction(ItemTransaction itemTransaction) {
         this.itemTransactions.add(itemTransaction);
         itemTransaction.setCreatedBy(this);
         return this;
     }
 
-    public InvUser removeItemTransaction(ItemTransaction itemTransaction) {
+    public User removeItemTransaction(ItemTransaction itemTransaction) {
         this.itemTransactions.remove(itemTransaction);
         itemTransaction.setCreatedBy(null);
         return this;
@@ -215,72 +214,72 @@ public class InvUser implements Serializable {
         this.itemTransactions = itemTransactions;
     }
 
-    public Set<InvDepartment> getInvDepartments() {
-        return invDepartments;
+    public Set<Department> getInvDepartments() {
+        return departments;
     }
 
-    public InvUser invDepartments(Set<InvDepartment> invDepartments) {
-        this.invDepartments = invDepartments;
+    public User invDepartments(Set<Department> departments) {
+        this.departments = departments;
         return this;
     }
 
-    public InvUser addInvDepartment(InvDepartment invDepartment) {
-        this.invDepartments.add(invDepartment);
-        invDepartment.getInvUsers().add(this);
+    public User addInvDepartment(Department department) {
+        this.departments.add(department);
+        department.getInvUsers().add(this);
         return this;
     }
 
-    public InvUser removeInvDepartment(InvDepartment invDepartment) {
-        this.invDepartments.remove(invDepartment);
-        invDepartment.getInvUsers().remove(this);
+    public User removeInvDepartment(Department department) {
+        this.departments.remove(department);
+        department.getInvUsers().remove(this);
         return this;
     }
 
-    public void setInvDepartments(Set<InvDepartment> invDepartments) {
-        this.invDepartments = invDepartments;
+    public void setInvDepartments(Set<Department> departments) {
+        this.departments = departments;
     }
 
-    public Set<InvReport> getInvReports() {
-        return invReports;
+    public Set<Report> getInvReports() {
+        return reports;
     }
 
-    public InvUser invReports(Set<InvReport> invReports) {
-        this.invReports = invReports;
+    public User reports(Set<Report> reports) {
+        this.reports = reports;
         return this;
     }
 
-    public InvUser addInvReport(InvReport invReport) {
-        this.invReports.add(invReport);
-        invReport.setInvUser(this);
+    public User addInvReport(Report report) {
+        this.reports.add(report);
+        report.setInvUser(this);
         return this;
     }
 
-    public InvUser removeInvReport(InvReport invReport) {
-        this.invReports.remove(invReport);
-        invReport.setInvUser(null);
+    public User removeInvReport(Report report) {
+        this.reports.remove(report);
+        report.setInvUser(null);
         return this;
     }
 
-    public void setInvReports(Set<InvReport> invReports) {
-        this.invReports = invReports;
+    public void setInvReports(Set<Report> reports) {
+        this.reports = reports;
     }
 
     public Set<Authority> getAuthorities() {
         return authorities;
     }
 
-    public InvUser authorities(Set<Authority> authorities) {
+    public User authorities(Set<Authority> authorities) {
         this.authorities = authorities;
         return this;
     }
 
-    public InvUser addAuthority(Authority authority) {
+    public User addAuthority(Authority authority) {
         this.authorities.add(authority);
         authority.getInvUsers().add(this);
         return this;
     }
 
-    public InvUser removeAuthority(Authority authority) {
+    public User removeAuthority(Authority authority) {
         this.authorities.remove(authority);
         authority.getInvUsers().remove(this);
         return this;
@@ -290,47 +289,47 @@ public class InvUser implements Serializable {
         this.authorities = authorities;
     }
 
-    public Set<InvStore> getInvStores() {
-        return invStores;
+    public Set<Store> getInvStores() {
+        return stores;
     }
 
-    public InvUser invStores(Set<InvStore> invStores) {
-        this.invStores = invStores;
+    public User invStores(Set<Store> stores) {
+        this.stores = stores;
         return this;
     }
 
-    public InvUser addInvStore(InvStore invStore) {
-        this.invStores.add(invStore);
-        invStore.getInvUsers().add(this);
+    public User addInvStore(Store store) {
+        this.stores.add(store);
+        store.getInvUsers().add(this);
         return this;
     }
 
-    public InvUser removeInvStore(InvStore invStore) {
-        this.invStores.remove(invStore);
-        invStore.getInvUsers().remove(this);
+    public User removeInvStore(Store store) {
+        this.stores.remove(store);
+        store.getInvUsers().remove(this);
         return this;
     }
 
-    public void setInvStores(Set<InvStore> invStores) {
-        this.invStores = invStores;
+    public void setInvStores(Set<Store> stores) {
+        this.stores = stores;
     }
 
     public Set<Order> getItemOrders() {
         return itemOrders;
     }
 
-    public InvUser itemOrders(Set<Order> orders) {
+    public User itemOrders(Set<Order> orders) {
         this.itemOrders = orders;
         return this;
     }
 
-    public InvUser addItemOrders(Order order) {
+    public User addItemOrders(Order order) {
         this.itemOrders.add(order);
         order.setRequestedBy(this);
         return this;
     }
 
-    public InvUser removeItemOrders(Order order) {
+    public User removeItemOrders(Order order) {
         this.itemOrders.remove(order);
         order.setRequestedBy(null);
         return this;
@@ -346,10 +345,10 @@ public class InvUser implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof InvUser)) {
+        if (!(o instanceof User)) {
             return false;
         }
-        return id != null && id.equals(((InvUser) o).id);
+        return id != null && id.equals(((User) o).id);
     }
 
     @Override
@@ -360,7 +359,7 @@ public class InvUser implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "InvUser{" +
+        return "User{" +
             "id=" + getId() +
             ", firstName='" + getFirstName() + "'" +
             ", lastName='" + getLastName() + "'" +

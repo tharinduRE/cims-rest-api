@@ -1,10 +1,9 @@
 package com.cheminv.app.web.rest;
 
 import com.cheminv.app.CimsApp;
-import com.cheminv.app.domain.InvReport;
-import com.cheminv.app.repository.InvReportRepository;
-import com.cheminv.app.service.InvReportService;
-import com.cheminv.app.service.dto.InvReportDTO;
+import com.cheminv.app.domain.Report;
+import com.cheminv.app.repository.ReportRepository;
+import com.cheminv.app.service.ReportService;
 import com.cheminv.app.service.mapper.InvReportMapper;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +19,6 @@ import org.springframework.util.Base64Utils;
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -28,12 +26,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Integration tests for the {@link InvReportResource} REST controller.
+ * Integration tests for the {@link ReportResource} REST controller.
  */
 @SpringBootTest(classes = CimsApp.class)
 @AutoConfigureMockMvc
 @WithMockUser
-public class InvReportResourceIT {
+public class ReportResourceIT {
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
@@ -47,13 +45,13 @@ public class InvReportResourceIT {
     private static final String UPDATED_REPORT_CONTENT_TYPE = "image/png";
 
     @Autowired
-    private InvReportRepository invReportRepository;
+    private ReportRepository reportRepository;
 
     @Autowired
     private InvReportMapper invReportMapper;
 
     @Autowired
-    private InvReportService invReportService;
+    private ReportService reportService;
 
     @Autowired
     private EntityManager em;
@@ -61,7 +59,7 @@ public class InvReportResourceIT {
     @Autowired
     private MockMvc restInvReportMockMvc;
 
-    private InvReport invReport;
+    private Report report;
 
     /**
      * Create an entity for this test.
@@ -69,13 +67,13 @@ public class InvReportResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static InvReport createEntity(EntityManager em) {
-        InvReport invReport = new InvReport()
+    public static Report createEntity(EntityManager em) {
+        Report report = new Report()
             .name(DEFAULT_NAME)
             .createdOn(DEFAULT_CREATED_ON)
             .report(DEFAULT_REPORT)
             .reportContentType(DEFAULT_REPORT_CONTENT_TYPE);
-        return invReport;
+        return report;
     }
     /**
      * Create an updated entity for this test.
@@ -83,31 +81,31 @@ public class InvReportResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static InvReport createUpdatedEntity(EntityManager em) {
-        InvReport invReport = new InvReport()
+    public static Report createUpdatedEntity(EntityManager em) {
+        Report report = new Report()
             .name(UPDATED_NAME)
             .createdOn(UPDATED_CREATED_ON)
             .report(UPDATED_REPORT)
             .reportContentType(UPDATED_REPORT_CONTENT_TYPE);
-        return invReport;
+        return report;
     }
 
     @BeforeEach
     public void initTest() {
-        invReport = createEntity(em);
+        report = createEntity(em);
     }
 
     @Test
     @Transactional
     public void getAllInvReports() throws Exception {
         // Initialize the database
-        invReportRepository.saveAndFlush(invReport);
+        reportRepository.saveAndFlush(report);
 
         // Get all the invReportList
         restInvReportMockMvc.perform(get("/api/inv-reports?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(invReport.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(report.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].createdOn").value(hasItem(DEFAULT_CREATED_ON.toString())))
             .andExpect(jsonPath("$.[*].reportContentType").value(hasItem(DEFAULT_REPORT_CONTENT_TYPE)))
@@ -118,13 +116,13 @@ public class InvReportResourceIT {
     @Transactional
     public void getInvReport() throws Exception {
         // Initialize the database
-        invReportRepository.saveAndFlush(invReport);
+        reportRepository.saveAndFlush(report);
 
-        // Get the invReport
-        restInvReportMockMvc.perform(get("/api/inv-reports/{id}", invReport.getId()))
+        // Get the report
+        restInvReportMockMvc.perform(get("/api/inv-reports/{id}", report.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(invReport.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(report.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
             .andExpect(jsonPath("$.createdOn").value(DEFAULT_CREATED_ON.toString()))
             .andExpect(jsonPath("$.reportContentType").value(DEFAULT_REPORT_CONTENT_TYPE))
@@ -133,7 +131,7 @@ public class InvReportResourceIT {
     @Test
     @Transactional
     public void getNonExistingInvReport() throws Exception {
-        // Get the invReport
+        // Get the report
         restInvReportMockMvc.perform(get("/api/inv-reports/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }

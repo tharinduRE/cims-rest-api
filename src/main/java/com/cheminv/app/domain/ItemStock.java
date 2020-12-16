@@ -93,7 +93,7 @@ public class ItemStock implements Serializable {
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties(value = "itemStocks", allowSetters = true)
-    private InvStore store;
+    private Store store;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -373,17 +373,17 @@ public class ItemStock implements Serializable {
         this.itemOrders = orders;
     }
 
-    public InvStore getStore() {
+    public Store getStore() {
         return store;
     }
 
-    public ItemStock store(InvStore invStore) {
-        this.store = invStore;
+    public ItemStock store(Store store) {
+        this.store = store;
         return this;
     }
 
-    public void setStore(InvStore invStore) {
-        this.store = invStore;
+    public void setStore(Store store) {
+        this.store = store;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

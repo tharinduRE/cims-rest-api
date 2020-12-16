@@ -1,9 +1,9 @@
 package com.cheminv.app.web.rest;
 
 import com.cheminv.app.CimsApp;
-import com.cheminv.app.domain.InvDepartment;
-import com.cheminv.app.repository.InvDepartmentRepository;
-import com.cheminv.app.service.InvDepartmentService;
+import com.cheminv.app.domain.Department;
+import com.cheminv.app.repository.DepartmentRepository;
+import com.cheminv.app.service.DepartmentService;
 import com.cheminv.app.service.dto.InvDepartmentDTO;
 import com.cheminv.app.service.mapper.InvDepartmentMapper;
 
@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -32,31 +31,31 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Integration tests for the {@link InvDepartmentResource} REST controller.
+ * Integration tests for the {@link DepartmentResource} REST controller.
  */
 @SpringBootTest(classes = CimsApp.class)
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
-public class InvDepartmentResourceIT {
+public class DepartmentResourceIT {
 
     private static final String DEFAULT_DEPARTMENT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_DEPARTMENT_NAME = "BBBBBBBBBB";
 
     @Autowired
-    private InvDepartmentRepository invDepartmentRepository;
+    private DepartmentRepository departmentRepository;
 
     @Mock
-    private InvDepartmentRepository invDepartmentRepositoryMock;
+    private DepartmentRepository departmentRepositoryMock;
 
     @Autowired
     private InvDepartmentMapper invDepartmentMapper;
 
     @Mock
-    private InvDepartmentService invDepartmentServiceMock;
+    private DepartmentService departmentServiceMock;
 
     @Autowired
-    private InvDepartmentService invDepartmentService;
+    private DepartmentService departmentService;
 
     @Autowired
     private EntityManager em;
@@ -64,7 +63,7 @@ public class InvDepartmentResourceIT {
     @Autowired
     private MockMvc restInvDepartmentMockMvc;
 
-    private InvDepartment invDepartment;
+    private Department department;
 
     /**
      * Create an entity for this test.
@@ -72,10 +71,10 @@ public class InvDepartmentResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static InvDepartment createEntity(EntityManager em) {
-        InvDepartment invDepartment = new InvDepartment()
+    public static Department createEntity(EntityManager em) {
+        Department department = new Department()
             .departmentName(DEFAULT_DEPARTMENT_NAME);
-        return invDepartment;
+        return department;
     }
     /**
      * Create an updated entity for this test.
@@ -83,43 +82,43 @@ public class InvDepartmentResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static InvDepartment createUpdatedEntity(EntityManager em) {
-        InvDepartment invDepartment = new InvDepartment()
+    public static Department createUpdatedEntity(EntityManager em) {
+        Department department = new Department()
             .departmentName(UPDATED_DEPARTMENT_NAME);
-        return invDepartment;
+        return department;
     }
 
     @BeforeEach
     public void initTest() {
-        invDepartment = createEntity(em);
+        department = createEntity(em);
     }
 
     @Test
     @Transactional
     public void createInvDepartment() throws Exception {
-        int databaseSizeBeforeCreate = invDepartmentRepository.findAll().size();
-        // Create the InvDepartment
-        InvDepartmentDTO invDepartmentDTO = invDepartmentMapper.toDto(invDepartment);
+        int databaseSizeBeforeCreate = departmentRepository.findAll().size();
+        // Create the Department
+        InvDepartmentDTO invDepartmentDTO = invDepartmentMapper.toDto(department);
         restInvDepartmentMockMvc.perform(post("/api/inv-departments")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(invDepartmentDTO)))
             .andExpect(status().isCreated());
 
-        // Validate the InvDepartment in the database
-        List<InvDepartment> invDepartmentList = invDepartmentRepository.findAll();
-        assertThat(invDepartmentList).hasSize(databaseSizeBeforeCreate + 1);
-        InvDepartment testInvDepartment = invDepartmentList.get(invDepartmentList.size() - 1);
-        assertThat(testInvDepartment.getDepartmentName()).isEqualTo(DEFAULT_DEPARTMENT_NAME);
+        // Validate the Department in the database
+        List<Department> departmentList = departmentRepository.findAll();
+        assertThat(departmentList).hasSize(databaseSizeBeforeCreate + 1);
+        Department testDepartment = departmentList.get(departmentList.size() - 1);
+        assertThat(testDepartment.getDepartmentName()).isEqualTo(DEFAULT_DEPARTMENT_NAME);
     }
 
     @Test
     @Transactional
     public void createInvDepartmentWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = invDepartmentRepository.findAll().size();
+        int databaseSizeBeforeCreate = departmentRepository.findAll().size();
 
-        // Create the InvDepartment with an existing ID
-        invDepartment.setId(1L);
-        InvDepartmentDTO invDepartmentDTO = invDepartmentMapper.toDto(invDepartment);
+        // Create the Department with an existing ID
+        department.setId(1L);
+        InvDepartmentDTO invDepartmentDTO = invDepartmentMapper.toDto(department);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restInvDepartmentMockMvc.perform(post("/api/inv-departments")
@@ -127,9 +126,9 @@ public class InvDepartmentResourceIT {
             .content(TestUtil.convertObjectToJsonBytes(invDepartmentDTO)))
             .andExpect(status().isBadRequest());
 
-        // Validate the InvDepartment in the database
-        List<InvDepartment> invDepartmentList = invDepartmentRepository.findAll();
-        assertThat(invDepartmentList).hasSize(databaseSizeBeforeCreate);
+        // Validate the Department in the database
+        List<Department> departmentList = departmentRepository.findAll();
+        assertThat(departmentList).hasSize(databaseSizeBeforeCreate);
     }
 
 
@@ -137,53 +136,53 @@ public class InvDepartmentResourceIT {
     @Transactional
     public void getAllInvDepartments() throws Exception {
         // Initialize the database
-        invDepartmentRepository.saveAndFlush(invDepartment);
+        departmentRepository.saveAndFlush(department);
 
         // Get all the invDepartmentList
         restInvDepartmentMockMvc.perform(get("/api/inv-departments?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(invDepartment.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(department.getId().intValue())))
             .andExpect(jsonPath("$.[*].departmentName").value(hasItem(DEFAULT_DEPARTMENT_NAME)));
     }
     
     @SuppressWarnings({"unchecked"})
     public void getAllInvDepartmentsWithEagerRelationshipsIsEnabled() throws Exception {
-        when(invDepartmentServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        when(departmentServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         restInvDepartmentMockMvc.perform(get("/api/inv-departments?eagerload=true"))
             .andExpect(status().isOk());
 
-        verify(invDepartmentServiceMock, times(1)).findAllWithEagerRelationships(any());
+        verify(departmentServiceMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @SuppressWarnings({"unchecked"})
     public void getAllInvDepartmentsWithEagerRelationshipsIsNotEnabled() throws Exception {
-        when(invDepartmentServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+        when(departmentServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
 
         restInvDepartmentMockMvc.perform(get("/api/inv-departments?eagerload=true"))
             .andExpect(status().isOk());
 
-        verify(invDepartmentServiceMock, times(1)).findAllWithEagerRelationships(any());
+        verify(departmentServiceMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @Test
     @Transactional
     public void getInvDepartment() throws Exception {
         // Initialize the database
-        invDepartmentRepository.saveAndFlush(invDepartment);
+        departmentRepository.saveAndFlush(department);
 
-        // Get the invDepartment
-        restInvDepartmentMockMvc.perform(get("/api/inv-departments/{id}", invDepartment.getId()))
+        // Get the department
+        restInvDepartmentMockMvc.perform(get("/api/inv-departments/{id}", department.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(invDepartment.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(department.getId().intValue()))
             .andExpect(jsonPath("$.departmentName").value(DEFAULT_DEPARTMENT_NAME));
     }
     @Test
     @Transactional
     public void getNonExistingInvDepartment() throws Exception {
-        // Get the invDepartment
+        // Get the department
         restInvDepartmentMockMvc.perform(get("/api/inv-departments/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }
@@ -192,37 +191,37 @@ public class InvDepartmentResourceIT {
     @Transactional
     public void updateInvDepartment() throws Exception {
         // Initialize the database
-        invDepartmentRepository.saveAndFlush(invDepartment);
+        departmentRepository.saveAndFlush(department);
 
-        int databaseSizeBeforeUpdate = invDepartmentRepository.findAll().size();
+        int databaseSizeBeforeUpdate = departmentRepository.findAll().size();
 
-        // Update the invDepartment
-        InvDepartment updatedInvDepartment = invDepartmentRepository.findById(invDepartment.getId()).get();
-        // Disconnect from session so that the updates on updatedInvDepartment are not directly saved in db
-        em.detach(updatedInvDepartment);
-        updatedInvDepartment
+        // Update the department
+        Department updatedDepartment = departmentRepository.findById(department.getId()).get();
+        // Disconnect from session so that the updates on updatedDepartment are not directly saved in db
+        em.detach(updatedDepartment);
+        updatedDepartment
             .departmentName(UPDATED_DEPARTMENT_NAME);
-        InvDepartmentDTO invDepartmentDTO = invDepartmentMapper.toDto(updatedInvDepartment);
+        InvDepartmentDTO invDepartmentDTO = invDepartmentMapper.toDto(updatedDepartment);
 
         restInvDepartmentMockMvc.perform(put("/api/inv-departments")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(invDepartmentDTO)))
             .andExpect(status().isOk());
 
-        // Validate the InvDepartment in the database
-        List<InvDepartment> invDepartmentList = invDepartmentRepository.findAll();
-        assertThat(invDepartmentList).hasSize(databaseSizeBeforeUpdate);
-        InvDepartment testInvDepartment = invDepartmentList.get(invDepartmentList.size() - 1);
-        assertThat(testInvDepartment.getDepartmentName()).isEqualTo(UPDATED_DEPARTMENT_NAME);
+        // Validate the Department in the database
+        List<Department> departmentList = departmentRepository.findAll();
+        assertThat(departmentList).hasSize(databaseSizeBeforeUpdate);
+        Department testDepartment = departmentList.get(departmentList.size() - 1);
+        assertThat(testDepartment.getDepartmentName()).isEqualTo(UPDATED_DEPARTMENT_NAME);
     }
 
     @Test
     @Transactional
     public void updateNonExistingInvDepartment() throws Exception {
-        int databaseSizeBeforeUpdate = invDepartmentRepository.findAll().size();
+        int databaseSizeBeforeUpdate = departmentRepository.findAll().size();
 
-        // Create the InvDepartment
-        InvDepartmentDTO invDepartmentDTO = invDepartmentMapper.toDto(invDepartment);
+        // Create the Department
+        InvDepartmentDTO invDepartmentDTO = invDepartmentMapper.toDto(department);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restInvDepartmentMockMvc.perform(put("/api/inv-departments")
@@ -230,26 +229,26 @@ public class InvDepartmentResourceIT {
             .content(TestUtil.convertObjectToJsonBytes(invDepartmentDTO)))
             .andExpect(status().isBadRequest());
 
-        // Validate the InvDepartment in the database
-        List<InvDepartment> invDepartmentList = invDepartmentRepository.findAll();
-        assertThat(invDepartmentList).hasSize(databaseSizeBeforeUpdate);
+        // Validate the Department in the database
+        List<Department> departmentList = departmentRepository.findAll();
+        assertThat(departmentList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
     public void deleteInvDepartment() throws Exception {
         // Initialize the database
-        invDepartmentRepository.saveAndFlush(invDepartment);
+        departmentRepository.saveAndFlush(department);
 
-        int databaseSizeBeforeDelete = invDepartmentRepository.findAll().size();
+        int databaseSizeBeforeDelete = departmentRepository.findAll().size();
 
-        // Delete the invDepartment
-        restInvDepartmentMockMvc.perform(delete("/api/inv-departments/{id}", invDepartment.getId())
+        // Delete the department
+        restInvDepartmentMockMvc.perform(delete("/api/inv-departments/{id}", department.getId())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<InvDepartment> invDepartmentList = invDepartmentRepository.findAll();
-        assertThat(invDepartmentList).hasSize(databaseSizeBeforeDelete - 1);
+        List<Department> departmentList = departmentRepository.findAll();
+        assertThat(departmentList).hasSize(databaseSizeBeforeDelete - 1);
     }
 }

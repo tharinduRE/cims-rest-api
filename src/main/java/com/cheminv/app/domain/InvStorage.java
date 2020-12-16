@@ -38,7 +38,7 @@ public class InvStorage implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties(value = "invStorages", allowSetters = true)
-    private InvDepartment department;
+    private Department department;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -113,17 +113,17 @@ public class InvStorage implements Serializable {
         this.itemStocks = itemStocks;
     }
 
-    public InvDepartment getDepartment() {
+    public Department getDepartment() {
         return department;
     }
 
-    public InvStorage department(InvDepartment invDepartment) {
-        this.department = invDepartment;
+    public InvStorage department(Department department) {
+        this.department = department;
         return this;
     }
 
-    public void setDepartment(InvDepartment invDepartment) {
-        this.department = invDepartment;
+    public void setDepartment(Department department) {
+        this.department = department;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

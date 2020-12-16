@@ -7,24 +7,24 @@ import com.cheminv.app.service.dto.InvReportDTO;
 import org.mapstruct.*;
 
 /**
- * Mapper for the entity {@link InvReport} and its DTO {@link InvReportDTO}.
+ * Mapper for the entity {@link Report} and its DTO {@link InvReportDTO}.
  */
 @Mapper(componentModel = "spring", uses = {InvUserMapper.class})
-public interface InvReportMapper extends EntityMapper<InvReportDTO, InvReport> {
+public interface InvReportMapper extends EntityMapper<InvReportDTO, Report> {
 
     @Mapping(source = "invUser.id", target = "invUserId")
     @Mapping(source = "invUser.firstName", target = "createdBy")
-    InvReportDTO toDto(InvReport invReport);
+    InvReportDTO toDto(Report report);
 
     @Mapping(source = "invUserId", target = "invUser")
-    InvReport toEntity(InvReportDTO invReportDTO);
+    Report toEntity(InvReportDTO invReportDTO);
 
-    default InvReport fromId(Long id) {
+    default Report fromId(Long id) {
         if (id == null) {
             return null;
         }
-        InvReport invReport = new InvReport();
-        invReport.setId(id);
-        return invReport;
+        Report report = new Report();
+        report.setId(id);
+        return report;
     }
 }

@@ -13,23 +13,23 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Mapper for the entity {@link InvUser} and its DTO {@link InvUserDTO}.
+ * Mapper for the entity {@link User} and its DTO {@link InvUserDTO}.
  */
 @Service
 public class InvUserMapper  {
 
-    public List<InvUserDTO> usersToUserDTOs(List<InvUser> users) {
+    public List<InvUserDTO> usersToUserDTOs(List<User> users) {
         return users.stream()
             .filter(Objects::nonNull)
             .map(this::userToUserDTO)
             .collect(Collectors.toList());
     }
 
-    public InvUserDTO userToUserDTO(InvUser user) {
+    public InvUserDTO userToUserDTO(User user) {
         return new InvUserDTO(user);
     }
 
-    public List<InvUser> userDTOsToUsers(List<InvUserDTO> userDTOs) {
+    public List<User> userDTOsToUsers(List<InvUserDTO> userDTOs) {
         return userDTOs.stream()
             .filter(Objects::nonNull)
             .map(this::userDTOToUser)
@@ -37,11 +37,11 @@ public class InvUserMapper  {
     }
 
 
-    public InvUser userDTOToUser(InvUserDTO userDTO) {
+    public User userDTOToUser(InvUserDTO userDTO) {
         if (userDTO == null) {
             return null;
         } else {
-            InvUser user = new InvUser();
+            User user = new User();
             user.setId(userDTO.getId());
             user.setFirstName(userDTO.getFirstName());
             user.setLastName(userDTO.getLastName());
@@ -66,11 +66,11 @@ public class InvUserMapper  {
         return authorities;
     }
 
-    public InvUser userFromId(Long id) {
+    public User userFromId(Long id) {
         if (id == null) {
             return null;
         }
-        InvUser user = new InvUser();
+        User user = new User();
         user.setId(id);
         return user;
     }

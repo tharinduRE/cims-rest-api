@@ -8,11 +8,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A InvDepartment.
+ * A Department.
  */
 @Entity
 @Table(name = "cims_inv_dept")
-public class InvDepartment implements Serializable {
+public class Department implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,7 @@ public class InvDepartment implements Serializable {
     @JoinTable(name = "cims_inv_dept_inv_user",
                joinColumns = @JoinColumn(name = "inv_department_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "inv_user_id", referencedColumnName = "id"))
-    private Set<InvUser> invUsers = new HashSet<>();
+    private Set<User> users = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -45,7 +45,7 @@ public class InvDepartment implements Serializable {
         return departmentName;
     }
 
-    public InvDepartment departmentName(String departmentName) {
+    public Department departmentName(String departmentName) {
         this.departmentName = departmentName;
         return this;
     }
@@ -58,18 +58,18 @@ public class InvDepartment implements Serializable {
         return invStorages;
     }
 
-    public InvDepartment invStorages(Set<InvStorage> invStorages) {
+    public Department invStorages(Set<InvStorage> invStorages) {
         this.invStorages = invStorages;
         return this;
     }
 
-    public InvDepartment addInvStorage(InvStorage invStorage) {
+    public Department addInvStorage(InvStorage invStorage) {
         this.invStorages.add(invStorage);
         invStorage.setDepartment(this);
         return this;
     }
 
-    public InvDepartment removeInvStorage(InvStorage invStorage) {
+    public Department removeInvStorage(InvStorage invStorage) {
         this.invStorages.remove(invStorage);
         invStorage.setDepartment(null);
         return this;
@@ -79,29 +79,29 @@ public class InvDepartment implements Serializable {
         this.invStorages = invStorages;
     }
 
-    public Set<InvUser> getInvUsers() {
-        return invUsers;
+    public Set<User> getInvUsers() {
+        return users;
     }
 
-    public InvDepartment invUsers(Set<InvUser> invUsers) {
-        this.invUsers = invUsers;
+    public Department invUsers(Set<User> users) {
+        this.users = users;
         return this;
     }
 
-    public InvDepartment addInvUser(InvUser invUser) {
-        this.invUsers.add(invUser);
-        invUser.getInvDepartments().add(this);
+    public Department addInvUser(User user) {
+        this.users.add(user);
+        user.getInvDepartments().add(this);
         return this;
     }
 
-    public InvDepartment removeInvUser(InvUser invUser) {
-        this.invUsers.remove(invUser);
-        invUser.getInvDepartments().remove(this);
+    public Department removeInvUser(User user) {
+        this.users.remove(user);
+        user.getInvDepartments().remove(this);
         return this;
     }
 
-    public void setInvUsers(Set<InvUser> invUsers) {
-        this.invUsers = invUsers;
+    public void setInvUsers(Set<User> users) {
+        this.users = users;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
@@ -110,10 +110,10 @@ public class InvDepartment implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof InvDepartment)) {
+        if (!(o instanceof Department)) {
             return false;
         }
-        return id != null && id.equals(((InvDepartment) o).id);
+        return id != null && id.equals(((Department) o).id);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class InvDepartment implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "InvDepartment{" +
+        return "Department{" +
             "id=" + getId() +
             ", departmentName='" + getDepartmentName() + "'" +
             "}";

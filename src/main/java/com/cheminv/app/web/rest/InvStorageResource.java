@@ -38,26 +38,26 @@ public class InvStorageResource {
     }
 
     /**
-     * {@code POST  /inv-storages} : Create a new invStorage.
+     * {@code POST  /storages} : Create a new invStorage.
      *
      * @param invStorageDTO the invStorageDTO to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new invStorageDTO, or with status {@code 400 (Bad Request)} if the invStorage has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/inv-storages")
+    @PostMapping("/storages")
     public ResponseEntity<InvStorageDTO> createInvStorage(@RequestBody InvStorageDTO invStorageDTO) throws URISyntaxException {
         log.debug("REST request to save InvStorage : {}", invStorageDTO);
         if (invStorageDTO.getId() != null) {
             throw new BadRequestAlertException("A new invStorage cannot already have an ID", ENTITY_NAME, "idexists");
         }
         InvStorageDTO result = invStorageService.save(invStorageDTO);
-        return ResponseEntity.created(new URI("/api/inv-storages/" + result.getId()))
+        return ResponseEntity.created(new URI("/api/storages/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * {@code PUT  /inv-storages} : Updates an existing invStorage.
+     * {@code PUT  /storages} : Updates an existing invStorage.
      *
      * @param invStorageDTO the invStorageDTO to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated invStorageDTO,
@@ -65,7 +65,7 @@ public class InvStorageResource {
      * or with status {@code 500 (Internal Server Error)} if the invStorageDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/inv-storages")
+    @PutMapping("/storages")
     public ResponseEntity<InvStorageDTO> updateInvStorage(@RequestBody InvStorageDTO invStorageDTO) throws URISyntaxException {
         log.debug("REST request to update InvStorage : {}", invStorageDTO);
         if (invStorageDTO.getId() == null) {
@@ -78,23 +78,23 @@ public class InvStorageResource {
     }
 
     /**
-     * {@code GET  /inv-storages} : get all the invStorages.
+     * {@code GET  /storages} : get all the invStorages.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of invStorages in body.
      */
-    @GetMapping("/inv-storages")
+    @GetMapping("/storages")
     public List<InvStorageDTO> getAllInvStorages() {
         log.debug("REST request to get all InvStorages");
         return invStorageService.findAll();
     }
 
     /**
-     * {@code GET  /inv-storages/:id} : get the "id" invStorage.
+     * {@code GET  /storages/:id} : get the "id" invStorage.
      *
      * @param id the id of the invStorageDTO to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the invStorageDTO, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/inv-storages/{id}")
+    @GetMapping("/storages/{id}")
     public ResponseEntity<InvStorageDTO> getInvStorage(@PathVariable Long id) {
         log.debug("REST request to get InvStorage : {}", id);
         Optional<InvStorageDTO> invStorageDTO = invStorageService.findOne(id);
@@ -102,12 +102,12 @@ public class InvStorageResource {
     }
 
     /**
-     * {@code DELETE  /inv-storages/:id} : delete the "id" invStorage.
+     * {@code DELETE  /storages/:id} : delete the "id" invStorage.
      *
      * @param id the id of the invStorageDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/inv-storages/{id}")
+    @DeleteMapping("/storages/{id}")
     public ResponseEntity<Void> deleteInvStorage(@PathVariable Long id) {
         log.debug("REST request to delete InvStorage : {}", id);
         invStorageService.delete(id);

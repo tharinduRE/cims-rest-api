@@ -8,11 +8,11 @@ import java.io.Serializable;
 import java.time.Instant;
 
 /**
- * A InvReport.
+ * A Report.
  */
 @Entity
 @Table(name = "cims_reports")
-public class InvReport implements Serializable {
+public class Report implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,8 +34,8 @@ public class InvReport implements Serializable {
     private String reportContentType;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = "invReports", allowSetters = true)
-    private InvUser invUser;
+    @JsonIgnoreProperties(value = "reports", allowSetters = true)
+    private User user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -50,7 +50,7 @@ public class InvReport implements Serializable {
         return name;
     }
 
-    public InvReport name(String name) {
+    public Report name(String name) {
         this.name = name;
         return this;
     }
@@ -63,7 +63,7 @@ public class InvReport implements Serializable {
         return createdOn;
     }
 
-    public InvReport createdOn(Instant createdOn) {
+    public Report createdOn(Instant createdOn) {
         this.createdOn = createdOn;
         return this;
     }
@@ -76,7 +76,7 @@ public class InvReport implements Serializable {
         return report;
     }
 
-    public InvReport report(byte[] report) {
+    public Report report(byte[] report) {
         this.report = report;
         return this;
     }
@@ -89,7 +89,7 @@ public class InvReport implements Serializable {
         return reportContentType;
     }
 
-    public InvReport reportContentType(String reportContentType) {
+    public Report reportContentType(String reportContentType) {
         this.reportContentType = reportContentType;
         return this;
     }
@@ -98,17 +98,17 @@ public class InvReport implements Serializable {
         this.reportContentType = reportContentType;
     }
 
-    public InvUser getInvUser() {
-        return invUser;
+    public User getInvUser() {
+        return user;
     }
 
-    public InvReport invUser(InvUser invUser) {
-        this.invUser = invUser;
+    public Report invUser(User user) {
+        this.user = user;
         return this;
     }
 
-    public void setInvUser(InvUser invUser) {
-        this.invUser = invUser;
+    public void setInvUser(User user) {
+        this.user = user;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
@@ -117,10 +117,10 @@ public class InvReport implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof InvReport)) {
+        if (!(o instanceof Report)) {
             return false;
         }
-        return id != null && id.equals(((InvReport) o).id);
+        return id != null && id.equals(((Report) o).id);
     }
 
     @Override
@@ -131,7 +131,7 @@ public class InvReport implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "InvReport{" +
+        return "Report{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +

@@ -1,8 +1,8 @@
 package com.cheminv.app.service.dto;
 
 import com.cheminv.app.domain.Authority;
-import com.cheminv.app.domain.InvStore;
-import com.cheminv.app.domain.InvUser;
+import com.cheminv.app.domain.Store;
+import com.cheminv.app.domain.User;
 
 import java.time.Instant;
 import javax.validation.constraints.*;
@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * A DTO for the {@link com.cheminv.app.domain.InvUser} entity.
+ * A DTO for the {@link User} entity.
  */
 public class InvUserDTO implements Serializable {
 
@@ -37,12 +37,12 @@ public class InvUserDTO implements Serializable {
 
     private Set<String> authorities = new HashSet<>();
 
-    private Set<InvStore> authStores = new HashSet<>();
+    private Set<Store> authStores = new HashSet<>();
 
     public InvUserDTO() {
     }
 
-    public InvUserDTO(InvUser user) {
+    public InvUserDTO(User user) {
         this.id = user.getId();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
@@ -121,11 +121,11 @@ public class InvUserDTO implements Serializable {
         this.authorities = authorities;
     }
 
-    public Set<InvStore> getAuthStores() {
+    public Set<Store> getAuthStores() {
         return authStores;
     }
 
-    public void setAuthStores(Set<InvStore> authStores) {
+    public void setAuthStores(Set<Store> authStores) {
         this.authStores = authStores;
     }
 

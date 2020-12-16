@@ -1,11 +1,13 @@
 package com.cheminv.app.service.dto;
 
+import com.cheminv.app.domain.Report;
+
 import java.time.Instant;
 import java.io.Serializable;
 import javax.persistence.Lob;
 
 /**
- * A DTO for the {@link com.cheminv.app.domain.InvReport} entity.
+ * A DTO for the {@link Report} entity.
  */
 public class InvReportDTO implements Serializable {
 

@@ -1,11 +1,13 @@
 package com.cheminv.app.service.dto;
 
+import com.cheminv.app.domain.Department;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A DTO for the {@link com.cheminv.app.domain.InvDepartment} entity.
+ * A DTO for the {@link Department} entity.
  */
 public class InvDepartmentDTO implements Serializable {
     

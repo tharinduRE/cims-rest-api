@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.cheminv.app.domain.InvStore;
+import com.cheminv.app.domain.Store;
 import com.cheminv.app.domain.enumeration.ItemStatus;
 
 /**
@@ -47,7 +47,7 @@ public class ItemStockDTO implements Serializable {
 
     private String storageUnit;
 
-    private InvStore store;
+    private Store store;
 
     public Long getId() {
         return id;
@@ -177,11 +177,11 @@ public class ItemStockDTO implements Serializable {
         this.storageUnit = storageUnit;
     }
 
-    public InvStore getStore() {
+    public Store getStore() {
         return store;
     }
 
-    public void setStore(InvStore store) {
+    public void setStore(Store store) {
         this.store = store;
     }
 

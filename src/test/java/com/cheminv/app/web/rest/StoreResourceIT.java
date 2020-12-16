@@ -1,8 +1,8 @@
 package com.cheminv.app.web.rest;
 
 import com.cheminv.app.CimsApp;
-import com.cheminv.app.domain.InvStore;
-import com.cheminv.app.repository.InvStoreRepository;
+import com.cheminv.app.domain.Store;
+import com.cheminv.app.repository.StoreRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,18 +22,18 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Integration tests for the {@link InvStoreResource} REST controller.
+ * Integration tests for the {@link StoreResource} REST controller.
  */
 @SpringBootTest(classes = CimsApp.class)
 @AutoConfigureMockMvc
 @WithMockUser
-public class InvStoreResourceIT {
+public class StoreResourceIT {
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
     @Autowired
-    private InvStoreRepository invStoreRepository;
+    private StoreRepository storeRepository;
 
     @Autowired
     private EntityManager em;
@@ -41,7 +41,7 @@ public class InvStoreResourceIT {
     @Autowired
     private MockMvc restInvStoreMockMvc;
 
-    private InvStore invStore;
+    private Store store;
 
     /**
      * Create an entity for this test.
@@ -49,10 +49,10 @@ public class InvStoreResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static InvStore createEntity(EntityManager em) {
-        InvStore invStore = new InvStore()
+    public static Store createEntity(EntityManager em) {
+        Store store = new Store()
             .name(DEFAULT_NAME);
-        return invStore;
+        return store;
     }
     /**
      * Create an updated entity for this test.
@@ -60,51 +60,51 @@ public class InvStoreResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static InvStore createUpdatedEntity(EntityManager em) {
-        InvStore invStore = new InvStore()
+    public static Store createUpdatedEntity(EntityManager em) {
+        Store store = new Store()
             .name(UPDATED_NAME);
-        return invStore;
+        return store;
     }
 
     @BeforeEach
     public void initTest() {
-        invStore = createEntity(em);
+        store = createEntity(em);
     }
 
     @Test
     @Transactional
     public void createInvStore() throws Exception {
-        int databaseSizeBeforeCreate = invStoreRepository.findAll().size();
-        // Create the InvStore
+        int databaseSizeBeforeCreate = storeRepository.findAll().size();
+        // Create the Store
         restInvStoreMockMvc.perform(post("/api/inv-stores")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(invStore)))
+            .content(TestUtil.convertObjectToJsonBytes(store)))
             .andExpect(status().isCreated());
 
-        // Validate the InvStore in the database
-        List<InvStore> invStoreList = invStoreRepository.findAll();
-        assertThat(invStoreList).hasSize(databaseSizeBeforeCreate + 1);
-        InvStore testInvStore = invStoreList.get(invStoreList.size() - 1);
-        assertThat(testInvStore.getName()).isEqualTo(DEFAULT_NAME);
+        // Validate the Store in the database
+        List<Store> storeList = storeRepository.findAll();
+        assertThat(storeList).hasSize(databaseSizeBeforeCreate + 1);
+        Store testStore = storeList.get(storeList.size() - 1);
+        assertThat(testStore.getName()).isEqualTo(DEFAULT_NAME);
     }
 
     @Test
     @Transactional
     public void createInvStoreWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = invStoreRepository.findAll().size();
+        int databaseSizeBeforeCreate = storeRepository.findAll().size();
 
-        // Create the InvStore with an existing ID
-        invStore.setId(1L);
+        // Create the Store with an existing ID
+        store.setId(1L);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restInvStoreMockMvc.perform(post("/api/inv-stores")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(invStore)))
+            .content(TestUtil.convertObjectToJsonBytes(store)))
             .andExpect(status().isBadRequest());
 
-        // Validate the InvStore in the database
-        List<InvStore> invStoreList = invStoreRepository.findAll();
-        assertThat(invStoreList).hasSize(databaseSizeBeforeCreate);
+        // Validate the Store in the database
+        List<Store> storeList = storeRepository.findAll();
+        assertThat(storeList).hasSize(databaseSizeBeforeCreate);
     }
 
 
@@ -112,13 +112,13 @@ public class InvStoreResourceIT {
     @Transactional
     public void getAllInvStores() throws Exception {
         // Initialize the database
-        invStoreRepository.saveAndFlush(invStore);
+        storeRepository.saveAndFlush(store);
 
         // Get all the invStoreList
         restInvStoreMockMvc.perform(get("/api/inv-stores?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(invStore.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(store.getId().intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
     }
     
@@ -126,19 +126,19 @@ public class InvStoreResourceIT {
     @Transactional
     public void getInvStore() throws Exception {
         // Initialize the database
-        invStoreRepository.saveAndFlush(invStore);
+        storeRepository.saveAndFlush(store);
 
-        // Get the invStore
-        restInvStoreMockMvc.perform(get("/api/inv-stores/{id}", invStore.getId()))
+        // Get the store
+        restInvStoreMockMvc.perform(get("/api/inv-stores/{id}", store.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(invStore.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(store.getId().intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME));
     }
     @Test
     @Transactional
     public void getNonExistingInvStore() throws Exception {
-        // Get the invStore
+        // Get the store
         restInvStoreMockMvc.perform(get("/api/inv-stores/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }
@@ -147,60 +147,60 @@ public class InvStoreResourceIT {
     @Transactional
     public void updateInvStore() throws Exception {
         // Initialize the database
-        invStoreRepository.saveAndFlush(invStore);
+        storeRepository.saveAndFlush(store);
 
-        int databaseSizeBeforeUpdate = invStoreRepository.findAll().size();
+        int databaseSizeBeforeUpdate = storeRepository.findAll().size();
 
-        // Update the invStore
-        InvStore updatedInvStore = invStoreRepository.findById(invStore.getId()).get();
-        // Disconnect from session so that the updates on updatedInvStore are not directly saved in db
-        em.detach(updatedInvStore);
-        updatedInvStore
+        // Update the store
+        Store updatedStore = storeRepository.findById(store.getId()).get();
+        // Disconnect from session so that the updates on updatedStore are not directly saved in db
+        em.detach(updatedStore);
+        updatedStore
             .name(UPDATED_NAME);
 
         restInvStoreMockMvc.perform(put("/api/inv-stores")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(updatedInvStore)))
+            .content(TestUtil.convertObjectToJsonBytes(updatedStore)))
             .andExpect(status().isOk());
 
-        // Validate the InvStore in the database
-        List<InvStore> invStoreList = invStoreRepository.findAll();
-        assertThat(invStoreList).hasSize(databaseSizeBeforeUpdate);
-        InvStore testInvStore = invStoreList.get(invStoreList.size() - 1);
-        assertThat(testInvStore.getName()).isEqualTo(UPDATED_NAME);
+        // Validate the Store in the database
+        List<Store> storeList = storeRepository.findAll();
+        assertThat(storeList).hasSize(databaseSizeBeforeUpdate);
+        Store testStore = storeList.get(storeList.size() - 1);
+        assertThat(testStore.getName()).isEqualTo(UPDATED_NAME);
     }
 
     @Test
     @Transactional
     public void updateNonExistingInvStore() throws Exception {
-        int databaseSizeBeforeUpdate = invStoreRepository.findAll().size();
+        int databaseSizeBeforeUpdate = storeRepository.findAll().size();
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restInvStoreMockMvc.perform(put("/api/inv-stores")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(TestUtil.convertObjectToJsonBytes(invStore)))
+            .content(TestUtil.convertObjectToJsonBytes(store)))
             .andExpect(status().isBadRequest());
 
-        // Validate the InvStore in the database
-        List<InvStore> invStoreList = invStoreRepository.findAll();
-        assertThat(invStoreList).hasSize(databaseSizeBeforeUpdate);
+        // Validate the Store in the database
+        List<Store> storeList = storeRepository.findAll();
+        assertThat(storeList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
     public void deleteInvStore() throws Exception {
         // Initialize the database
-        invStoreRepository.saveAndFlush(invStore);
+        storeRepository.saveAndFlush(store);
 
-        int databaseSizeBeforeDelete = invStoreRepository.findAll().size();
+        int databaseSizeBeforeDelete = storeRepository.findAll().size();
 
-        // Delete the invStore
-        restInvStoreMockMvc.perform(delete("/api/inv-stores/{id}", invStore.getId())
+        // Delete the store
+        restInvStoreMockMvc.perform(delete("/api/inv-stores/{id}", store.getId())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<InvStore> invStoreList = invStoreRepository.findAll();
-        assertThat(invStoreList).hasSize(databaseSizeBeforeDelete - 1);
+        List<Store> storeList = storeRepository.findAll();
+        assertThat(storeList).hasSize(databaseSizeBeforeDelete - 1);
     }
 }
