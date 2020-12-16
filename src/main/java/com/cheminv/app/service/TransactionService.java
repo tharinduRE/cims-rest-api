@@ -5,7 +5,7 @@ import com.cheminv.app.domain.Transaction;
 import com.cheminv.app.repository.ItemStockRepository;
 import com.cheminv.app.repository.TransactionRepository;
 import com.cheminv.app.service.dto.ItemTransactionDTO;
-import com.cheminv.app.service.mapper.ItemTransactionMapper;
+import com.cheminv.app.service.mapper.TransactionMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,13 +27,13 @@ public class TransactionService {
 
     private final TransactionRepository transactionRepository;
 
-    private final ItemTransactionMapper itemTransactionMapper;
+    private final TransactionMapper transactionMapper;
 
     private final ItemStockRepository itemStockRepository;
 
-    public TransactionService(TransactionRepository transactionRepository, ItemTransactionMapper itemTransactionMapper, ItemStockRepository itemStockRepository) {
+    public TransactionService(TransactionRepository transactionRepository, TransactionMapper transactionMapper, ItemStockRepository itemStockRepository) {
         this.transactionRepository = transactionRepository;
-        this.itemTransactionMapper = itemTransactionMapper;
+        this.transactionMapper = transactionMapper;
         this.itemStockRepository = itemStockRepository;
     }
 
@@ -45,10 +45,10 @@ public class TransactionService {
      */
     public ItemTransactionDTO save(ItemTransactionDTO itemTransactionDTO) {
         log.debug("Request to save Transaction : {}", itemTransactionDTO);
-        Transaction transaction = itemTransactionMapper.toEntity(itemTransactionDTO);
+        Transaction transaction = transactionMapper.toEntity(itemTransactionDTO);
         transaction = transactionRepository.save(transaction);
         adjustTotalQuantity(transaction);
-        return itemTransactionMapper.toDto(transaction);
+        return transactionMapper.toDto(transaction);
     }
 
     public void adjustTotalQuantity(Transaction transaction){
@@ -68,7 +68,7 @@ public class TransactionService {
     public Page<ItemTransactionDTO> findAll(Pageable pageable) {
         log.debug("Request to get all ItemTransactions");
         return transactionRepository.findAll(pageable)
-            .map(itemTransactionMapper::toDto);
+            .map(transactionMapper::toDto);
     }
 
 
@@ -82,7 +82,7 @@ public class TransactionService {
     public Optional<ItemTransactionDTO> findOne(Long id) {
         log.debug("Request to get Transaction : {}", id);
         return transactionRepository.findById(id)
-            .map(itemTransactionMapper::toDto);
+            .map(transactionMapper::toDto);
     }
 
     /**

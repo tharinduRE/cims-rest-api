@@ -6,7 +6,7 @@ import com.cheminv.app.domain.Store;
 import com.cheminv.app.repository.UserRepository;
 import com.cheminv.app.service.UserService;
 import com.cheminv.app.service.dto.InvUserDTO;
-import com.cheminv.app.service.mapper.InvUserMapper;
+import com.cheminv.app.service.mapper.UserMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,7 +67,7 @@ public class UserResourceIT {
     private UserRepository userRepositoryMock;
 
     @Autowired
-    private InvUserMapper invUserMapper;
+    private UserMapper userMapper;
 
     @Mock
     private UserService userServiceMock;
@@ -148,7 +148,7 @@ public class UserResourceIT {
     public void createInvUser() throws Exception {
         int databaseSizeBeforeCreate = userRepository.findAll().size();
         // Create the User
-        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(user);
+        InvUserDTO invUserDTO = userMapper.userToUserDTO(user);
         restInvUserMockMvc.perform(post("/api/inv-users")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(invUserDTO)))
@@ -174,7 +174,7 @@ public class UserResourceIT {
 
         // Create the User with an existing ID
         user.setId(1L);
-        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(user);
+        InvUserDTO invUserDTO = userMapper.userToUserDTO(user);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restInvUserMockMvc.perform(post("/api/inv-users")
@@ -275,7 +275,7 @@ public class UserResourceIT {
             .lastUpdated(UPDATED_LAST_UPDATED)
             .email(UPDATED_EMAIL)
             .password(UPDATED_PASSWORD);
-        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(updatedUser);
+        InvUserDTO invUserDTO = userMapper.userToUserDTO(updatedUser);
 
         restInvUserMockMvc.perform(put("/api/inv-users")
             .contentType(MediaType.APPLICATION_JSON)
@@ -301,7 +301,7 @@ public class UserResourceIT {
         int databaseSizeBeforeUpdate = userRepository.findAll().size();
 
         // Create the User
-        InvUserDTO invUserDTO = invUserMapper.userToUserDTO(user);
+        InvUserDTO invUserDTO = userMapper.userToUserDTO(user);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restInvUserMockMvc.perform(put("/api/inv-users")

@@ -6,17 +6,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class TransactionMapperTest {
 
-    private ItemTransactionMapper itemTransactionMapper;
+    private TransactionMapper transactionMapper;
 
     @BeforeEach
     public void setUp() {
-        itemTransactionMapper = new ItemTransactionMapperImpl();
+        transactionMapper = new TransactionMapperImpl();
     }
 
     @Test
     public void testEntityFromId() {
         Long id = 1L;
-        assertThat(itemTransactionMapper.fromId(id).getId()).isEqualTo(id);
-        assertThat(itemTransactionMapper.fromId(null)).isNull();
+        assertThat(transactionMapper.fromId(id).getId()).isEqualTo(id);
+        assertThat(transactionMapper.fromId(null)).isNull();
     }
 }

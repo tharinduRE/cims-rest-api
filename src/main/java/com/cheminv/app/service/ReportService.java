@@ -3,7 +3,7 @@ package com.cheminv.app.service;
 import com.cheminv.app.domain.Report;
 import com.cheminv.app.repository.ReportRepository;
 import com.cheminv.app.service.dto.InvReportDTO;
-import com.cheminv.app.service.mapper.InvReportMapper;
+import com.cheminv.app.service.mapper.ReportMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,11 +25,11 @@ public class ReportService {
 
     private final ReportRepository reportRepository;
 
-    private final InvReportMapper invReportMapper;
+    private final ReportMapper reportMapper;
 
-    public ReportService(ReportRepository reportRepository, InvReportMapper invReportMapper) {
+    public ReportService(ReportRepository reportRepository, ReportMapper reportMapper) {
         this.reportRepository = reportRepository;
-        this.invReportMapper = invReportMapper;
+        this.reportMapper = reportMapper;
     }
 
     /**
@@ -40,9 +40,9 @@ public class ReportService {
      */
     public InvReportDTO save(InvReportDTO invReportDTO) {
         log.debug("Request to save Report : {}", invReportDTO);
-        Report report = invReportMapper.toEntity(invReportDTO);
+        Report report = reportMapper.toEntity(invReportDTO);
         report = reportRepository.save(report);
-        return invReportMapper.toDto(report);
+        return reportMapper.toDto(report);
     }
 
     /**
@@ -55,7 +55,7 @@ public class ReportService {
     public Page<InvReportDTO> findAll(Pageable pageable) {
         log.debug("Request to get all InvReports");
         return reportRepository.findAll(pageable)
-            .map(invReportMapper::toDto);
+            .map(reportMapper::toDto);
     }
 
 
@@ -69,7 +69,7 @@ public class ReportService {
     public Optional<InvReportDTO> findOne(Long id) {
         log.debug("Request to get Report : {}", id);
         return reportRepository.findById(id)
-            .map(invReportMapper::toDto);
+            .map(reportMapper::toDto);
     }
 
     /**

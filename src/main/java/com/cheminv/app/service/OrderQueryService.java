@@ -112,7 +112,7 @@ public class OrderQueryService extends QueryService<Order> {
             }
             if (criteria.getRequestedById() != null) {
                 specification = specification.and(buildSpecification(criteria.getRequestedById(),
-                    root -> root.join(Order_.requestedBy, JoinType.LEFT).get(InvUser_.id)));
+                    root -> root.join(Order_.requestedBy, JoinType.LEFT).get(User_.id)));
             }
         }
         return specification;

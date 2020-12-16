@@ -6,7 +6,7 @@ import com.cheminv.app.security.AuthoritiesConstants;
 import com.cheminv.app.service.UserService;
 import com.cheminv.app.service.dto.InvUserDTO;
 
-import com.cheminv.app.service.mapper.InvUserMapper;
+import com.cheminv.app.service.mapper.UserMapper;
 import com.cheminv.app.web.rest.errors.BadRequestAlertException;
 import com.cheminv.app.web.rest.errors.EmailAlreadyUsedException;
 import com.cheminv.app.web.rest.errors.InvalidPasswordException;
@@ -44,11 +44,11 @@ public class UserResource {
 
     private final UserService userService;
 
-    private final InvUserMapper userMapper;
+    private final UserMapper userMapper;
 
     private final UserRepository userRepository;
 
-    public UserResource(UserService userService, InvUserMapper userMapper, UserRepository userRepository) {
+    public UserResource(UserService userService, UserMapper userMapper, UserRepository userRepository) {
         this.userService = userService;
         this.userMapper = userMapper;
         this.userRepository = userRepository;

@@ -7,7 +7,7 @@ import com.cheminv.app.domain.User;
 import com.cheminv.app.repository.TransactionRepository;
 import com.cheminv.app.service.TransactionService;
 import com.cheminv.app.service.dto.ItemTransactionDTO;
-import com.cheminv.app.service.mapper.ItemTransactionMapper;
+import com.cheminv.app.service.mapper.TransactionMapper;
 import com.cheminv.app.service.TransactionQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -55,7 +55,7 @@ public class TransactionResourceIT {
     private TransactionRepository transactionRepository;
 
     @Autowired
-    private ItemTransactionMapper itemTransactionMapper;
+    private TransactionMapper transactionMapper;
 
     @Autowired
     private TransactionService transactionService;
@@ -150,7 +150,7 @@ public class TransactionResourceIT {
     public void createItemTransaction() throws Exception {
         int databaseSizeBeforeCreate = transactionRepository.findAll().size();
         // Create the Transaction
-        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(transaction);
+        ItemTransactionDTO itemTransactionDTO = transactionMapper.toDto(transaction);
         restItemTransactionMockMvc.perform(post("/api/item-transactions")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(itemTransactionDTO)))
@@ -173,7 +173,7 @@ public class TransactionResourceIT {
 
         // Create the Transaction with an existing ID
         transaction.setId(1L);
-        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(transaction);
+        ItemTransactionDTO itemTransactionDTO = transactionMapper.toDto(transaction);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restItemTransactionMockMvc.perform(post("/api/item-transactions")
@@ -195,7 +195,7 @@ public class TransactionResourceIT {
         transaction.setQuantity(null);
 
         // Create the Transaction, which fails.
-        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(transaction);
+        ItemTransactionDTO itemTransactionDTO = transactionMapper.toDto(transaction);
 
 
         restItemTransactionMockMvc.perform(post("/api/item-transactions")
@@ -641,7 +641,7 @@ public class TransactionResourceIT {
             .remarks(UPDATED_REMARKS)
             .transactionType(UPDATED_TRANSACTION_TYPE)
             .transactionDate(UPDATED_TRANSACTION_DATE);
-        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(updatedTransaction);
+        ItemTransactionDTO itemTransactionDTO = transactionMapper.toDto(updatedTransaction);
 
         restItemTransactionMockMvc.perform(put("/api/item-transactions")
             .contentType(MediaType.APPLICATION_JSON)
@@ -664,7 +664,7 @@ public class TransactionResourceIT {
         int databaseSizeBeforeUpdate = transactionRepository.findAll().size();
 
         // Create the Transaction
-        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(transaction);
+        ItemTransactionDTO itemTransactionDTO = transactionMapper.toDto(transaction);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restItemTransactionMockMvc.perform(put("/api/item-transactions")

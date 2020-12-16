@@ -9,7 +9,7 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link InvStorage} and its DTO {@link InvStorageDTO}.
  */
-@Mapper(componentModel = "spring", uses = {InvDepartmentMapper.class})
+@Mapper(componentModel = "spring", uses = {DepartmentMapper.class})
 public interface InvStorageMapper extends EntityMapper<InvStorageDTO, InvStorage> {
 
     @Mapping(source = "department.id", target = "departmentId")

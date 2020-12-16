@@ -5,7 +5,7 @@ import com.cheminv.app.domain.Department;
 import com.cheminv.app.repository.DepartmentRepository;
 import com.cheminv.app.service.DepartmentService;
 import com.cheminv.app.service.dto.InvDepartmentDTO;
-import com.cheminv.app.service.mapper.InvDepartmentMapper;
+import com.cheminv.app.service.mapper.DepartmentMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +49,7 @@ public class DepartmentResourceIT {
     private DepartmentRepository departmentRepositoryMock;
 
     @Autowired
-    private InvDepartmentMapper invDepartmentMapper;
+    private DepartmentMapper departmentMapper;
 
     @Mock
     private DepartmentService departmentServiceMock;
@@ -98,7 +98,7 @@ public class DepartmentResourceIT {
     public void createInvDepartment() throws Exception {
         int databaseSizeBeforeCreate = departmentRepository.findAll().size();
         // Create the Department
-        InvDepartmentDTO invDepartmentDTO = invDepartmentMapper.toDto(department);
+        InvDepartmentDTO invDepartmentDTO = departmentMapper.toDto(department);
         restInvDepartmentMockMvc.perform(post("/api/inv-departments")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(invDepartmentDTO)))
@@ -118,7 +118,7 @@ public class DepartmentResourceIT {
 
         // Create the Department with an existing ID
         department.setId(1L);
-        InvDepartmentDTO invDepartmentDTO = invDepartmentMapper.toDto(department);
+        InvDepartmentDTO invDepartmentDTO = departmentMapper.toDto(department);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restInvDepartmentMockMvc.perform(post("/api/inv-departments")
@@ -201,7 +201,7 @@ public class DepartmentResourceIT {
         em.detach(updatedDepartment);
         updatedDepartment
             .departmentName(UPDATED_DEPARTMENT_NAME);
-        InvDepartmentDTO invDepartmentDTO = invDepartmentMapper.toDto(updatedDepartment);
+        InvDepartmentDTO invDepartmentDTO = departmentMapper.toDto(updatedDepartment);
 
         restInvDepartmentMockMvc.perform(put("/api/inv-departments")
             .contentType(MediaType.APPLICATION_JSON)
@@ -221,7 +221,7 @@ public class DepartmentResourceIT {
         int databaseSizeBeforeUpdate = departmentRepository.findAll().size();
 
         // Create the Department
-        InvDepartmentDTO invDepartmentDTO = invDepartmentMapper.toDto(department);
+        InvDepartmentDTO invDepartmentDTO = departmentMapper.toDto(department);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restInvDepartmentMockMvc.perform(put("/api/inv-departments")

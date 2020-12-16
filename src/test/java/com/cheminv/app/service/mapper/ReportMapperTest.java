@@ -6,17 +6,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ReportMapperTest {
 
-    private InvReportMapper invReportMapper;
+    private ReportMapper reportMapper;
 
     @BeforeEach
     public void setUp() {
-        invReportMapper = new InvReportMapperImpl();
+        reportMapper = new ReportMapperImpl();
     }
 
     @Test
     public void testEntityFromId() {
         Long id = 1L;
-        assertThat(invReportMapper.fromId(id).getId()).isEqualTo(id);
-        assertThat(invReportMapper.fromId(null)).isNull();
+        assertThat(reportMapper.fromId(id).getId()).isEqualTo(id);
+        assertThat(reportMapper.fromId(null)).isNull();
     }
 }

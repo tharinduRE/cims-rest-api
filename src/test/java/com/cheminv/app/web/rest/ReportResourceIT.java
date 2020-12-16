@@ -4,7 +4,7 @@ import com.cheminv.app.CimsApp;
 import com.cheminv.app.domain.Report;
 import com.cheminv.app.repository.ReportRepository;
 import com.cheminv.app.service.ReportService;
-import com.cheminv.app.service.mapper.InvReportMapper;
+import com.cheminv.app.service.mapper.ReportMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +48,7 @@ public class ReportResourceIT {
     private ReportRepository reportRepository;
 
     @Autowired
-    private InvReportMapper invReportMapper;
+    private ReportMapper reportMapper;
 
     @Autowired
     private ReportService reportService;

@@ -126,7 +126,7 @@ public class ItemStockQueryService extends QueryService<ItemStock> {
             }
             if (criteria.getItemTransactionId() != null) {
                 specification = specification.and(buildSpecification(criteria.getItemTransactionId(),
-                    root -> root.join(ItemStock_.itemTransactions, JoinType.LEFT).get(ItemTransaction_.id)));
+                    root -> root.join(ItemStock_.transactions, JoinType.LEFT).get(Transaction_.id)));
             }
             if (criteria.getWasteItemId() != null) {
                 specification = specification.and(buildSpecification(criteria.getWasteItemId(),
@@ -150,7 +150,7 @@ public class ItemStockQueryService extends QueryService<ItemStock> {
             }
             if (criteria.getStoreId() != null) {
                 specification = specification.and(buildSpecification(criteria.getStoreId(),
-                    root -> root.join(ItemStock_.store, JoinType.LEFT).get(InvStore_.id)));
+                    root -> root.join(ItemStock_.store, JoinType.LEFT).get(Store_.id)));
             }
         }
         return specification;

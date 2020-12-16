@@ -6,17 +6,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class DepartmentMapperTest {
 
-    private InvDepartmentMapper invDepartmentMapper;
+    private DepartmentMapper departmentMapper;
 
     @BeforeEach
     public void setUp() {
-        invDepartmentMapper = new InvDepartmentMapperImpl();
+        departmentMapper = new DepartmentMapperImpl();
     }
 
     @Test
     public void testEntityFromId() {
         Long id = 1L;
-        assertThat(invDepartmentMapper.fromId(id).getId()).isEqualTo(id);
-        assertThat(invDepartmentMapper.fromId(null)).isNull();
+        assertThat(departmentMapper.fromId(id).getId()).isEqualTo(id);
+        assertThat(departmentMapper.fromId(null)).isNull();
     }
 }

@@ -10,7 +10,7 @@ import com.cheminv.app.security.SecurityUtils;
 import com.cheminv.app.service.dto.InvUserDTO;
 import com.cheminv.app.service.exception.EmailAlreadyUsedException;
 import com.cheminv.app.service.exception.InvalidPasswordException;
-import com.cheminv.app.service.mapper.InvUserMapper;
+import com.cheminv.app.service.mapper.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,13 +36,13 @@ public class UserService {
 
     private final AuthorityRepository authorityRepository;
 
-    private final InvUserMapper invUserMapper;
+    private final UserMapper userMapper;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, InvUserMapper invUserMapper) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthorityRepository authorityRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authorityRepository = authorityRepository;
-        this.invUserMapper = invUserMapper;
+        this.userMapper = userMapper;
     }
 
     public User registerUser(InvUserDTO userDTO, String password) {
@@ -180,7 +180,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<InvUserDTO> getAllManagedUsers() {
         List<User> managedUserList = userRepository.findAllByEmailNot(Constants.SYSTEM_ACCOUNT);
-        return invUserMapper.usersToUserDTOs(managedUserList);
+        return userMapper.usersToUserDTOs(managedUserList);
     }
 
     @Transactional(readOnly = true)

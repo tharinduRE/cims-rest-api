@@ -19,7 +19,7 @@ import com.cheminv.app.domain.*; // for static metamodels
 import com.cheminv.app.repository.TransactionRepository;
 import com.cheminv.app.service.dto.ItemTransactionCriteria;
 import com.cheminv.app.service.dto.ItemTransactionDTO;
-import com.cheminv.app.service.mapper.ItemTransactionMapper;
+import com.cheminv.app.service.mapper.TransactionMapper;
 
 /**
  * Service for executing complex queries for {@link Transaction} entities in the database.
@@ -35,11 +35,11 @@ public class TransactionQueryService extends QueryService<Transaction> {
 
     private final TransactionRepository transactionRepository;
 
-    private final ItemTransactionMapper itemTransactionMapper;
+    private final TransactionMapper transactionMapper;
 
-    public TransactionQueryService(TransactionRepository transactionRepository, ItemTransactionMapper itemTransactionMapper) {
+    public TransactionQueryService(TransactionRepository transactionRepository, TransactionMapper transactionMapper) {
         this.transactionRepository = transactionRepository;
-        this.itemTransactionMapper = itemTransactionMapper;
+        this.transactionMapper = transactionMapper;
     }
 
     /**
@@ -51,7 +51,7 @@ public class TransactionQueryService extends QueryService<Transaction> {
     public List<ItemTransactionDTO> findByCriteria(ItemTransactionCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
         final Specification<Transaction> specification = createSpecification(criteria);
-        return itemTransactionMapper.toDto(transactionRepository.findAll(specification));
+        return transactionMapper.toDto(transactionRepository.findAll(specification));
     }
 
     /**
@@ -65,7 +65,7 @@ public class TransactionQueryService extends QueryService<Transaction> {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Transaction> specification = createSpecification(criteria);
         return transactionRepository.findAll(specification, page)
-            .map(itemTransactionMapper::toDto);
+            .map(transactionMapper::toDto);
     }
 
     /**
@@ -89,27 +89,27 @@ public class TransactionQueryService extends QueryService<Transaction> {
         Specification<Transaction> specification = Specification.where(null);
         if (criteria != null) {
             if (criteria.getId() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getId(), ItemTransaction_.id));
+                specification = specification.and(buildRangeSpecification(criteria.getId(), Transaction_.id));
             }
             if (criteria.getQuantity() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getQuantity(), ItemTransaction_.quantity));
+                specification = specification.and(buildRangeSpecification(criteria.getQuantity(), Transaction_.quantity));
             }
             if (criteria.getRemarks() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getRemarks(), ItemTransaction_.remarks));
+                specification = specification.and(buildStringSpecification(criteria.getRemarks(), Transaction_.remarks));
             }
             if (criteria.getTransactionType() != null) {
-                specification = specification.and(buildSpecification(criteria.getTransactionType(), ItemTransaction_.transactionType));
+                specification = specification.and(buildSpecification(criteria.getTransactionType(), Transaction_.transactionType));
             }
             if (criteria.getTransactionDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getTransactionDate(), ItemTransaction_.transactionDate));
+                specification = specification.and(buildRangeSpecification(criteria.getTransactionDate(), Transaction_.transactionDate));
             }
             if (criteria.getItemStockId() != null) {
                 specification = specification.and(buildSpecification(criteria.getItemStockId(),
-                    root -> root.join(ItemTransaction_.itemStock, JoinType.LEFT).get(ItemStock_.id)));
+                    root -> root.join(Transaction_.itemStock, JoinType.LEFT).get(ItemStock_.id)));
             }
             if (criteria.getCreatedById() != null) {
                 specification = specification.and(buildSpecification(criteria.getCreatedById(),
-                    root -> root.join(ItemTransaction_.createdBy, JoinType.LEFT).get(InvUser_.id)));
+                    root -> root.join(Transaction_.createdBy, JoinType.LEFT).get(User_.id)));
             }
         }
         return specification;

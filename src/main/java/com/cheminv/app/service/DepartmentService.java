@@ -3,7 +3,7 @@ package com.cheminv.app.service;
 import com.cheminv.app.domain.Department;
 import com.cheminv.app.repository.DepartmentRepository;
 import com.cheminv.app.service.dto.InvDepartmentDTO;
-import com.cheminv.app.service.mapper.InvDepartmentMapper;
+import com.cheminv.app.service.mapper.DepartmentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,11 +28,11 @@ public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
 
-    private final InvDepartmentMapper invDepartmentMapper;
+    private final DepartmentMapper departmentMapper;
 
-    public DepartmentService(DepartmentRepository departmentRepository, InvDepartmentMapper invDepartmentMapper) {
+    public DepartmentService(DepartmentRepository departmentRepository, DepartmentMapper departmentMapper) {
         this.departmentRepository = departmentRepository;
-        this.invDepartmentMapper = invDepartmentMapper;
+        this.departmentMapper = departmentMapper;
     }
 
     /**
@@ -43,9 +43,9 @@ public class DepartmentService {
      */
     public InvDepartmentDTO save(InvDepartmentDTO invDepartmentDTO) {
         log.debug("Request to save Department : {}", invDepartmentDTO);
-        Department department = invDepartmentMapper.toEntity(invDepartmentDTO);
+        Department department = departmentMapper.toEntity(invDepartmentDTO);
         department = departmentRepository.save(department);
-        return invDepartmentMapper.toDto(department);
+        return departmentMapper.toDto(department);
     }
 
     /**
@@ -57,7 +57,7 @@ public class DepartmentService {
     public List<InvDepartmentDTO> findAll() {
         log.debug("Request to get all InvDepartments");
         return departmentRepository.findAllWithEagerRelationships().stream()
-            .map(invDepartmentMapper::toDto)
+            .map(departmentMapper::toDto)
             .collect(Collectors.toCollection(LinkedList::new));
     }
 
@@ -68,7 +68,7 @@ public class DepartmentService {
      * @return the list of entities.
      */
     public Page<InvDepartmentDTO> findAllWithEagerRelationships(Pageable pageable) {
-        return departmentRepository.findAllWithEagerRelationships(pageable).map(invDepartmentMapper::toDto);
+        return departmentRepository.findAllWithEagerRelationships(pageable).map(departmentMapper::toDto);
     }
 
     /**
@@ -81,7 +81,7 @@ public class DepartmentService {
     public Optional<InvDepartmentDTO> findOne(Long id) {
         log.debug("Request to get Department : {}", id);
         return departmentRepository.findOneWithEagerRelationships(id)
-            .map(invDepartmentMapper::toDto);
+            .map(departmentMapper::toDto);
     }
 
     /**

@@ -9,8 +9,8 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link Report} and its DTO {@link InvReportDTO}.
  */
-@Mapper(componentModel = "spring", uses = {InvUserMapper.class})
-public interface InvReportMapper extends EntityMapper<InvReportDTO, Report> {
+@Mapper(componentModel = "spring", uses = {UserMapper.class})
+public interface ReportMapper extends EntityMapper<InvReportDTO, Report> {
 
     @Mapping(source = "invUser.id", target = "invUserId")
     @Mapping(source = "invUser.firstName", target = "createdBy")

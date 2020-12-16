@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  * Mapper for the entity {@link User} and its DTO {@link InvUserDTO}.
  */
 @Service
-public class InvUserMapper  {
+public class UserMapper {
 
     public List<InvUserDTO> usersToUserDTOs(List<User> users) {
         return users.stream()
