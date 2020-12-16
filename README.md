@@ -2,6 +2,7 @@
     <img src="docs/logo-512w.png" alt="Chakra logo" width="100" />
 </p>
 <h1 align="center"> Chemical Inventory Management System </h1> <br>
+
 ![Java CI with Maven](https://github.com/tharinduRE/cims-rest-api/workflows/Java%20CI%20with%20Maven/badge.svg)
 
 REST api for the chemical inventory management system 
