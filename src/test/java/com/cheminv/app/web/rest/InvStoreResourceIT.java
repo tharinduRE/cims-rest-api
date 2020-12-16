@@ -21,7 +21,6 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.cheminv.app.domain.enumeration.StockStore;
 /**
  * Integration tests for the {@link InvStoreResource} REST controller.
  */
@@ -29,9 +28,6 @@ import com.cheminv.app.domain.enumeration.StockStore;
 @AutoConfigureMockMvc
 @WithMockUser
 public class InvStoreResourceIT {
-
-    private static final StockStore DEFAULT_CODE = StockStore.ORG;
-    private static final StockStore UPDATED_CODE = StockStore.ORG;
 
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
@@ -55,7 +51,6 @@ public class InvStoreResourceIT {
      */
     public static InvStore createEntity(EntityManager em) {
         InvStore invStore = new InvStore()
-            .code(DEFAULT_CODE)
             .name(DEFAULT_NAME);
         return invStore;
     }
@@ -67,7 +62,6 @@ public class InvStoreResourceIT {
      */
     public static InvStore createUpdatedEntity(EntityManager em) {
         InvStore invStore = new InvStore()
-            .code(UPDATED_CODE)
             .name(UPDATED_NAME);
         return invStore;
     }
@@ -91,7 +85,6 @@ public class InvStoreResourceIT {
         List<InvStore> invStoreList = invStoreRepository.findAll();
         assertThat(invStoreList).hasSize(databaseSizeBeforeCreate + 1);
         InvStore testInvStore = invStoreList.get(invStoreList.size() - 1);
-        assertThat(testInvStore.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testInvStore.getName()).isEqualTo(DEFAULT_NAME);
     }
 
@@ -126,7 +119,6 @@ public class InvStoreResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(invStore.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
     }
     
@@ -141,7 +133,6 @@ public class InvStoreResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(invStore.getId().intValue()))
-            .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME));
     }
     @Test
@@ -165,7 +156,6 @@ public class InvStoreResourceIT {
         // Disconnect from session so that the updates on updatedInvStore are not directly saved in db
         em.detach(updatedInvStore);
         updatedInvStore
-            .code(UPDATED_CODE)
             .name(UPDATED_NAME);
 
         restInvStoreMockMvc.perform(put("/api/inv-stores")
@@ -177,7 +167,6 @@ public class InvStoreResourceIT {
         List<InvStore> invStoreList = invStoreRepository.findAll();
         assertThat(invStoreList).hasSize(databaseSizeBeforeUpdate);
         InvStore testInvStore = invStoreList.get(invStoreList.size() - 1);
-        assertThat(testInvStore.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testInvStore.getName()).isEqualTo(UPDATED_NAME);
     }
 

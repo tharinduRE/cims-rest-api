@@ -8,14 +8,22 @@
       "relationshipType": "many-to-many",
       "ownerSide": false,
       "otherEntityRelationshipName": "invStore"
+    },
+    {
+      "relationshipName": "subStore",
+      "otherEntityName": "invStore",
+      "relationshipType": "one-to-many",
+      "otherEntityRelationshipName": "parentStore"
+    },
+    {
+      "relationshipName": "parentStore",
+      "otherEntityName": "invStore",
+      "relationshipType": "many-to-one",
+      "otherEntityField": "id",
+      "otherEntityRelationshipName": "invStore"
     }
   ],
   "fields": [
-    {
-      "fieldName": "code",
-      "fieldType": "StockStore",
-      "fieldValues": "ORG"
-    },
     {
       "fieldName": "name",
       "fieldType": "String"

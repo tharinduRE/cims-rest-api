@@ -1,0 +1,11 @@
+id;name;parent_store_id
+1;Organic;null
+2;Inorganic;null
+3;Acids;null
+4;Glassware;null
+5;Normal Glassware;4
+6;QuickFit Glassware;4
+7;Organic New;1
+8;Organic Used;1
+9;Inorganic New;2
+10;Inorganic Used;2

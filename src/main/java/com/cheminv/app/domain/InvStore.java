@@ -1,14 +1,14 @@
 package com.cheminv.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-
-import com.cheminv.app.domain.enumeration.StockStore;
 
 /**
  * A InvStore.
@@ -21,14 +21,18 @@ public class InvStore implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonProperty(value = "storeId")
     private Long id;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "code")
-    private StockStore code;
 
     @Column(name = "name")
     private String name;
+
+    @ManyToOne
+    private InvStore parentStore;
+
+    @OneToMany(mappedBy = "parentStore")
+    @JsonIgnore
+    private Set<InvStore> subStores = new HashSet<>();
 
     @ManyToMany(mappedBy = "invStores")
     @JsonIgnore
@@ -41,19 +45,6 @@ public class InvStore implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public StockStore getCode() {
-        return code;
-    }
-
-    public InvStore code(StockStore code) {
-        this.code = code;
-        return this;
-    }
-
-    public void setCode(StockStore code) {
-        this.code = code;
     }
 
     public String getName() {
@@ -93,6 +84,44 @@ public class InvStore implements Serializable {
     public void setInvUsers(Set<InvUser> invUsers) {
         this.invUsers = invUsers;
     }
+
+    public Set<InvStore> getSubStores() {
+        return subStores;
+    }
+
+    public InvStore subStores(Set<InvStore> invStores) {
+        this.subStores = invStores;
+        return this;
+    }
+
+    public InvStore addSubStore(InvStore invStore) {
+        this.subStores.add(invStore);
+        invStore.setParentStore(this);
+        return this;
+    }
+
+    public InvStore removeSubStore(InvStore invStore) {
+        this.subStores.remove(invStore);
+        invStore.setParentStore(null);
+        return this;
+    }
+
+    public void setSubStores(Set<InvStore> invStores) {
+        this.subStores = invStores;
+    }
+
+    public InvStore getParentStore() {
+        return parentStore;
+    }
+
+    public InvStore parentStore(InvStore invStore) {
+        this.parentStore = invStore;
+        return this;
+    }
+
+    public void setParentStore(InvStore invStore) {
+        this.parentStore = invStore;
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -116,7 +145,6 @@ public class InvStore implements Serializable {
     public String toString() {
         return "InvStore{" +
             "id=" + getId() +
-            ", code='" + getCode() + "'" +
             ", name='" + getName() + "'" +
             "}";
     }

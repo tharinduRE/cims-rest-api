@@ -38,6 +38,7 @@
     <include file="config/liquibase/changelog/20201021155750_added_entity_constraints_InvReport.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20201009054054_added_entity_constraints_InvUser.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20201022170704_added_entity_constraints_Order.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20201022100440_added_entity_constraints_InvStore.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>
