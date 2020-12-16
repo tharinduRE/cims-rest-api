@@ -2,7 +2,6 @@ package com.cheminv.app.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.persistence.*;
 
@@ -21,13 +20,13 @@ public class InvStore implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonProperty(value = "storeId")
     private Long id;
 
     @Column(name = "name")
     private String name;
 
     @ManyToOne
+    @JsonIgnoreProperties(value = "subStores", allowSetters = true)
     private InvStore parentStore;
 
     @OneToMany(mappedBy = "parentStore")
@@ -37,6 +36,10 @@ public class InvStore implements Serializable {
     @ManyToMany(mappedBy = "invStores")
     @JsonIgnore
     private Set<InvUser> invUsers = new HashSet<>();
+
+    @OneToMany(mappedBy = "store",fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<ItemStock> itemStocks = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -121,6 +124,31 @@ public class InvStore implements Serializable {
 
     public void setParentStore(InvStore invStore) {
         this.parentStore = invStore;
+    }
+
+    public Set<ItemStock> getItemStocks() {
+        return itemStocks;
+    }
+
+    public InvStore itemStocks(Set<ItemStock> itemStocks) {
+        this.itemStocks = itemStocks;
+        return this;
+    }
+
+    public InvStore addItemStock(ItemStock itemStock) {
+        this.itemStocks.add(itemStock);
+        itemStock.setStore(this);
+        return this;
+    }
+
+    public InvStore removeItemStock(ItemStock itemStock) {
+        this.itemStocks.remove(itemStock);
+        itemStock.setStore(null);
+        return this;
+    }
+
+    public void setItemStocks(Set<ItemStock> itemStocks) {
+        this.itemStocks = itemStocks;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

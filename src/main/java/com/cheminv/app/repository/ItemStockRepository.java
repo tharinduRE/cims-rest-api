@@ -17,8 +17,8 @@ import java.util.Optional;
 @Repository
 public interface ItemStockRepository extends JpaRepository<ItemStock, Long>, JpaSpecificationExecutor<ItemStock> {
 
-    /*List<ItemStock> findAllByStockStoreEquals(StockStore stockStore);
-
+    List<ItemStock> findAllByStore(Long storeId);
+    /*
     @Query("select distinct itemStock from ItemStock itemStock where itemStock.totalQuantity <= itemStock.minimumQuantity and itemStock.stockStore in :stores")
     Page<ItemStock> findAllByLessThanOrEqualToMinimum(@Param("stores") List<StockStore> stores,Pageable pageable);*/
 

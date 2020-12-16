@@ -32,5 +32,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="cims_meas_units"/>
 
+        <addForeignKeyConstraint baseColumnNames="store_id"
+                                 baseTableName="cims_item_stock"
+                                 constraintName="fk_cims_item_stock_store_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="cims_inv_store"/>
+
     </changeSet>
 </databaseChangeLog>

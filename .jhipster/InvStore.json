@@ -21,6 +21,12 @@
       "relationshipType": "many-to-one",
       "otherEntityField": "id",
       "otherEntityRelationshipName": "invStore"
+    },
+    {
+      "relationshipName": "itemStock",
+      "otherEntityName": "itemStock",
+      "relationshipType": "one-to-many",
+      "otherEntityRelationshipName": "invStore"
     }
   ],
   "fields": [

@@ -84,7 +84,7 @@ public class ItemStock implements Serializable {
                inverseJoinColumns = @JoinColumn(name = "hazard_code_id", referencedColumnName = "id"))
     private Set<HazardCode> hazardCodes = new HashSet<>();
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
     @NotNull
     @JsonIgnoreProperties(value = "itemStocks", allowSetters = true)
     private InvStorage invStorage;
@@ -96,6 +96,11 @@ public class ItemStock implements Serializable {
 
     @OneToMany(mappedBy = "itemStock")
     private Set<Order> itemOrders = new HashSet<>();
+
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties(value = "itemStocks", allowSetters = true)
+    private InvStore store;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public Long getId() {
@@ -399,6 +404,19 @@ public class ItemStock implements Serializable {
 
     public void setItemOrders(Set<Order> orders) {
         this.itemOrders = orders;
+    }
+
+    public InvStore getStore() {
+        return store;
+    }
+
+    public ItemStock store(InvStore invStore) {
+        this.store = invStore;
+        return this;
+    }
+
+    public void setStore(InvStore invStore) {
+        this.store = invStore;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 

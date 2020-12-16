@@ -148,6 +148,10 @@ public class ItemStockQueryService extends QueryService<ItemStock> {
                 specification = specification.and(buildSpecification(criteria.getItemOrdersId(),
                     root -> root.join(ItemStock_.itemOrders, JoinType.LEFT).get(Order_.id)));
             }
+            if (criteria.getStoreId() != null) {
+                specification = specification.and(buildSpecification(criteria.getStoreId(),
+                    root -> root.join(ItemStock_.store, JoinType.LEFT).get(InvStore_.id)));
+            }
         }
         return specification;
     }

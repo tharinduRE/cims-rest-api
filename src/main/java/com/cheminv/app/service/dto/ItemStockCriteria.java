@@ -80,6 +80,8 @@ public class ItemStockCriteria implements Serializable, Criteria {
 
     private LongFilter itemOrdersId;
 
+    private LongFilter storeId;
+
     public ItemStockCriteria() {
     }
 
@@ -102,6 +104,7 @@ public class ItemStockCriteria implements Serializable, Criteria {
         this.invStorageId = other.invStorageId == null ? null : other.invStorageId.copy();
         this.storageUnitId = other.storageUnitId == null ? null : other.storageUnitId.copy();
         this.itemOrdersId = other.itemOrdersId == null ? null : other.itemOrdersId.copy();
+        this.storeId = other.storeId == null ? null : other.storeId.copy();
     }
 
     @Override
@@ -253,6 +256,14 @@ public class ItemStockCriteria implements Serializable, Criteria {
         this.itemOrdersId = itemOrdersId;
     }
 
+    public LongFilter getStoreId() {
+        return storeId;
+    }
+
+    public void setStoreId(LongFilter storeId) {
+        this.storeId = storeId;
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -281,7 +292,8 @@ public class ItemStockCriteria implements Serializable, Criteria {
             Objects.equals(hazardCodeId, that.hazardCodeId) &&
             Objects.equals(invStorageId, that.invStorageId) &&
             Objects.equals(storageUnitId, that.storageUnitId) &&
-            Objects.equals(itemOrdersId, that.itemOrdersId);
+            Objects.equals(itemOrdersId, that.itemOrdersId) &&
+            Objects.equals(storeId, that.storeId);
     }
 
     @Override
@@ -304,7 +316,8 @@ public class ItemStockCriteria implements Serializable, Criteria {
         hazardCodeId,
         invStorageId,
         storageUnitId,
-        itemOrdersId
+        itemOrdersId,
+        storeId
         );
     }
 
@@ -330,6 +343,7 @@ public class ItemStockCriteria implements Serializable, Criteria {
                 (invStorageId != null ? "invStorageId=" + invStorageId + ", " : "") +
                 (storageUnitId != null ? "storageUnitId=" + storageUnitId + ", " : "") +
                 (itemOrdersId != null ? "itemOrdersId=" + itemOrdersId + ", " : "") +
+                (storeId != null ? "storeId=" + storeId + ", " : "") +
             "}";
     }
 

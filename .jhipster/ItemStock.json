@@ -95,6 +95,14 @@
       "otherEntityName": "order",
       "relationshipType": "one-to-many",
       "otherEntityRelationshipName": "itemStock"
+    },
+    {
+      "relationshipName": "store",
+      "otherEntityName": "invStore",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": ["required"],
+      "otherEntityField": "id",
+      "otherEntityRelationshipName": "itemStock"
     }
   ],
   "changelogDate": "20201009054454",

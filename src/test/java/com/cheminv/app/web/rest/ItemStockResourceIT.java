@@ -8,6 +8,7 @@ import com.cheminv.app.domain.HazardCode;
 import com.cheminv.app.domain.InvStorage;
 import com.cheminv.app.domain.MeasUnit;
 import com.cheminv.app.domain.Order;
+import com.cheminv.app.domain.InvStore;
 import com.cheminv.app.repository.ItemStockRepository;
 import com.cheminv.app.service.ItemStockService;
 import com.cheminv.app.service.dto.ItemStockDTO;
@@ -161,6 +162,16 @@ public class ItemStockResourceIT {
             measUnit = TestUtil.findAll(em, MeasUnit.class).get(0);
         }
         itemStock.setStorageUnit(measUnit);
+        // Add required entity
+        InvStore invStore;
+        if (TestUtil.findAll(em, InvStore.class).isEmpty()) {
+            invStore = InvStoreResourceIT.createEntity(em);
+            em.persist(invStore);
+            em.flush();
+        } else {
+            invStore = TestUtil.findAll(em, InvStore.class).get(0);
+        }
+        itemStock.setStore(invStore);
         return itemStock;
     }
     /**
@@ -204,6 +215,16 @@ public class ItemStockResourceIT {
             measUnit = TestUtil.findAll(em, MeasUnit.class).get(0);
         }
         itemStock.setStorageUnit(measUnit);
+        // Add required entity
+        InvStore invStore;
+        if (TestUtil.findAll(em, InvStore.class).isEmpty()) {
+            invStore = InvStoreResourceIT.createUpdatedEntity(em);
+            em.persist(invStore);
+            em.flush();
+        } else {
+            invStore = TestUtil.findAll(em, InvStore.class).get(0);
+        }
+        itemStock.setStore(invStore);
         return itemStock;
     }
 
@@ -1372,6 +1393,22 @@ public class ItemStockResourceIT {
 
         // Get all the itemStockList where itemOrders equals to itemOrdersId + 1
         defaultItemStockShouldNotBeFound("itemOrdersId.equals=" + (itemOrdersId + 1));
+    }
+
+
+    @Test
+    @Transactional
+    public void getAllItemStocksByStoreIsEqualToSomething() throws Exception {
+        // Get already existing entity
+        InvStore store = itemStock.getStore();
+        itemStockRepository.saveAndFlush(itemStock);
+        Long storeId = store.getId();
+
+        // Get all the itemStockList where store equals to storeId
+        defaultItemStockShouldBeFound("storeId.equals=" + storeId);
+
+        // Get all the itemStockList where store equals to storeId + 1
+        defaultItemStockShouldNotBeFound("storeId.equals=" + (storeId + 1));
     }
 
     /**
