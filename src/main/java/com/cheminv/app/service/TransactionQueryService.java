@@ -14,31 +14,31 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.github.jhipster.service.QueryService;
 
-import com.cheminv.app.domain.ItemTransaction;
+import com.cheminv.app.domain.Transaction;
 import com.cheminv.app.domain.*; // for static metamodels
-import com.cheminv.app.repository.ItemTransactionRepository;
+import com.cheminv.app.repository.TransactionRepository;
 import com.cheminv.app.service.dto.ItemTransactionCriteria;
 import com.cheminv.app.service.dto.ItemTransactionDTO;
 import com.cheminv.app.service.mapper.ItemTransactionMapper;
 
 /**
- * Service for executing complex queries for {@link ItemTransaction} entities in the database.
+ * Service for executing complex queries for {@link Transaction} entities in the database.
  * The main input is a {@link ItemTransactionCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
  * It returns a {@link List} of {@link ItemTransactionDTO} or a {@link Page} of {@link ItemTransactionDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
-public class ItemTransactionQueryService extends QueryService<ItemTransaction> {
+public class TransactionQueryService extends QueryService<Transaction> {
 
-    private final Logger log = LoggerFactory.getLogger(ItemTransactionQueryService.class);
+    private final Logger log = LoggerFactory.getLogger(TransactionQueryService.class);
 
-    private final ItemTransactionRepository itemTransactionRepository;
+    private final TransactionRepository transactionRepository;
 
     private final ItemTransactionMapper itemTransactionMapper;
 
-    public ItemTransactionQueryService(ItemTransactionRepository itemTransactionRepository, ItemTransactionMapper itemTransactionMapper) {
-        this.itemTransactionRepository = itemTransactionRepository;
+    public TransactionQueryService(TransactionRepository transactionRepository, ItemTransactionMapper itemTransactionMapper) {
+        this.transactionRepository = transactionRepository;
         this.itemTransactionMapper = itemTransactionMapper;
     }
 
@@ -50,8 +50,8 @@ public class ItemTransactionQueryService extends QueryService<ItemTransaction> {
     @Transactional(readOnly = true)
     public List<ItemTransactionDTO> findByCriteria(ItemTransactionCriteria criteria) {
         log.debug("find by criteria : {}", criteria);
-        final Specification<ItemTransaction> specification = createSpecification(criteria);
-        return itemTransactionMapper.toDto(itemTransactionRepository.findAll(specification));
+        final Specification<Transaction> specification = createSpecification(criteria);
+        return itemTransactionMapper.toDto(transactionRepository.findAll(specification));
     }
 
     /**
@@ -63,8 +63,8 @@ public class ItemTransactionQueryService extends QueryService<ItemTransaction> {
     @Transactional(readOnly = true)
     public Page<ItemTransactionDTO> findByCriteria(ItemTransactionCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
-        final Specification<ItemTransaction> specification = createSpecification(criteria);
-        return itemTransactionRepository.findAll(specification, page)
+        final Specification<Transaction> specification = createSpecification(criteria);
+        return transactionRepository.findAll(specification, page)
             .map(itemTransactionMapper::toDto);
     }
 
@@ -76,8 +76,8 @@ public class ItemTransactionQueryService extends QueryService<ItemTransaction> {
     @Transactional(readOnly = true)
     public long countByCriteria(ItemTransactionCriteria criteria) {
         log.debug("count by criteria : {}", criteria);
-        final Specification<ItemTransaction> specification = createSpecification(criteria);
-        return itemTransactionRepository.count(specification);
+        final Specification<Transaction> specification = createSpecification(criteria);
+        return transactionRepository.count(specification);
     }
 
     /**
@@ -85,8 +85,8 @@ public class ItemTransactionQueryService extends QueryService<ItemTransaction> {
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching {@link Specification} of the entity.
      */
-    protected Specification<ItemTransaction> createSpecification(ItemTransactionCriteria criteria) {
-        Specification<ItemTransaction> specification = Specification.where(null);
+    protected Specification<Transaction> createSpecification(ItemTransactionCriteria criteria) {
+        Specification<Transaction> specification = Specification.where(null);
         if (criteria != null) {
             if (criteria.getId() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getId(), ItemTransaction_.id));

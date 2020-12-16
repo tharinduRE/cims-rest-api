@@ -52,7 +52,7 @@ public class User implements Serializable {
     private String avatarUrl;
 
     @OneToMany(mappedBy = "createdBy",cascade = CascadeType.ALL)
-    private Set<ItemTransaction> itemTransactions = new HashSet<>();
+    private Set<Transaction> transactions = new HashSet<>();
 
     @ManyToMany(mappedBy = "users")
     @JsonIgnore
@@ -189,29 +189,29 @@ public class User implements Serializable {
         this.avatarUrl = avatarUrl;
     }
 
-    public Set<ItemTransaction> getItemTransactions() {
-        return itemTransactions;
+    public Set<Transaction> getItemTransactions() {
+        return transactions;
     }
 
-    public User itemTransactions(Set<ItemTransaction> itemTransactions) {
-        this.itemTransactions = itemTransactions;
+    public User itemTransactions(Set<Transaction> transactions) {
+        this.transactions = transactions;
         return this;
     }
 
-    public User addItemTransaction(ItemTransaction itemTransaction) {
-        this.itemTransactions.add(itemTransaction);
-        itemTransaction.setCreatedBy(this);
+    public User addItemTransaction(Transaction transaction) {
+        this.transactions.add(transaction);
+        transaction.setCreatedBy(this);
         return this;
     }
 
-    public User removeItemTransaction(ItemTransaction itemTransaction) {
-        this.itemTransactions.remove(itemTransaction);
-        itemTransaction.setCreatedBy(null);
+    public User removeItemTransaction(Transaction transaction) {
+        this.transactions.remove(transaction);
+        transaction.setCreatedBy(null);
         return this;
     }
 
-    public void setItemTransactions(Set<ItemTransaction> itemTransactions) {
-        this.itemTransactions = itemTransactions;
+    public void setItemTransactions(Set<Transaction> transactions) {
+        this.transactions = transactions;
     }
 
     public Set<Department> getInvDepartments() {

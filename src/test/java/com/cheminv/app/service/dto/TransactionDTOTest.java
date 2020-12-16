@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import com.cheminv.app.web.rest.TestUtil;
 
-public class ItemTransactionDTOTest {
+public class TransactionDTOTest {
 
     @Test
     public void dtoEqualsVerifier() throws Exception {

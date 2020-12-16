@@ -66,7 +66,7 @@ public class ItemStock implements Serializable {
     private Instant lastUpdated;
 
     @OneToMany(mappedBy = "itemStock")
-    private Set<ItemTransaction> itemTransactions = new HashSet<>();
+    private Set<Transaction> transactions = new HashSet<>();
 
     @OneToMany(mappedBy = "itemStock")
     private Set<WasteItem> wasteItems = new HashSet<>();
@@ -247,29 +247,29 @@ public class ItemStock implements Serializable {
         this.lastUpdated = lastUpdated;
     }
 
-    public Set<ItemTransaction> getItemTransactions() {
-        return itemTransactions;
+    public Set<Transaction> getItemTransactions() {
+        return transactions;
     }
 
-    public ItemStock itemTransactions(Set<ItemTransaction> itemTransactions) {
-        this.itemTransactions = itemTransactions;
+    public ItemStock itemTransactions(Set<Transaction> transactions) {
+        this.transactions = transactions;
         return this;
     }
 
-    public ItemStock addItemTransaction(ItemTransaction itemTransaction) {
-        this.itemTransactions.add(itemTransaction);
-        itemTransaction.setItemStock(this);
+    public ItemStock addItemTransaction(Transaction transaction) {
+        this.transactions.add(transaction);
+        transaction.setItemStock(this);
         return this;
     }
 
-    public ItemStock removeItemTransaction(ItemTransaction itemTransaction) {
-        this.itemTransactions.remove(itemTransaction);
-        itemTransaction.setItemStock(null);
+    public ItemStock removeItemTransaction(Transaction transaction) {
+        this.transactions.remove(transaction);
+        transaction.setItemStock(null);
         return this;
     }
 
-    public void setItemTransactions(Set<ItemTransaction> itemTransactions) {
-        this.itemTransactions = itemTransactions;
+    public void setItemTransactions(Set<Transaction> transactions) {
+        this.transactions = transactions;
     }
 
     public Set<WasteItem> getWasteItems() {

@@ -3,6 +3,7 @@ package com.cheminv.app.service.dto;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.cheminv.app.domain.Transaction;
 import io.github.jhipster.service.Criteria;
 import com.cheminv.app.domain.enumeration.TransactionType;
 import io.github.jhipster.service.filter.Filter;
@@ -12,8 +13,8 @@ import io.github.jhipster.service.filter.StringFilter;
 import io.github.jhipster.service.filter.InstantFilter;
 
 /**
- * Criteria class for the {@link com.cheminv.app.domain.ItemTransaction} entity. This class is used
- * in {@link com.cheminv.app.web.rest.ItemTransactionResource} to receive all the possible filtering options from
+ * Criteria class for the {@link Transaction} entity. This class is used
+ * in {@link com.cheminv.app.web.rest.TransactionResource} to receive all the possible filtering options from
  * the Http GET request parameters.
  * For example the following could be a valid request:
  * {@code /item-transactions?id.greaterThan=5&attr1.contains=something&attr2.specified=false}

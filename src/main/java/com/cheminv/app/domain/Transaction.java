@@ -12,11 +12,11 @@ import com.cheminv.app.domain.enumeration.TransactionType;
 import org.hibernate.annotations.CreationTimestamp;
 
 /**
- * A ItemTransaction.
+ * A Transaction.
  */
 @Entity
 @Table(name = "cims_item_transaction")
-public class ItemTransaction implements Serializable {
+public class Transaction implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -62,7 +62,7 @@ public class ItemTransaction implements Serializable {
         return quantity;
     }
 
-    public ItemTransaction quantity(Float quantity) {
+    public Transaction quantity(Float quantity) {
         this.quantity = quantity;
         return this;
     }
@@ -75,7 +75,7 @@ public class ItemTransaction implements Serializable {
         return remarks;
     }
 
-    public ItemTransaction remarks(String remarks) {
+    public Transaction remarks(String remarks) {
         this.remarks = remarks;
         return this;
     }
@@ -88,7 +88,7 @@ public class ItemTransaction implements Serializable {
         return transactionType;
     }
 
-    public ItemTransaction transactionType(TransactionType transactionType) {
+    public Transaction transactionType(TransactionType transactionType) {
         this.transactionType = transactionType;
         return this;
     }
@@ -101,7 +101,7 @@ public class ItemTransaction implements Serializable {
         return transactionDate;
     }
 
-    public ItemTransaction transactionDate(Instant transactionDate) {
+    public Transaction transactionDate(Instant transactionDate) {
         this.transactionDate = transactionDate;
         return this;
     }
@@ -114,7 +114,7 @@ public class ItemTransaction implements Serializable {
         return itemStock;
     }
 
-    public ItemTransaction itemStock(ItemStock itemStock) {
+    public Transaction itemStock(ItemStock itemStock) {
         this.itemStock = itemStock;
         return this;
     }
@@ -127,7 +127,7 @@ public class ItemTransaction implements Serializable {
         return createdBy;
     }
 
-    public ItemTransaction createdBy(User user) {
+    public Transaction createdBy(User user) {
         this.createdBy = user;
         return this;
     }
@@ -142,10 +142,10 @@ public class ItemTransaction implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof ItemTransaction)) {
+        if (!(o instanceof Transaction)) {
             return false;
         }
-        return id != null && id.equals(((ItemTransaction) o).id);
+        return id != null && id.equals(((Transaction) o).id);
     }
 
     @Override
@@ -156,7 +156,7 @@ public class ItemTransaction implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "ItemTransaction{" +
+        return "Transaction{" +
             "id=" + getId() +
             ", quantity=" + getQuantity() +
             ", remarks='" + getRemarks() + "'" +

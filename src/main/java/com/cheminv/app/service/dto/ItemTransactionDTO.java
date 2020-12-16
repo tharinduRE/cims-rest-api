@@ -3,10 +3,12 @@ package com.cheminv.app.service.dto;
 import java.time.Instant;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+
+import com.cheminv.app.domain.Transaction;
 import com.cheminv.app.domain.enumeration.TransactionType;
 
 /**
- * A DTO for the {@link com.cheminv.app.domain.ItemTransaction} entity.
+ * A DTO for the {@link Transaction} entity.
  */
 public class ItemTransactionDTO implements Serializable {
 

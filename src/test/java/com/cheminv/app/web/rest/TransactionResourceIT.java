@@ -1,14 +1,14 @@
 package com.cheminv.app.web.rest;
 
 import com.cheminv.app.CimsApp;
-import com.cheminv.app.domain.ItemTransaction;
+import com.cheminv.app.domain.Transaction;
 import com.cheminv.app.domain.ItemStock;
 import com.cheminv.app.domain.User;
-import com.cheminv.app.repository.ItemTransactionRepository;
-import com.cheminv.app.service.ItemTransactionService;
+import com.cheminv.app.repository.TransactionRepository;
+import com.cheminv.app.service.TransactionService;
 import com.cheminv.app.service.dto.ItemTransactionDTO;
 import com.cheminv.app.service.mapper.ItemTransactionMapper;
-import com.cheminv.app.service.ItemTransactionQueryService;
+import com.cheminv.app.service.TransactionQueryService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,12 +31,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.cheminv.app.domain.enumeration.TransactionType;
 /**
- * Integration tests for the {@link ItemTransactionResource} REST controller.
+ * Integration tests for the {@link TransactionResource} REST controller.
  */
 @SpringBootTest(classes = CimsApp.class)
 @AutoConfigureMockMvc
 @WithMockUser
-public class ItemTransactionResourceIT {
+public class TransactionResourceIT {
 
     private static final Float DEFAULT_QUANTITY = 1F;
     private static final Float UPDATED_QUANTITY = 2F;
@@ -52,16 +52,16 @@ public class ItemTransactionResourceIT {
     private static final Instant UPDATED_TRANSACTION_DATE = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 
     @Autowired
-    private ItemTransactionRepository itemTransactionRepository;
+    private TransactionRepository transactionRepository;
 
     @Autowired
     private ItemTransactionMapper itemTransactionMapper;
 
     @Autowired
-    private ItemTransactionService itemTransactionService;
+    private TransactionService transactionService;
 
     @Autowired
-    private ItemTransactionQueryService itemTransactionQueryService;
+    private TransactionQueryService transactionQueryService;
 
     @Autowired
     private EntityManager em;
@@ -69,7 +69,7 @@ public class ItemTransactionResourceIT {
     @Autowired
     private MockMvc restItemTransactionMockMvc;
 
-    private ItemTransaction itemTransaction;
+    private Transaction transaction;
 
     /**
      * Create an entity for this test.
@@ -77,8 +77,8 @@ public class ItemTransactionResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static ItemTransaction createEntity(EntityManager em) {
-        ItemTransaction itemTransaction = new ItemTransaction()
+    public static Transaction createEntity(EntityManager em) {
+        Transaction transaction = new Transaction()
             .quantity(DEFAULT_QUANTITY)
             .remarks(DEFAULT_REMARKS)
             .transactionType(DEFAULT_TRANSACTION_TYPE)
@@ -92,7 +92,7 @@ public class ItemTransactionResourceIT {
         } else {
             itemStock = TestUtil.findAll(em, ItemStock.class).get(0);
         }
-        itemTransaction.setItemStock(itemStock);
+        transaction.setItemStock(itemStock);
         // Add required entity
         User user;
         if (TestUtil.findAll(em, User.class).isEmpty()) {
@@ -102,8 +102,8 @@ public class ItemTransactionResourceIT {
         } else {
             user = TestUtil.findAll(em, User.class).get(0);
         }
-        itemTransaction.setCreatedBy(user);
-        return itemTransaction;
+        transaction.setCreatedBy(user);
+        return transaction;
     }
     /**
      * Create an updated entity for this test.
@@ -111,8 +111,8 @@ public class ItemTransactionResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static ItemTransaction createUpdatedEntity(EntityManager em) {
-        ItemTransaction itemTransaction = new ItemTransaction()
+    public static Transaction createUpdatedEntity(EntityManager em) {
+        Transaction transaction = new Transaction()
             .quantity(UPDATED_QUANTITY)
             .remarks(UPDATED_REMARKS)
             .transactionType(UPDATED_TRANSACTION_TYPE)
@@ -126,7 +126,7 @@ public class ItemTransactionResourceIT {
         } else {
             itemStock = TestUtil.findAll(em, ItemStock.class).get(0);
         }
-        itemTransaction.setItemStock(itemStock);
+        transaction.setItemStock(itemStock);
         // Add required entity
         User user;
         if (TestUtil.findAll(em, User.class).isEmpty()) {
@@ -136,44 +136,44 @@ public class ItemTransactionResourceIT {
         } else {
             user = TestUtil.findAll(em, User.class).get(0);
         }
-        itemTransaction.setCreatedBy(user);
-        return itemTransaction;
+        transaction.setCreatedBy(user);
+        return transaction;
     }
 
     @BeforeEach
     public void initTest() {
-        itemTransaction = createEntity(em);
+        transaction = createEntity(em);
     }
 
     @Test
     @Transactional
     public void createItemTransaction() throws Exception {
-        int databaseSizeBeforeCreate = itemTransactionRepository.findAll().size();
-        // Create the ItemTransaction
-        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(itemTransaction);
+        int databaseSizeBeforeCreate = transactionRepository.findAll().size();
+        // Create the Transaction
+        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(transaction);
         restItemTransactionMockMvc.perform(post("/api/item-transactions")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(itemTransactionDTO)))
             .andExpect(status().isCreated());
 
-        // Validate the ItemTransaction in the database
-        List<ItemTransaction> itemTransactionList = itemTransactionRepository.findAll();
-        assertThat(itemTransactionList).hasSize(databaseSizeBeforeCreate + 1);
-        ItemTransaction testItemTransaction = itemTransactionList.get(itemTransactionList.size() - 1);
-        assertThat(testItemTransaction.getQuantity()).isEqualTo(DEFAULT_QUANTITY);
-        assertThat(testItemTransaction.getRemarks()).isEqualTo(DEFAULT_REMARKS);
-        assertThat(testItemTransaction.getTransactionType()).isEqualTo(DEFAULT_TRANSACTION_TYPE);
-        assertThat(testItemTransaction.getTransactionDate()).isEqualTo(DEFAULT_TRANSACTION_DATE);
+        // Validate the Transaction in the database
+        List<Transaction> transactionList = transactionRepository.findAll();
+        assertThat(transactionList).hasSize(databaseSizeBeforeCreate + 1);
+        Transaction testTransaction = transactionList.get(transactionList.size() - 1);
+        assertThat(testTransaction.getQuantity()).isEqualTo(DEFAULT_QUANTITY);
+        assertThat(testTransaction.getRemarks()).isEqualTo(DEFAULT_REMARKS);
+        assertThat(testTransaction.getTransactionType()).isEqualTo(DEFAULT_TRANSACTION_TYPE);
+        assertThat(testTransaction.getTransactionDate()).isEqualTo(DEFAULT_TRANSACTION_DATE);
     }
 
     @Test
     @Transactional
     public void createItemTransactionWithExistingId() throws Exception {
-        int databaseSizeBeforeCreate = itemTransactionRepository.findAll().size();
+        int databaseSizeBeforeCreate = transactionRepository.findAll().size();
 
-        // Create the ItemTransaction with an existing ID
-        itemTransaction.setId(1L);
-        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(itemTransaction);
+        // Create the Transaction with an existing ID
+        transaction.setId(1L);
+        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(transaction);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restItemTransactionMockMvc.perform(post("/api/item-transactions")
@@ -181,21 +181,21 @@ public class ItemTransactionResourceIT {
             .content(TestUtil.convertObjectToJsonBytes(itemTransactionDTO)))
             .andExpect(status().isBadRequest());
 
-        // Validate the ItemTransaction in the database
-        List<ItemTransaction> itemTransactionList = itemTransactionRepository.findAll();
-        assertThat(itemTransactionList).hasSize(databaseSizeBeforeCreate);
+        // Validate the Transaction in the database
+        List<Transaction> transactionList = transactionRepository.findAll();
+        assertThat(transactionList).hasSize(databaseSizeBeforeCreate);
     }
 
 
     @Test
     @Transactional
     public void checkQuantityIsRequired() throws Exception {
-        int databaseSizeBeforeTest = itemTransactionRepository.findAll().size();
+        int databaseSizeBeforeTest = transactionRepository.findAll().size();
         // set the field null
-        itemTransaction.setQuantity(null);
+        transaction.setQuantity(null);
 
-        // Create the ItemTransaction, which fails.
-        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(itemTransaction);
+        // Create the Transaction, which fails.
+        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(transaction);
 
 
         restItemTransactionMockMvc.perform(post("/api/item-transactions")
@@ -203,21 +203,21 @@ public class ItemTransactionResourceIT {
             .content(TestUtil.convertObjectToJsonBytes(itemTransactionDTO)))
             .andExpect(status().isBadRequest());
 
-        List<ItemTransaction> itemTransactionList = itemTransactionRepository.findAll();
-        assertThat(itemTransactionList).hasSize(databaseSizeBeforeTest);
+        List<Transaction> transactionList = transactionRepository.findAll();
+        assertThat(transactionList).hasSize(databaseSizeBeforeTest);
     }
 
     @Test
     @Transactional
     public void getAllItemTransactions() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList
         restItemTransactionMockMvc.perform(get("/api/item-transactions?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(itemTransaction.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(transaction.getId().intValue())))
             .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY.doubleValue())))
             .andExpect(jsonPath("$.[*].remarks").value(hasItem(DEFAULT_REMARKS)))
             .andExpect(jsonPath("$.[*].transactionType").value(hasItem(DEFAULT_TRANSACTION_TYPE.toString())))
@@ -228,13 +228,13 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getItemTransaction() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
-        // Get the itemTransaction
-        restItemTransactionMockMvc.perform(get("/api/item-transactions/{id}", itemTransaction.getId()))
+        // Get the transaction
+        restItemTransactionMockMvc.perform(get("/api/item-transactions/{id}", transaction.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.id").value(itemTransaction.getId().intValue()))
+            .andExpect(jsonPath("$.id").value(transaction.getId().intValue()))
             .andExpect(jsonPath("$.quantity").value(DEFAULT_QUANTITY.doubleValue()))
             .andExpect(jsonPath("$.remarks").value(DEFAULT_REMARKS))
             .andExpect(jsonPath("$.transactionType").value(DEFAULT_TRANSACTION_TYPE.toString()))
@@ -246,9 +246,9 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getItemTransactionsByIdFiltering() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
-        Long id = itemTransaction.getId();
+        Long id = transaction.getId();
 
         defaultItemTransactionShouldBeFound("id.equals=" + id);
         defaultItemTransactionShouldNotBeFound("id.notEquals=" + id);
@@ -265,7 +265,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByQuantityIsEqualToSomething() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where quantity equals to DEFAULT_QUANTITY
         defaultItemTransactionShouldBeFound("quantity.equals=" + DEFAULT_QUANTITY);
@@ -278,7 +278,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByQuantityIsNotEqualToSomething() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where quantity not equals to DEFAULT_QUANTITY
         defaultItemTransactionShouldNotBeFound("quantity.notEquals=" + DEFAULT_QUANTITY);
@@ -291,7 +291,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByQuantityIsInShouldWork() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where quantity in DEFAULT_QUANTITY or UPDATED_QUANTITY
         defaultItemTransactionShouldBeFound("quantity.in=" + DEFAULT_QUANTITY + "," + UPDATED_QUANTITY);
@@ -304,7 +304,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByQuantityIsNullOrNotNull() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where quantity is not null
         defaultItemTransactionShouldBeFound("quantity.specified=true");
@@ -317,7 +317,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByQuantityIsGreaterThanOrEqualToSomething() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where quantity is greater than or equal to DEFAULT_QUANTITY
         defaultItemTransactionShouldBeFound("quantity.greaterThanOrEqual=" + DEFAULT_QUANTITY);
@@ -330,7 +330,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByQuantityIsLessThanOrEqualToSomething() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where quantity is less than or equal to DEFAULT_QUANTITY
         defaultItemTransactionShouldBeFound("quantity.lessThanOrEqual=" + DEFAULT_QUANTITY);
@@ -343,7 +343,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByQuantityIsLessThanSomething() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where quantity is less than DEFAULT_QUANTITY
         defaultItemTransactionShouldNotBeFound("quantity.lessThan=" + DEFAULT_QUANTITY);
@@ -356,7 +356,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByQuantityIsGreaterThanSomething() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where quantity is greater than DEFAULT_QUANTITY
         defaultItemTransactionShouldNotBeFound("quantity.greaterThan=" + DEFAULT_QUANTITY);
@@ -370,7 +370,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByRemarksIsEqualToSomething() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where remarks equals to DEFAULT_REMARKS
         defaultItemTransactionShouldBeFound("remarks.equals=" + DEFAULT_REMARKS);
@@ -383,7 +383,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByRemarksIsNotEqualToSomething() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where remarks not equals to DEFAULT_REMARKS
         defaultItemTransactionShouldNotBeFound("remarks.notEquals=" + DEFAULT_REMARKS);
@@ -396,7 +396,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByRemarksIsInShouldWork() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where remarks in DEFAULT_REMARKS or UPDATED_REMARKS
         defaultItemTransactionShouldBeFound("remarks.in=" + DEFAULT_REMARKS + "," + UPDATED_REMARKS);
@@ -409,7 +409,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByRemarksIsNullOrNotNull() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where remarks is not null
         defaultItemTransactionShouldBeFound("remarks.specified=true");
@@ -421,7 +421,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByRemarksContainsSomething() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where remarks contains DEFAULT_REMARKS
         defaultItemTransactionShouldBeFound("remarks.contains=" + DEFAULT_REMARKS);
@@ -434,7 +434,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByRemarksNotContainsSomething() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where remarks does not contain DEFAULT_REMARKS
         defaultItemTransactionShouldNotBeFound("remarks.doesNotContain=" + DEFAULT_REMARKS);
@@ -448,7 +448,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByTransactionTypeIsEqualToSomething() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where transactionType equals to DEFAULT_TRANSACTION_TYPE
         defaultItemTransactionShouldBeFound("transactionType.equals=" + DEFAULT_TRANSACTION_TYPE);
@@ -461,7 +461,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByTransactionTypeIsNotEqualToSomething() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where transactionType not equals to DEFAULT_TRANSACTION_TYPE
         defaultItemTransactionShouldNotBeFound("transactionType.notEquals=" + DEFAULT_TRANSACTION_TYPE);
@@ -474,7 +474,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByTransactionTypeIsInShouldWork() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where transactionType in DEFAULT_TRANSACTION_TYPE or UPDATED_TRANSACTION_TYPE
         defaultItemTransactionShouldBeFound("transactionType.in=" + DEFAULT_TRANSACTION_TYPE + "," + UPDATED_TRANSACTION_TYPE);
@@ -487,7 +487,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByTransactionTypeIsNullOrNotNull() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where transactionType is not null
         defaultItemTransactionShouldBeFound("transactionType.specified=true");
@@ -500,7 +500,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByTransactionDateIsEqualToSomething() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where transactionDate equals to DEFAULT_TRANSACTION_DATE
         defaultItemTransactionShouldBeFound("transactionDate.equals=" + DEFAULT_TRANSACTION_DATE);
@@ -513,7 +513,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByTransactionDateIsNotEqualToSomething() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where transactionDate not equals to DEFAULT_TRANSACTION_DATE
         defaultItemTransactionShouldNotBeFound("transactionDate.notEquals=" + DEFAULT_TRANSACTION_DATE);
@@ -526,7 +526,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByTransactionDateIsInShouldWork() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where transactionDate in DEFAULT_TRANSACTION_DATE or UPDATED_TRANSACTION_DATE
         defaultItemTransactionShouldBeFound("transactionDate.in=" + DEFAULT_TRANSACTION_DATE + "," + UPDATED_TRANSACTION_DATE);
@@ -539,7 +539,7 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByTransactionDateIsNullOrNotNull() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
         // Get all the itemTransactionList where transactionDate is not null
         defaultItemTransactionShouldBeFound("transactionDate.specified=true");
@@ -552,8 +552,8 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByItemStockIsEqualToSomething() throws Exception {
         // Get already existing entity
-        ItemStock itemStock = itemTransaction.getItemStock();
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        ItemStock itemStock = transaction.getItemStock();
+        transactionRepository.saveAndFlush(transaction);
         Long itemStockId = itemStock.getId();
 
         // Get all the itemTransactionList where itemStock equals to itemStockId
@@ -568,8 +568,8 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void getAllItemTransactionsByCreatedByIsEqualToSomething() throws Exception {
         // Get already existing entity
-        User createdBy = itemTransaction.getCreatedBy();
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        User createdBy = transaction.getCreatedBy();
+        transactionRepository.saveAndFlush(transaction);
         Long createdById = createdBy.getId();
 
         // Get all the itemTransactionList where createdBy equals to createdById
@@ -586,7 +586,7 @@ public class ItemTransactionResourceIT {
         restItemTransactionMockMvc.perform(get("/api/item-transactions?sort=id,desc&" + filter))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(itemTransaction.getId().intValue())))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(transaction.getId().intValue())))
             .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY.doubleValue())))
             .andExpect(jsonPath("$.[*].remarks").value(hasItem(DEFAULT_REMARKS)))
             .andExpect(jsonPath("$.[*].transactionType").value(hasItem(DEFAULT_TRANSACTION_TYPE.toString())))
@@ -619,7 +619,7 @@ public class ItemTransactionResourceIT {
     @Test
     @Transactional
     public void getNonExistingItemTransaction() throws Exception {
-        // Get the itemTransaction
+        // Get the transaction
         restItemTransactionMockMvc.perform(get("/api/item-transactions/{id}", Long.MAX_VALUE))
             .andExpect(status().isNotFound());
     }
@@ -628,43 +628,43 @@ public class ItemTransactionResourceIT {
     @Transactional
     public void updateItemTransaction() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
-        int databaseSizeBeforeUpdate = itemTransactionRepository.findAll().size();
+        int databaseSizeBeforeUpdate = transactionRepository.findAll().size();
 
-        // Update the itemTransaction
-        ItemTransaction updatedItemTransaction = itemTransactionRepository.findById(itemTransaction.getId()).get();
-        // Disconnect from session so that the updates on updatedItemTransaction are not directly saved in db
-        em.detach(updatedItemTransaction);
-        updatedItemTransaction
+        // Update the transaction
+        Transaction updatedTransaction = transactionRepository.findById(transaction.getId()).get();
+        // Disconnect from session so that the updates on updatedTransaction are not directly saved in db
+        em.detach(updatedTransaction);
+        updatedTransaction
             .quantity(UPDATED_QUANTITY)
             .remarks(UPDATED_REMARKS)
             .transactionType(UPDATED_TRANSACTION_TYPE)
             .transactionDate(UPDATED_TRANSACTION_DATE);
-        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(updatedItemTransaction);
+        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(updatedTransaction);
 
         restItemTransactionMockMvc.perform(put("/api/item-transactions")
             .contentType(MediaType.APPLICATION_JSON)
             .content(TestUtil.convertObjectToJsonBytes(itemTransactionDTO)))
             .andExpect(status().isOk());
 
-        // Validate the ItemTransaction in the database
-        List<ItemTransaction> itemTransactionList = itemTransactionRepository.findAll();
-        assertThat(itemTransactionList).hasSize(databaseSizeBeforeUpdate);
-        ItemTransaction testItemTransaction = itemTransactionList.get(itemTransactionList.size() - 1);
-        assertThat(testItemTransaction.getQuantity()).isEqualTo(UPDATED_QUANTITY);
-        assertThat(testItemTransaction.getRemarks()).isEqualTo(UPDATED_REMARKS);
-        assertThat(testItemTransaction.getTransactionType()).isEqualTo(UPDATED_TRANSACTION_TYPE);
-        assertThat(testItemTransaction.getTransactionDate()).isEqualTo(UPDATED_TRANSACTION_DATE);
+        // Validate the Transaction in the database
+        List<Transaction> transactionList = transactionRepository.findAll();
+        assertThat(transactionList).hasSize(databaseSizeBeforeUpdate);
+        Transaction testTransaction = transactionList.get(transactionList.size() - 1);
+        assertThat(testTransaction.getQuantity()).isEqualTo(UPDATED_QUANTITY);
+        assertThat(testTransaction.getRemarks()).isEqualTo(UPDATED_REMARKS);
+        assertThat(testTransaction.getTransactionType()).isEqualTo(UPDATED_TRANSACTION_TYPE);
+        assertThat(testTransaction.getTransactionDate()).isEqualTo(UPDATED_TRANSACTION_DATE);
     }
 
     @Test
     @Transactional
     public void updateNonExistingItemTransaction() throws Exception {
-        int databaseSizeBeforeUpdate = itemTransactionRepository.findAll().size();
+        int databaseSizeBeforeUpdate = transactionRepository.findAll().size();
 
-        // Create the ItemTransaction
-        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(itemTransaction);
+        // Create the Transaction
+        ItemTransactionDTO itemTransactionDTO = itemTransactionMapper.toDto(transaction);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restItemTransactionMockMvc.perform(put("/api/item-transactions")
@@ -672,26 +672,26 @@ public class ItemTransactionResourceIT {
             .content(TestUtil.convertObjectToJsonBytes(itemTransactionDTO)))
             .andExpect(status().isBadRequest());
 
-        // Validate the ItemTransaction in the database
-        List<ItemTransaction> itemTransactionList = itemTransactionRepository.findAll();
-        assertThat(itemTransactionList).hasSize(databaseSizeBeforeUpdate);
+        // Validate the Transaction in the database
+        List<Transaction> transactionList = transactionRepository.findAll();
+        assertThat(transactionList).hasSize(databaseSizeBeforeUpdate);
     }
 
     @Test
     @Transactional
     public void deleteItemTransaction() throws Exception {
         // Initialize the database
-        itemTransactionRepository.saveAndFlush(itemTransaction);
+        transactionRepository.saveAndFlush(transaction);
 
-        int databaseSizeBeforeDelete = itemTransactionRepository.findAll().size();
+        int databaseSizeBeforeDelete = transactionRepository.findAll().size();
 
-        // Delete the itemTransaction
-        restItemTransactionMockMvc.perform(delete("/api/item-transactions/{id}", itemTransaction.getId())
+        // Delete the transaction
+        restItemTransactionMockMvc.perform(delete("/api/item-transactions/{id}", transaction.getId())
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNoContent());
 
         // Validate the database contains one less item
-        List<ItemTransaction> itemTransactionList = itemTransactionRepository.findAll();
-        assertThat(itemTransactionList).hasSize(databaseSizeBeforeDelete - 1);
+        List<Transaction> transactionList = transactionRepository.findAll();
+        assertThat(transactionList).hasSize(databaseSizeBeforeDelete - 1);
     }
 }

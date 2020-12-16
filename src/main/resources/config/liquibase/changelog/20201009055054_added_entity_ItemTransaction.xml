@@ -9,7 +9,7 @@
         <property name="autoIncrement" value="true"/>
 
     <!--
-        Added the entity ItemTransaction.
+        Added the entity Transaction.
     -->
     <changeSet id="20201009055054-1" author="jhipster">
         <createTable tableName="cims_item_transaction">

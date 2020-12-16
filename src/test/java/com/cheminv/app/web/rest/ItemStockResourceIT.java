@@ -1,14 +1,8 @@
 package com.cheminv.app.web.rest;
 
 import com.cheminv.app.CimsApp;
-import com.cheminv.app.domain.ItemStock;
-import com.cheminv.app.domain.ItemTransaction;
-import com.cheminv.app.domain.WasteItem;
-import com.cheminv.app.domain.HazardCode;
-import com.cheminv.app.domain.InvStorage;
-import com.cheminv.app.domain.MeasUnit;
-import com.cheminv.app.domain.Order;
-import com.cheminv.app.domain.Store;
+import com.cheminv.app.domain.*;
+import com.cheminv.app.domain.Transaction;
 import com.cheminv.app.repository.ItemStockRepository;
 import com.cheminv.app.service.ItemStockService;
 import com.cheminv.app.service.dto.ItemStockDTO;
@@ -1271,17 +1265,17 @@ public class ItemStockResourceIT {
     public void getAllItemStocksByItemTransactionIsEqualToSomething() throws Exception {
         // Initialize the database
         itemStockRepository.saveAndFlush(itemStock);
-        ItemTransaction itemTransaction = ItemTransactionResourceIT.createEntity(em);
-        em.persist(itemTransaction);
+        Transaction transaction = TransactionResourceIT.createEntity(em);
+        em.persist(transaction);
         em.flush();
-        itemStock.addItemTransaction(itemTransaction);
+        itemStock.addItemTransaction(transaction);
         itemStockRepository.saveAndFlush(itemStock);
-        Long itemTransactionId = itemTransaction.getId();
+        Long itemTransactionId = transaction.getId();
 
-        // Get all the itemStockList where itemTransaction equals to itemTransactionId
+        // Get all the itemStockList where transaction equals to itemTransactionId
         defaultItemStockShouldBeFound("itemTransactionId.equals=" + itemTransactionId);
 
-        // Get all the itemStockList where itemTransaction equals to itemTransactionId + 1
+        // Get all the itemStockList where transaction equals to itemTransactionId + 1
         defaultItemStockShouldNotBeFound("itemTransactionId.equals=" + (itemTransactionId + 1));
     }
 
